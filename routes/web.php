@@ -107,26 +107,6 @@ Route::get('/home', function () {
     return view('home');
 });
 
-Route::get('/nhanvien', function () {
-
-    if (session('VaiTro') != 'NhanVien') {
-        return redirect('/login');
-    }
-    $maNV = session('MaNV');
-    $data = YeuCauDichVu::where(function ($q) use ($maNV) {
-        $q->whereNull('MaNV')
-            ->orWhere('MaNV', $maNV);
-    })
-        ->where('TrangThai', '!=', 'HoanThanh')
-        ->orderBy('MaYC', 'desc')
-        ->get();
-    return view(
-        'nhanvien',
-        compact('data')
-    );
-});
-
-
 
 Route::post('/them-sinhvien', function (Request $request) {
     SinhVien::create([
@@ -174,6 +154,25 @@ Route::get('/quanly-sinhvien', function () {
 // ======================
 // Nhân Viên
 // ======================
+
+Route::get('/nhanvien', function () {
+
+    if (session('VaiTro') != 'NhanVien') {
+        return redirect('/login');
+    }
+    $maNV = session('MaNV');
+    $data = YeuCauDichVu::where(function ($q) use ($maNV) {
+        $q->whereNull('MaNV')
+            ->orWhere('MaNV', $maNV);
+    })
+        ->where('TrangThai', '!=', 'HoanThanh')
+        ->orderBy('MaYC', 'desc')
+        ->get();
+    return view(
+        'nhanvien',
+        compact('data')
+    );
+});
 
 Route::get('/quanly-nhanvien', function () {
     if (session('VaiTro') != 'Admin') {
@@ -233,11 +232,9 @@ Route::get('/xoa-nhanvien/{id}', function ($id) {
     return back();
 });
 
-
 // ======================
 // YÊU CẦU DV
 // ======================
-
 
 Route::post('/yeucau', function (Request $request) {
 
@@ -246,20 +243,35 @@ Route::post('/yeucau', function (Request $request) {
         $request->masv
     )->first();
 
-    if(!$sv){
+    if (!$sv) {
         return back()->with(
             'error',
             'Mã sinh viên không tồn tại'
         );
     }
 
+    // Tìm nhân viên đang rảnh
+    $nv = NhanVienXuLy::whereNotIn(
+        'MaNV',
+        YeuCauDichVu::where(
+            'TrangThai',
+            'DangXuLy'
+        )->pluck('MaNV')
+    )->first();
+
     YeuCauDichVu::create([
         'MaSV' => $request->masv,
         'LoaiDichVu' => $request->loai,
-        'NoiDung' => $request->noidung,
         'NgayGui' => now(),
-        'TrangThai' => 'ChoXuLy',
-        'MaNV' => null
+
+        // Nếu có NV rảnh => giao luôn
+        'TrangThai' => $nv
+            ? 'DangXuLy'
+            : 'ChoXuLy',
+
+        'MaNV' => $nv
+            ? $nv->MaNV
+            : null
     ]);
 
     return back()->with(
@@ -268,49 +280,43 @@ Route::post('/yeucau', function (Request $request) {
     );
 });
 
-Route::get('/nhan-yeucau/{id}', function ($id) {
-    $maNV = session('MaNV');
-    $dangXuLy = YeuCauDichVu::where(
-        'MaNV',
-        $maNV
-    )
-        ->where(
-            'TrangThai',
-            'DangXuLy'
-        )
-        ->exists();
-    if ($dangXuLy) {
-        return back()->with(
-            'error',
-            'Bạn đang xử lý một yêu cầu khác'
-        );
-    }
-    $yc = YeuCauDichVu::findOrFail($id);
-    if ($yc->MaNV != null) {
-        return back()->with(
-            'error',
-            'Yêu cầu đã được nhân viên khác nhận'
-        );
-    }
-    $yc->update([
-        'MaNV' => $maNV,
-        'TrangThai' => 'DangXuLy'
-    ]);
-    return back();
-});
-
 // ======================
 // HOÀN THÀNH YÊU CẦU
 // ======================
 
 Route::get('/capnhat-hoanthanh/{id}', function ($id) {
+
+    $maNV = session('MaNV');
+
     $yc = YeuCauDichVu::findOrFail($id);
-    if ($yc->MaNV != session('MaNV')) {
+
+    if ($yc->MaNV != $maNV) {
         return back();
     }
+
+    // Hoàn thành yêu cầu hiện tại
     $yc->update([
         'TrangThai' => 'HoanThanh'
     ]);
+
+    // Tìm yêu cầu chờ xử lý lâu nhất
+    $yeuCauMoi = YeuCauDichVu::where(
+        'TrangThai',
+        'ChoXuLy'
+    )
+    ->whereNull('MaNV')
+    ->orderBy('MaYC')
+    ->first();
+
+    // Tự nhận yêu cầu mới
+    if ($yeuCauMoi) {
+
+        $yeuCauMoi->update([
+            'MaNV' => $maNV,
+            'TrangThai' => 'DangXuLy'
+        ]);
+    }
+
     return redirect('/nhanvien');
 });
 
@@ -326,18 +332,6 @@ Route::get('/danhsach-hoanthanh', function () {
     return view(
         'hoanthanh',
         compact('data')
-    );
-});
-
-// ======================
-// CHI TIẾT
-// ======================
-
-Route::get('/chitiet/{id}', function ($id) {
-    $item = YeuCauDichVu::findOrFail($id);
-    return view(
-        'chitiet',
-        compact('item')
     );
 });
 

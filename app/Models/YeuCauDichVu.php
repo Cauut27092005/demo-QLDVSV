@@ -12,7 +12,6 @@ class YeuCauDichVu extends Model
         'MaSV',
         'MaNV',
         'LoaiDichVu',
-        'NoiDung',
         'NgayGui',
         'TrangThai'
     ];

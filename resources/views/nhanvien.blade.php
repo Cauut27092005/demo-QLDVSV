@@ -48,7 +48,6 @@
                             <th>Mã YC</th>
                             <th>Mã SV</th>
                             <th>Loại dịch vụ</th>
-                            <th>Nội dung</th>
                             <th>Ngày gửi</th>
                             <th>Trạng thái</th>
                             <th>Thao tác</th>
@@ -72,7 +71,6 @@
                 <td>${item.MaYC}</td>
                 <td>${item.MaSV}</td>
                 <td>${item.LoaiDichVu}</td>
-                <td>${item.NoiDung}</td>
                 <td>${item.NgayGui}</td>
                 <td>
                     ${
@@ -85,21 +83,16 @@
                 </td>
                 <td>
                     ${
-                    item.TrangThai == 'ChoXuLy'
+                    item.TrangThai == 'DangXuLy'
                     ?
-                    `
-                    <a href="/nhan-yeucau/${item.MaYC}"
-                    class="btn btn-primary btn-sm">
-                        Nhận
-                    </a>
-                    `
-                    :
                     `
                     <a href="/capnhat-hoanthanh/${item.MaYC}"
                     class="btn btn-success btn-sm">
                         Hoàn thành
                     </a>
                     `
+                    :
+                    ''
                     }
                 </td>
             </tr>

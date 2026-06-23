@@ -29,7 +29,6 @@
                         <th>Mã YC</th>
                         <th>Mã SV</th>
                         <th>Loại dịch vụ</th>
-                        <th>Xem</th>
                         <th>Ngày gửi</th>
                         <th>Trạng thái</th>
                     </tr>
@@ -38,12 +37,6 @@
                         <td>{{ $item->MaYC }}</td>
                         <td>{{ $item->MaSV }}</td>
                         <td>{{ $item->LoaiDichVu }}</td>
-                        <td>
-                            <a href="/chitiet/{{ $item->MaYC }}"
-                                class="btn btn-primary btn-sm">
-                                Xem chi tiết
-                            </a>
-                        </td>
                         <td>{{ $item->NgayGui }}</td>
                         <td>
                             <span class="badge bg-success">
