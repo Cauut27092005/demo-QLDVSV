@@ -17,14 +17,22 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, .1);
             cursor: pointer;
             transition: .3s;
+            height: 150px;
         }
 
         .dashboard-card:hover {
             transform: translateY(-5px);
         }
 
+        .dashboard-card .card-body {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
         .number {
-            font-size: 40px;
+            font-size: 42px;
             font-weight: bold;
         }
 
@@ -33,7 +41,6 @@
         }
     </style>
 </head>
-
 <body>
     <div id="app" class="container mt-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
@@ -41,14 +48,13 @@
                 <h2>Dashboard Admin</h2>
                 <small>Xin chào Admin 👋</small>
             </div>
-
             <a href="/logout" class="btn btn-danger">
                 Đăng xuất
             </a>
         </div>
-        <div class="row">
-
-            <div class="col-md-3 mb-3">
+        <!-- CARD -->
+        <div class="row g-3">
+            <div class="col-md-3">
                 <div
                     class="card dashboard-card bg-primary text-white"
                     @click="show='nv'">
@@ -60,7 +66,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 mb-3">
+            <div class="col-md-3">
                 <div
                     class="card dashboard-card bg-warning"
                     @click="show='yc'">
@@ -72,7 +78,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 mb-3">
+            <div class="col-md-3">
                 <div
                     class="card dashboard-card bg-info text-white"
                     @click="show='dxl'">
@@ -84,12 +90,12 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 mb-3">
+            <div class="col-md-3">
                 <div
                     class="card dashboard-card bg-success text-white"
                     @click="show='ht'">
                     <div class="card-body text-center">
-                        <h5>Hoàn thành</h5>
+                        <h5>Đã xử lý</h5>
                         <div class="number">
                             @{{ hoanThanh }}
                         </div>
@@ -97,6 +103,7 @@
                 </div>
             </div>
         </div>
+        <!-- NHÂN VIÊN -->
         <div
             v-if="show=='nv'"
             class="card shadow table-box">
@@ -114,17 +121,17 @@
                     </thead>
                     <tbody>
                         <tr
-                            v-for="nv in nhanviens"
-                            :key="nv.MaNV">
-                            <td>@{{ nv.MaNV }}</td>
-                            <td>@{{ nv.HoTen }}</td>
-                            <td>@{{ nv.BoPhan }}</td>
+                            v-for="item in nhanViens"
+                            :key="item.MaNV">
+                            <td>@{{ item.MaNV }}</td>
+                            <td>@{{ item.HoTen }}</td>
+                            <td>@{{ item.BoPhan }}</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </div>
-        <!-- Danh sách yêu cầu -->
+        <!-- YÊU CẦU -->
         <div
             v-if="show=='yc'"
             class="card shadow table-box">
@@ -137,7 +144,7 @@
                         <tr>
                             <th>Mã YC</th>
                             <th>Mã SV</th>
-                            <th>Loại dịch vụ</th>
+                            <th>Loại DV</th>
                             <th>Ngày gửi</th>
                             <th>Trạng thái</th>
                         </tr>
@@ -156,12 +163,12 @@
                 </table>
             </div>
         </div>
-        <!-- Đang xử lý -->
+        <!-- ĐANG XỬ LÝ -->
         <div
             v-if="show=='dxl'"
             class="card shadow table-box">
             <div class="card-header bg-info text-white">
-                Đang xử lý
+                Danh sách đang xử lý
             </div>
             <div class="card-body">
                 <table class="table table-bordered">
@@ -186,12 +193,12 @@
                 </table>
             </div>
         </div>
-        <!-- Hoàn thành -->
+        <!-- HOÀN THÀNH -->
         <div
             v-if="show=='ht'"
             class="card shadow table-box">
             <div class="card-header bg-success text-white">
-                Đã hoàn thành
+                Danh sách đã hoàn thành
             </div>
             <div class="card-body">
                 <table class="table table-bordered">
@@ -225,7 +232,7 @@
                     tongYC: 0,
                     dangXuLy: 0,
                     hoanThanh: 0,
-                    nhanviens: [],
+                    nhanViens: [],
                     yeuCaus: [],
                     dangXuLys: [],
                     hoanThanhs: [],
@@ -241,17 +248,18 @@
             methods: {
                 loadData() {
                     fetch('/api-admin')
-                        .then(res => res.json())
-                        .then(data => {
-                            this.tongNV = data.tongNV;
-                            this.tongYC = data.tongYC;
-                            this.dangXuLy = data.dangXuLy;
-                            this.hoanThanh = data.hoanThanh;
-                            this.nhanviens = data.nhanviens;
-                            this.yeuCaus = data.yeuCaus;
-                            this.dangXuLys = data.dangXuLys;
-                            this.hoanThanhs = data.hoanThanhs;
-                        });
+                    .then(res => res.json())
+                    .then(data => {
+                        console.log(data);
+                        this.tongNV = data.tongNV;
+                        this.tongYC = data.tongYC;
+                        this.dangXuLy = data.dangXuLy;
+                        this.hoanThanh = data.hoanThanh;
+                        this.nhanViens = data.nhanViens;
+                        this.yeuCaus = data.yeuCaus;
+                        this.dangXuLys = data.dangXuLys;
+                        this.hoanThanhs = data.hoanThanhs;
+                    });
                 }
             }
         }).mount('#app');

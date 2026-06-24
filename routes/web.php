@@ -65,27 +65,25 @@ Route::post('/login', function (Request $request) {
 
 Route::get('/api-admin', function () {
     return [
-        'tongNV' => NhanVienXuLy::count(),
-        'tongYC' => YeuCauDichVu::count(),
-        'dangXuLy' => YeuCauDichVu::where(
-            'TrangThai',
-            'DangXuLy'
-        )->count(),
-        'hoanThanh' => YeuCauDichVu::where(
-            'TrangThai',
-            'HoanThanh'
-        )->count(),
-        'nhanviens' => NhanVienXuLy::all(),
-        'yeuCaus' => YeuCauDichVu::all(),
-        'dangXuLys' => YeuCauDichVu::where(
-            'TrangThai',
-            'DangXuLy'
-        )->get(),
-        'hoanThanhs' => YeuCauDichVu::where(
-            'TrangThai',
-            'HoanThanh'
-        )->get()
-    ];
+    'tongNV' => NhanVienXuLy::count(),
+    'tongYC' => YeuCauDichVu::count(),
+    'dangXuLy' => YeuCauDichVu::where('TrangThai','DangXuLy')->count(),
+    'hoanThanh' => YeuCauDichVu::where('TrangThai','HoanThanh')->count(),
+
+    'nhanViens' => NhanVienXuLy::all(),
+
+    'yeuCaus' => YeuCauDichVu::all(),
+
+    'dangXuLys' => YeuCauDichVu::where(
+        'TrangThai',
+        'DangXuLy'
+    )->get(),
+
+    'hoanThanhs' => YeuCauDichVu::where(
+        'TrangThai',
+        'HoanThanh'
+    )->get()
+];
 });
 
 Route::get('/admin', function () {
@@ -106,6 +104,37 @@ Route::get('/home', function () {
 // ======================
 // Nhân Viên
 // ======================
+
+use Illuminate\Support\Facades\DB;
+
+Route::get('/api-thongke-nhanvien', function (Request $request) {
+
+    $tuNgay = $request->tuNgay;
+    $denNgay = $request->denNgay;
+
+    return DB::table('yeucau_dichvu')
+        ->join(
+            'nhanvien_xuly',
+            'yeucau_dichvu.MaNV',
+            '=',
+            'nhanvien_xuly.MaNV'
+        )
+        ->select(
+            'nhanvien_xuly.MaNV',
+            'nhanvien_xuly.HoTen',
+            DB::raw('COUNT(*) as SoLuong')
+        )
+        ->where('TrangThai', 'HoanThanh')
+        ->whereDate('NgayHoanThanh', '>=', $tuNgay)
+        ->whereDate('NgayHoanThanh', '<=', $denNgay)
+        
+        ->groupBy(
+            'nhanvien_xuly.MaNV',
+            'nhanvien_xuly.HoTen'
+        )
+        ->orderByDesc('SoLuong')
+        ->get();
+});
 
 Route::get('/api-nhanvien', function () {
     return App\Models\NhanVienXuLy::all();
@@ -243,7 +272,8 @@ Route::get('/capnhat-hoanthanh/{id}', function ($id) {
     }
     // Hoàn thành yêu cầu hiện tại
     $yc->update([
-        'TrangThai' => 'HoanThanh'
+    'TrangThai' => 'HoanThanh',
+    'NgayHoanThanh' => now()
     ]);
     // Tìm yêu cầu chờ xử lý lâu nhất
     $yeuCauMoi = YeuCauDichVu::where(
