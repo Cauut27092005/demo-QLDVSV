@@ -63,34 +63,35 @@ Route::post('/login', function (Request $request) {
     );
 });
 
+Route::get('/api-admin', function () {
+
+    return response()->json([
+        'tongNV' => NhanVienXuLy::count(),
+        'tongYC' => YeuCauDichVu::count(),
+        'hoanThanh' => YeuCauDichVu::where(
+            'TrangThai',
+            'HoanThanh'
+        )->count(),
+
+        'nhanviens' => NhanVienXuLy::all(),
+
+        'yeucaus' => YeuCauDichVu::all(),
+
+        'hoanthanhs' => YeuCauDichVu::where(
+            'TrangThai',
+            'HoanThanh'
+        )->get()
+    ]);
+
+});
+
 Route::get('/admin', function () {
+
     if (session('VaiTro') != 'Admin') {
         return redirect('/login');
     }
-    $tongNV = NhanVienXuLy::count();
-    $tongYC = YeuCauDichVu::count();
-    $hoanThanh = YeuCauDichVu::where(
-        'TrangThai',
-        'HoanThanh'
-    )->count();
-    $nhanviens = NhanVienXuLy::all();
-    $yeucaus = YeuCauDichVu::all();
-    $hoanthanhs = YeuCauDichVu::where(
-        'TrangThai',
-        'HoanThanh'
-    )->get();
 
-    return view(
-        'admin',
-        compact(
-            'tongNV',
-            'tongYC',
-            'hoanThanh',
-            'nhanviens',
-            'yeucaus',
-            'hoanthanhs'
-        )
-    );
+    return view('admin');
 });
 
 // ======================
@@ -98,7 +99,6 @@ Route::get('/admin', function () {
 // ======================
 
 Route::get('/home', function () {
-
     return view('home');
 });
 
@@ -106,8 +106,11 @@ Route::get('/home', function () {
 // Nhân Viên
 // ======================
 
-Route::get('/nhanvien', function () {
+Route::get('/api-nhanvien', function () {
+    return App\Models\NhanVienXuLy::all();
+});
 
+Route::get('/nhanvien', function () {
     if (session('VaiTro') != 'NhanVien') {
         return redirect('/login');
     }
@@ -188,7 +191,6 @@ Route::get('/xoa-nhanvien/{id}', function ($id) {
 // ======================
 
 Route::post('/yeucau', function (Request $request) {
-
     // Gọi API JSON Server
     $response = Http::get(
         'http://localhost:3000/sinhvien',
@@ -196,17 +198,13 @@ Route::post('/yeucau', function (Request $request) {
             'MaSV' => $request->masv
         ]
     );
-
     $sinhVien = $response->json();
-
     if (count($sinhVien) == 0) {
-
         return back()->with(
             'error',
             'Mã sinh viên không tồn tại trong hệ thống'
         );
     }
-
     // Tìm nhân viên rảnh
     $nv = NhanVienXuLy::whereNotIn(
         'MaNV',
@@ -215,21 +213,17 @@ Route::post('/yeucau', function (Request $request) {
             'DangXuLy'
         )->pluck('MaNV')
     )->first();
-
     YeuCauDichVu::create([
         'MaSV' => $request->masv,
         'LoaiDichVu' => $request->loai,
         'NgayGui' => now(),
-
         'TrangThai' => $nv
             ? 'DangXuLy'
             : 'ChoXuLy',
-
         'MaNV' => $nv
             ? $nv->MaNV
             : null
     ]);
-
     return back()->with(
         'success',
         'Gửi yêu cầu thành công'
@@ -240,20 +234,16 @@ Route::post('/yeucau', function (Request $request) {
 // ======================
 
 Route::get('/capnhat-hoanthanh/{id}', function ($id) {
-
     $maNV = session('MaNV');
-
     $yc = YeuCauDichVu::findOrFail($id);
 
     if ($yc->MaNV != $maNV) {
         return back();
     }
-
     // Hoàn thành yêu cầu hiện tại
     $yc->update([
         'TrangThai' => 'HoanThanh'
     ]);
-
     // Tìm yêu cầu chờ xử lý lâu nhất
     $yeuCauMoi = YeuCauDichVu::where(
         'TrangThai',
@@ -262,17 +252,24 @@ Route::get('/capnhat-hoanthanh/{id}', function ($id) {
     ->whereNull('MaNV')
     ->orderBy('MaYC')
     ->first();
-
     // Tự nhận yêu cầu mới
     if ($yeuCauMoi) {
-
         $yeuCauMoi->update([
             'MaNV' => $maNV,
             'TrangThai' => 'DangXuLy'
         ]);
     }
-
     return redirect('/nhanvien');
+});
+
+Route::get('/api-hoanthanh', function () {
+    return App\Models\YeuCauDichVu::where(
+        'TrangThai',
+        'HoanThanh'
+    )
+    ->orderBy('MaYC','desc')
+    ->get();
+
 });
 
 // ======================
@@ -291,15 +288,17 @@ Route::get('/danhsach-hoanthanh', function () {
 });
 
 Route::get('/api-yeucau', function () {
-    $maNV = session('MaNV');
-    return YeuCauDichVu::where(function ($q) use ($maNV) {
-
-        $q->whereNull('MaNV')
-            ->orWhere('MaNV', $maNV);
-    })
-        ->where('TrangThai', '!=', 'HoanThanh')
-        ->orderBy('MaYC', 'desc')
-        ->get();
+    return YeuCauDichVu::where(
+        'MaNV',
+        session('MaNV')
+    )
+    ->where(
+        'TrangThai',
+        '!=',
+        'HoanThanh'
+    )
+    ->orderBy('MaYC', 'desc')
+    ->get();
 });
 
 // ======================
@@ -307,12 +306,10 @@ Route::get('/api-yeucau', function () {
 // ======================
 
 Route::get('/bang-thongbao', function () {
-
     return view('bang_thongbao');
 });
 
 Route::get('/api-thongbao', function () {
-
     return YeuCauDichVu::whereIn(
         'TrangThai',
         ['ChoXuLy', 'DangXuLy']

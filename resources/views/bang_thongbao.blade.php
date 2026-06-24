@@ -1,63 +1,36 @@
 <!DOCTYPE html>
-
 <html>
 
 <head>
     <title>Bảng thông báo</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet">
     <style>
         body {
-            background: #0f172a;
-            color: white;
-            overflow: hidden;
+            background: #f4f6f9;
         }
 
         .title {
-            text-align: center;
-            font-size: 42px;
+            font-size: 32px;
             font-weight: bold;
-            padding: 20px;
-            background: #1e293b;
-        }
-
-        .box {
-            border-radius: 15px;
-            padding: 15px;
-            height: 80vh;
-        }
-
-        .waiting {
-            background: #f59e0b;
-        }
-
-        .processing {
-            background: #2563eb;
-        }
-
-        .done {
-            background: #16a34a;
-        }
-
-        .item {
-            background: rgba(255, 255, 255, 0.15);
-            margin-bottom: 10px;
-            padding: 10px;
-            border-radius: 10px;
-            font-size: 20px;
-        }
-
-        h3 {
             text-align: center;
-            font-weight: bold;
+        }
+
+        .table td,
+        .table th {
+            vertical-align: middle;
+            font-size: 18px;
         }
     </style>
 </head>
 
 <body>
-    <div class="container-fluid mt-3">
+    <div id="app" class="container-fluid mt-3">
         <div class="card shadow">
-            <div class="card-header bg-dark text-white text-center">
-                📢 DANH SÁCH YÊU CẦU DỊCH VỤ SINH VIÊN
+            <div class="card-header bg-primary text-white text-center">
+                <h3 class="mb-0">
+                    📢 DANH SÁCH YÊU CẦU DỊCH VỤ SINH VIÊN
+                </h3>
             </div>
             <div class="card-body">
                 <table class="table table-bordered table-striped text-center">
@@ -69,54 +42,64 @@
                             <th>Trạng thái</th>
                         </tr>
                     </thead>
-                    <tbody id="tbodyThongBao">
+                    <tbody>
+                        <tr
+                            v-for="item in yeucaus"
+                            :key="item.MaYC">
+                            <td>[[ item.MaYC ]]</td>
+                            <td>[[ item.MaSV ]]</td>
+                            <td>[[ item.LoaiDichVu ]]</td>
+                            <td>
+                                <span
+                                    v-if="item.TrangThai=='ChoXuLy'"
+                                    class="badge bg-warning">
+                                    Chờ xử lý
+                                </span>
+                                <span
+                                    v-else
+                                    class="badge bg-primary">
+                                    Đang xử lý
+                                </span>
+                            </td>
+                        </tr>
+                        <tr v-if="yeucaus.length==0">
+                            <td colspan="4">
+                                Không có dữ liệu
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script>
-        function loadData() {
-
-            fetch('/api-thongbao')
-                .then(res => res.json())
-                .then(data => {
-
-                    let html = '';
-
-                    data.forEach(item => {
-
-                        let trangThai = '';
-
-                        if (item.TrangThai == 'ChoXuLy') {
-                            trangThai =
-                                '<span class="badge bg-warning">Chờ xử lý</span>';
-                        } else {
-                            trangThai =
-                                '<span class="badge bg-primary">Đang xử lý</span>';
-                        }
-
-                        html += `
-                <tr>
-                    <td>${item.MaYC}</td>
-                    <td>${item.MaSV}</td>
-                    <td>${item.LoaiDichVu}</td>
-                    <td>${trangThai}</td>
-                </tr>
-            `;
-                    });
-
-                    document.getElementById(
-                        'tbodyThongBao'
-                    ).innerHTML = html;
-
-                });
-
-        }
-
-        loadData();
-
-        setInterval(loadData, 2000);
+        const {
+            createApp
+        } = Vue;
+        createApp({
+            delimiters: ['[[', ']]'],
+            data() {
+                return {
+                    yeucaus: []
+                }
+            },
+            methods: {
+                loadData() {
+                    fetch('/api-thongbao')
+                        .then(res => res.json())
+                        .then(data => {
+                            this.yeucaus = data;
+                        });
+                }
+            },
+            mounted() {
+                this.loadData();
+                setInterval(() => {
+                    this.loadData();
+                }, 2000);
+            }
+        }).mount('#app');
     </script>
 </body>
 
