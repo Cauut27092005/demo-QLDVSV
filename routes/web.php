@@ -64,33 +64,34 @@ Route::post('/login', function (Request $request) {
 });
 
 Route::get('/api-admin', function () {
-
-    return response()->json([
+    return [
         'tongNV' => NhanVienXuLy::count(),
         'tongYC' => YeuCauDichVu::count(),
+        'dangXuLy' => YeuCauDichVu::where(
+            'TrangThai',
+            'DangXuLy'
+        )->count(),
         'hoanThanh' => YeuCauDichVu::where(
             'TrangThai',
             'HoanThanh'
         )->count(),
-
         'nhanviens' => NhanVienXuLy::all(),
-
-        'yeucaus' => YeuCauDichVu::all(),
-
-        'hoanthanhs' => YeuCauDichVu::where(
+        'yeuCaus' => YeuCauDichVu::all(),
+        'dangXuLys' => YeuCauDichVu::where(
+            'TrangThai',
+            'DangXuLy'
+        )->get(),
+        'hoanThanhs' => YeuCauDichVu::where(
             'TrangThai',
             'HoanThanh'
         )->get()
-    ]);
-
+    ];
 });
 
 Route::get('/admin', function () {
-
     if (session('VaiTro') != 'Admin') {
         return redirect('/login');
     }
-
     return view('admin');
 });
 
@@ -249,9 +250,9 @@ Route::get('/capnhat-hoanthanh/{id}', function ($id) {
         'TrangThai',
         'ChoXuLy'
     )
-    ->whereNull('MaNV')
-    ->orderBy('MaYC')
-    ->first();
+        ->whereNull('MaNV')
+        ->orderBy('MaYC')
+        ->first();
     // Tự nhận yêu cầu mới
     if ($yeuCauMoi) {
         $yeuCauMoi->update([
@@ -267,9 +268,8 @@ Route::get('/api-hoanthanh', function () {
         'TrangThai',
         'HoanThanh'
     )
-    ->orderBy('MaYC','desc')
-    ->get();
-
+        ->orderBy('MaYC', 'desc')
+        ->get();
 });
 
 // ======================
@@ -292,13 +292,13 @@ Route::get('/api-yeucau', function () {
         'MaNV',
         session('MaNV')
     )
-    ->where(
-        'TrangThai',
-        '!=',
-        'HoanThanh'
-    )
-    ->orderBy('MaYC', 'desc')
-    ->get();
+        ->where(
+            'TrangThai',
+            '!=',
+            'HoanThanh'
+        )
+        ->orderBy('MaYC', 'desc')
+        ->get();
 });
 
 // ======================
@@ -314,14 +314,14 @@ Route::get('/api-thongbao', function () {
         'TrangThai',
         ['ChoXuLy', 'DangXuLy']
     )
-    ->orderByRaw("
+        ->orderByRaw("
         CASE
             WHEN TrangThai='DangXuLy' THEN 1
             WHEN TrangThai='ChoXuLy' THEN 2
         END
     ")
-    ->orderBy('MaYC', 'desc')
-    ->get();
+        ->orderBy('MaYC', 'desc')
+        ->get();
 });
 
 // ======================
