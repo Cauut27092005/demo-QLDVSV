@@ -3,7 +3,6 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 
-use App\Models\SinhVien;
 use App\Models\TaiKhoan;
 use App\Models\YeuCauDichVu;
 use App\Models\Admin;
@@ -68,14 +67,12 @@ Route::get('/admin', function () {
     if (session('VaiTro') != 'Admin') {
         return redirect('/login');
     }
-    $tongSV = SinhVien::count();
     $tongNV = NhanVienXuLy::count();
     $tongYC = YeuCauDichVu::count();
     $hoanThanh = YeuCauDichVu::where(
         'TrangThai',
         'HoanThanh'
     )->count();
-    $sinhviens = SinhVien::all();
     $nhanviens = NhanVienXuLy::all();
     $yeucaus = YeuCauDichVu::all();
     $hoanthanhs = YeuCauDichVu::where(
@@ -102,54 +99,9 @@ Route::get('/admin', function () {
 // Sinh Viên
 // ======================
 
-
 Route::get('/home', function () {
 
     return view('home');
-});
-
-
-Route::post('/them-sinhvien', function (Request $request) {
-    SinhVien::create([
-        'MaSV' => $request->masv,
-        'HoTen' => $request->hoten,
-        'Email' => $request->email,
-        'SDT' => $request->sdt
-    ]);
-    return back();
-});
-
-Route::post('/sua-sinhvien/{id}', function (Request $request, $id) {
-
-    $sv = SinhVien::findOrFail($id);
-
-    $sv->update([
-        'HoTen' => $request->hoten,
-        'Email' => $request->email,
-        'SDT' => $request->sdt
-    ]);
-
-    return back();
-});
-
-Route::get('/xoa-sinhvien/{id}', function ($id) {
-    YeuCauDichVu::where(
-        'MaSV',
-        $id
-    )->delete();
-    SinhVien::destroy($id);
-    return back();
-});
-
-Route::get('/quanly-sinhvien', function () {
-    if (session('VaiTro') != 'Admin') {
-        return redirect('/login');
-    }
-    $data = SinhVien::all();
-    return view(
-        'quanly_sinhvien',
-        compact('data')
-    );
 });
 
 // ======================

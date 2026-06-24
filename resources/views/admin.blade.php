@@ -142,12 +142,6 @@
                 Quản lý nhân viên
             </span>
         </a>
-        <a href="/quanly-sinhvien">
-            🎓
-            <span class="menu-text">
-                Quản lý sinh viên
-            </span>
-        </a>
         <a href="/logout">
             🚪
             <span class="menu-text">
@@ -161,14 +155,6 @@
         <h3>Dashboard Quản Trị</h3>
         <div> Xin chào Admin 👋 </div>
         <div class="row">
-            <div class="col-md-3 mb-3">
-                <div class="card dashboard-card bg-primary text-white" onclick="showTable('sv')">
-                    <div class="card-body">
-                        <h5>sinh viên</h5>
-                        <div class="number"> {{ $tongSV }} </div>
-                    </div>
-                </div>
-            </div>
             <div class="col-md-3 mb-3">
                 <div class="card dashboard-card bg-success text-white" onclick="showTable('nv')">
                     <div class="card-body">
