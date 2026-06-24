@@ -13,6 +13,7 @@ class YeuCauDichVu extends Model
         'MaNV',
         'LoaiDichVu',
         'NgayGui',
-        'TrangThai'
+        'TrangThai',
+        'NgayHoanThanh'
     ];
 }

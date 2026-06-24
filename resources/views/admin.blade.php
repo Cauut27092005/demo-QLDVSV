@@ -41,6 +41,7 @@
         }
     </style>
 </head>
+
 <body>
     <div id="app" class="container mt-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
@@ -54,6 +55,18 @@
         </div>
         <!-- CARD -->
         <div class="row g-3">
+            <div class="col-md-3">
+                <div
+                    class="card dashboard-card bg-dark text-white"
+                    @click="show='tk'">
+                    <div class="card-body text-center">
+                        <h5>Thống kê NV</h5>
+                        <div class="number">
+                            📊
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="col-md-3">
                 <div
                     class="card dashboard-card bg-primary text-white"
@@ -223,6 +236,60 @@
                 </table>
             </div>
         </div>
+        <div
+            v-if="show=='tk'"
+            class="card shadow table-box">
+            <div class="card-header bg-dark text-white">
+                Thống kê số yêu cầu đã xử lý
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label>Từ ngày</label>
+                        <input
+                            type="date"
+                            class="form-control"
+                            v-model="tuNgay">
+                    </div>
+                    <div class="col-md-4">
+                        <label>Đến ngày</label>
+                        <input
+                            type="date"
+                            class="form-control"
+                            v-model="denNgay">
+                    </div>
+                    <div class="col-md-4 d-flex align-items-end">
+                        <button
+                            class="btn btn-primary w-100"
+                            @click="loadThongKe()">
+                            Thống kê
+                        </button>
+                    </div>
+                </div>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Mã NV</th>
+                            <th>Họ tên</th>
+                            <th>Số yêu cầu hoàn thành</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                            v-for="item in thongKeNhanVien"
+                            :key="item.MaNV">
+                            <td>@{{ item.MaNV }}</td>
+                            <td>@{{ item.HoTen }}</td>
+                            <td>
+                                <span class="badge bg-success">
+                                    @{{ item.SoLuong }}
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
     <script>
         Vue.createApp({
@@ -236,6 +303,9 @@
                     yeuCaus: [],
                     dangXuLys: [],
                     hoanThanhs: [],
+                    thongKeNhanVien: [],
+                    tuNgay: '',
+                    denNgay: '',
                     show: ''
                 }
             },
@@ -248,18 +318,30 @@
             methods: {
                 loadData() {
                     fetch('/api-admin')
-                    .then(res => res.json())
-                    .then(data => {
-                        console.log(data);
-                        this.tongNV = data.tongNV;
-                        this.tongYC = data.tongYC;
-                        this.dangXuLy = data.dangXuLy;
-                        this.hoanThanh = data.hoanThanh;
-                        this.nhanViens = data.nhanViens;
-                        this.yeuCaus = data.yeuCaus;
-                        this.dangXuLys = data.dangXuLys;
-                        this.hoanThanhs = data.hoanThanhs;
-                    });
+                        .then(res => res.json())
+                        .then(data => {
+                            this.tongNV = data.tongNV;
+                            this.tongYC = data.tongYC;
+                            this.dangXuLy = data.dangXuLy;
+                            this.hoanThanh = data.hoanThanh;
+                            this.nhanViens = data.nhanViens;
+                            this.yeuCaus = data.yeuCaus;
+                            this.dangXuLys = data.dangXuLys;
+                            this.hoanThanhs = data.hoanThanhs;
+                        });
+                },
+                loadThongKe() {
+                    if (!this.tuNgay || !this.denNgay) {
+                        alert('Chọn khoảng thời gian');
+                        return;
+                    }
+                    fetch(
+                            `/api-thongke-nhanvien?tuNgay=${this.tuNgay}&denNgay=${this.denNgay}`
+                        )
+                        .then(res => res.json())
+                        .then(data => {
+                            this.thongKeNhanVien = data;
+                        });
                 }
             }
         }).mount('#app');
