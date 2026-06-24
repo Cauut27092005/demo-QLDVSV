@@ -92,12 +92,6 @@
                 Quản lý nhân viên
             </span>
         </a>
-        <a href="/quanly-sinhvien">
-            🎓
-            <span class="menu-text">
-                Quản lý sinh viên
-            </span>
-        </a>
         <a href="/logout">
             🚪
             <span class="menu-text">

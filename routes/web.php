@@ -83,11 +83,9 @@ Route::get('/admin', function () {
     return view(
         'admin',
         compact(
-            'tongSV',
             'tongNV',
             'tongYC',
             'hoanThanh',
-            'sinhviens',
             'nhanviens',
             'yeucaus',
             'hoanthanhs'

@@ -185,33 +185,6 @@
                 Chi tiết dữ liệu
             </div>
             <div class="card-body">
-                <!-- Sinh viên -->
-                <div id="tableSV" style="display:none">
-                    <h4 class="mb-3">
-                        Danh sách sinh viên
-                    </h4>
-                    <table class="table table-bordered table-hover">
-                        <thead class="table-primary">
-                            <tr>
-                                <th>Mã SV</th>
-                                <th>Họ tên</th>
-                                <th>Email</th>
-                                <th>SĐT</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($sinhviens as $sv)
-                            <tr>
-                                <td>{{ $sv->MaSV }}</td>
-                                <td>{{ $sv->HoTen }}</td>
-                                <td>{{ $sv->Email }}</td>
-                                <td>{{ $sv->SDT }}</td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-
                 <!-- Nhân viên -->
                 <div id="tableNV" style="display:none">
                     <h4 class="mb-3">
@@ -307,13 +280,9 @@
         }
 
         function showTable(type) {
-            document.getElementById('tableSV').style.display = 'none';
             document.getElementById('tableNV').style.display = 'none';
             document.getElementById('tableYC').style.display = 'none';
             document.getElementById('tableHT').style.display = 'none';
-            if (type === 'sv') {
-                document.getElementById('tableSV').style.display = 'block';
-            }
             if (type === 'nv') {
                 document.getElementById('tableNV').style.display = 'block';
             }
