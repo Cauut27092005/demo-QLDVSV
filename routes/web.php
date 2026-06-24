@@ -353,6 +353,31 @@ Route::get('/api-yeucau', function () {
 });
 
 // ======================
+// THÔNG BÁO
+// ======================
+
+Route::get('/bang-thongbao', function () {
+
+    return view('bang_thongbao');
+});
+
+Route::get('/api-thongbao', function () {
+
+    return YeuCauDichVu::whereIn(
+        'TrangThai',
+        ['ChoXuLy', 'DangXuLy']
+    )
+    ->orderByRaw("
+        CASE
+            WHEN TrangThai='DangXuLy' THEN 1
+            WHEN TrangThai='ChoXuLy' THEN 2
+        END
+    ")
+    ->orderBy('MaYC', 'desc')
+    ->get();
+});
+
+// ======================
 // ĐĂNG XUẤT
 // ======================
 
