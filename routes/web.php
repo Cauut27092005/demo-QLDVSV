@@ -8,6 +8,7 @@ use App\Models\TaiKhoan;
 use App\Models\YeuCauDichVu;
 use App\Models\Admin;
 use App\Models\NhanVienXuLy;
+use Illuminate\Support\Facades\Http;
 
 Route::get('/', function () {
     return redirect('/login');
@@ -238,19 +239,25 @@ Route::get('/xoa-nhanvien/{id}', function ($id) {
 
 Route::post('/yeucau', function (Request $request) {
 
-    $sv = SinhVien::where(
-        'MaSV',
-        $request->masv
-    )->first();
+    // Gọi API JSON Server
+    $response = Http::get(
+        'http://localhost:3000/sinhvien',
+        [
+            'MaSV' => $request->masv
+        ]
+    );
 
-    if (!$sv) {
+    $sinhVien = $response->json();
+
+    if (count($sinhVien) == 0) {
+
         return back()->with(
             'error',
-            'Mã sinh viên không tồn tại'
+            'Mã sinh viên không tồn tại trong hệ thống'
         );
     }
 
-    // Tìm nhân viên đang rảnh
+    // Tìm nhân viên rảnh
     $nv = NhanVienXuLy::whereNotIn(
         'MaNV',
         YeuCauDichVu::where(
@@ -264,7 +271,6 @@ Route::post('/yeucau', function (Request $request) {
         'LoaiDichVu' => $request->loai,
         'NgayGui' => now(),
 
-        // Nếu có NV rảnh => giao luôn
         'TrangThai' => $nv
             ? 'DangXuLy'
             : 'ChoXuLy',
@@ -279,7 +285,6 @@ Route::post('/yeucau', function (Request $request) {
         'Gửi yêu cầu thành công'
     );
 });
-
 // ======================
 // HOÀN THÀNH YÊU CẦU
 // ======================

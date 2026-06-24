@@ -1,0 +1,25 @@
+{
+  "sinhvien": [
+    {
+      "id": 1,
+      "MaSV": "PH12345",
+      "HoTen": "Nguyen Van C",
+      "Email": "a@gmail.com",
+      "SDT": "0123456789"
+    },
+    {
+      "id": 2,
+      "MaSV": "PH54321",
+      "HoTen": "Cauut",
+      "Email": "huong@gmail.com",
+      "SDT": "1234567890"
+    },
+    {
+      "id": 3,
+      "MaSV": "PH11111",
+      "HoTen": "Tran Van D",
+      "Email": "b@gmail.com",
+      "SDT": "0987654321"
+    }
+  ]
+}
