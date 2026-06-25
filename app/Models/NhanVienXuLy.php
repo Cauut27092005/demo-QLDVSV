@@ -14,6 +14,7 @@ class NhanVienXuLy extends Model
 
     protected $fillable = [
         'HoTen',
-        'BoPhan'
+        'BoPhan',
+        'TrangThaiOnline'
     ];
 }

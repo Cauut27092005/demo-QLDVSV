@@ -46,15 +46,25 @@ Route::post('/login', function (Request $request) {
         'VaiTro',
         'NhanVien'
     )->first();
+
     if (
         $user &&
         $user->Password == $request->password
     ) {
+
+        NhanVienXuLy::where(
+            'MaNV',
+            $user->MaNV
+        )->update([
+            'TrangThaiOnline' => 1
+        ]);
+
         session([
             'login' => true,
             'VaiTro' => 'NhanVien',
             'MaNV' => $user->MaNV
         ]);
+
         return redirect('/nhanvien');
     }
     return back()->with(
@@ -65,25 +75,25 @@ Route::post('/login', function (Request $request) {
 
 Route::get('/api-admin', function () {
     return [
-    'tongNV' => NhanVienXuLy::count(),
-    'tongYC' => YeuCauDichVu::count(),
-    'dangXuLy' => YeuCauDichVu::where('TrangThai','DangXuLy')->count(),
-    'hoanThanh' => YeuCauDichVu::where('TrangThai','HoanThanh')->count(),
+        'tongNV' => NhanVienXuLy::count(),
+        'tongYC' => YeuCauDichVu::count(),
+        'dangXuLy' => YeuCauDichVu::where('TrangThai', 'DangXuLy')->count(),
+        'hoanThanh' => YeuCauDichVu::where('TrangThai', 'HoanThanh')->count(),
 
-    'nhanViens' => NhanVienXuLy::all(),
+        'nhanViens' => NhanVienXuLy::all(),
 
-    'yeuCaus' => YeuCauDichVu::all(),
+        'yeuCaus' => YeuCauDichVu::all(),
 
-    'dangXuLys' => YeuCauDichVu::where(
-        'TrangThai',
-        'DangXuLy'
-    )->get(),
+        'dangXuLys' => YeuCauDichVu::where(
+            'TrangThai',
+            'DangXuLy'
+        )->get(),
 
-    'hoanThanhs' => YeuCauDichVu::where(
-        'TrangThai',
-        'HoanThanh'
-    )->get()
-];
+        'hoanThanhs' => YeuCauDichVu::where(
+            'TrangThai',
+            'HoanThanh'
+        )->get()
+    ];
 });
 
 Route::get('/admin', function () {
@@ -174,9 +184,10 @@ Route::get('/quanly-nhanvien', function () {
 
 Route::post('/them-nhanvien', function (Request $request) {
     $nv = App\Models\NhanVienXuLy::create([
-        'HoTen' => $request->hoten,
-        'BoPhan' => $request->bophan
-    ]);
+    'HoTen' => $request->hoten,
+    'BoPhan' => $request->bophan,
+    'TrangThaiOnline' => 0
+]);
     TaiKhoan::create([
         'Username' => $request->username,
         'Password' => $request->password,
@@ -239,13 +250,18 @@ Route::post('/yeucau', function (Request $request) {
         );
     }
     // Tìm nhân viên rảnh
-    $nv = NhanVienXuLy::whereNotIn(
+    $nv = NhanVienXuLy::where(
+        'TrangThaiOnline',
+        1
+    )
+    ->whereNotIn(
         'MaNV',
         YeuCauDichVu::where(
             'TrangThai',
             'DangXuLy'
         )->pluck('MaNV')
-    )->first();
+    )
+    ->first();
     YeuCauDichVu::create([
         'MaSV' => $request->masv,
         'LoaiDichVu' => $request->loai,
@@ -275,8 +291,8 @@ Route::get('/capnhat-hoanthanh/{id}', function ($id) {
     }
     // Hoàn thành yêu cầu hiện tại
     $yc->update([
-    'TrangThai' => 'HoanThanh',
-    'NgayHoanThanh' => now()
+        'TrangThai' => 'HoanThanh',
+        'NgayHoanThanh' => now()
     ]);
     // Tìm yêu cầu chờ xử lý lâu nhất
     $yeuCauMoi = YeuCauDichVu::where(
@@ -362,6 +378,16 @@ Route::get('/api-thongbao', function () {
 // ======================
 
 Route::get('/logout', function () {
+    if (
+        session('VaiTro') == 'NhanVien'
+    ) {
+        NhanVienXuLy::where(
+            'MaNV',
+            session('MaNV')
+        )->update([
+            'TrangThaiOnline' => 0
+        ]);
+    }
     session()->flush();
     return redirect('/login');
 });
