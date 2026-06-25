@@ -52,12 +52,43 @@ Route::post('/login', function (Request $request) {
         $user->Password == $request->password
     ) {
 
+        // Cập nhật trạng thái online
         NhanVienXuLy::where(
             'MaNV',
             $user->MaNV
         )->update([
             'TrangThaiOnline' => 1
         ]);
+
+        // Nếu có yêu cầu đang chờ thì giao ngay cho nhân viên vừa đăng nhập
+        $yeuCauCho = YeuCauDichVu::where(
+            'TrangThai',
+            'ChoXuLy'
+        )
+            ->whereNull('MaNV')
+            ->orderBy('MaYC')
+            ->first();
+
+        if ($yeuCauCho) {
+
+            // Kiểm tra nhân viên có đang xử lý yêu cầu nào không
+            $dangXuLy = YeuCauDichVu::where(
+                'MaNV',
+                $user->MaNV
+            )
+                ->where(
+                    'TrangThai',
+                    'DangXuLy'
+                )
+                ->exists();
+
+            if (!$dangXuLy) {
+                $yeuCauCho->update([
+                    'MaNV' => $user->MaNV,
+                    'TrangThai' => 'DangXuLy'
+                ]);
+            }
+        }
 
         session([
             'login' => true,
@@ -184,10 +215,10 @@ Route::get('/quanly-nhanvien', function () {
 
 Route::post('/them-nhanvien', function (Request $request) {
     $nv = App\Models\NhanVienXuLy::create([
-    'HoTen' => $request->hoten,
-    'BoPhan' => $request->bophan,
-    'TrangThaiOnline' => 0
-]);
+        'HoTen' => $request->hoten,
+        'BoPhan' => $request->bophan,
+        'TrangThaiOnline' => 0
+    ]);
     TaiKhoan::create([
         'Username' => $request->username,
         'Password' => $request->password,
@@ -254,14 +285,14 @@ Route::post('/yeucau', function (Request $request) {
         'TrangThaiOnline',
         1
     )
-    ->whereNotIn(
-        'MaNV',
-        YeuCauDichVu::where(
-            'TrangThai',
-            'DangXuLy'
-        )->pluck('MaNV')
-    )
-    ->first();
+        ->whereNotIn(
+            'MaNV',
+            YeuCauDichVu::where(
+                'TrangThai',
+                'DangXuLy'
+            )->pluck('MaNV')
+        )
+        ->first();
     YeuCauDichVu::create([
         'MaSV' => $request->masv,
         'LoaiDichVu' => $request->loai,
