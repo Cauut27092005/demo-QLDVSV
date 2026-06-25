@@ -8,6 +8,7 @@ use App\Models\YeuCauDichVu;
 use App\Models\Admin;
 use App\Models\NhanVienXuLy;
 use Illuminate\Support\Facades\Http;
+use App\Events\DuLieuCapNhat;
 
 Route::get('/', function () {
     return redirect('/login');
@@ -304,6 +305,7 @@ Route::post('/yeucau', function (Request $request) {
             ? $nv->MaNV
             : null
     ]);
+    event(new DuLieuCapNhat());
     return back()->with(
         'success',
         'Gửi yêu cầu thành công'
@@ -325,6 +327,7 @@ Route::get('/capnhat-hoanthanh/{id}', function ($id) {
         'TrangThai' => 'HoanThanh',
         'NgayHoanThanh' => now()
     ]);
+    event(new DuLieuCapNhat());
     // Tìm yêu cầu chờ xử lý lâu nhất
     $yeuCauMoi = YeuCauDichVu::where(
         'TrangThai',
@@ -421,4 +424,9 @@ Route::get('/logout', function () {
     }
     session()->flush();
     return redirect('/login');
+});
+
+Route::get('/test-socket', function () {
+    event(new \App\Events\DuLieuCapNhat('hello'));
+    return 'OK';
 });

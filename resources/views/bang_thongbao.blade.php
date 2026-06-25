@@ -3,6 +3,7 @@
 
 <head>
     <title>Bảng thông báo</title>
+    @vite(['resources/js/app.js'])
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
         rel="stylesheet">
     <style>
@@ -94,10 +95,11 @@
                 }
             },
             mounted() {
-                this.loadData();
-                setInterval(() => {
-                    this.loadData();
-                }, 2000);
+                this.loadYeuCau();
+                window.Echo.channel('yeucau')
+                    .listen('.DuLieuCapNhat', () => {
+                        this.loadYeuCau();
+                    });
             }
         }).mount('#app');
     </script>

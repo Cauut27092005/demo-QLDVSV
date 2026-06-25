@@ -3,6 +3,7 @@
 
 <head>
     <title>Nhân viên xử lý yêu cầu</title>
+    @vite(['resources/js/app.js'])
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
         rel="stylesheet">
     <style>
@@ -120,9 +121,10 @@
             },
             mounted() {
                 this.loadYeuCau();
-                setInterval(() => {
-                    this.loadYeuCau();
-                }, 2000);
+                window.Echo.channel('yeucau')
+                    .listen('.DuLieuCapNhat', () => {
+                        this.loadYeuCau();
+                    });
             }
         }).mount('#app');
     </script>
