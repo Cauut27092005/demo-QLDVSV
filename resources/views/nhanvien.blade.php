@@ -120,7 +120,9 @@
                 }
             },
             mounted() {
+                console.log('Vue loaded');
                 this.loadYeuCau();
+                console.log(window.Echo);
                 window.Echo.channel('yeucau')
                     .listen('.DuLieuCapNhat', () => {
                         this.loadYeuCau();

@@ -88,6 +88,7 @@ Route::post('/login', function (Request $request) {
                     'MaNV' => $user->MaNV,
                     'TrangThai' => 'DangXuLy'
                 ]);
+                event(new DuLieuCapNhat());
             }
         }
 
@@ -342,6 +343,7 @@ Route::get('/capnhat-hoanthanh/{id}', function ($id) {
             'MaNV' => $maNV,
             'TrangThai' => 'DangXuLy'
         ]);
+        event(new DuLieuCapNhat());
     }
     return redirect('/nhanvien');
 });
