@@ -46,7 +46,7 @@
         @click="openPage('ht')">
 
         ✔
-        <span>Hoàn thành</span>
+        <span>Đã xử lý</span>
 
     </div>
 

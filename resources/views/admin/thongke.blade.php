@@ -39,12 +39,7 @@
                     <tr
                         v-for="item in thongKePage"
                         :key="item.MaNV">
-                        <td>
-                            <a href="#"
-                                @click.prevent="xemChiTiet(item.MaNV)">
-                                @{{ item.MaNV }}
-                            </a>
-                        </td>
+                        <td>@{{ item.MaNV }}</td>
                         <td>@{{ item.HoTen }}</td>
                         <td>
                             <span class="badge bg-success">
@@ -61,35 +56,30 @@
                 </tbody>
             </table>
             <nav class="mt-3">
-                        <ul class="pagination justify-content-center">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item"
+                        :class="{disabled:currentPage.tk==1}">
+                        <a class="page-link"
+                            @click.prevent="changePage('tk',currentPage.tk-1)">«</a>
+                    </li>
+                    <li
+                        v-for="i in totalTKPage"
+                        :key="i"
+                        class="page-item"
+                        :class="{active:i==currentPage.tk}">
 
-                            <li class="page-item"
-                                :class="{disabled:currentPage.tk==1}">
-                                <a class="page-link"
-                                    @click.prevent="changePage('tk',currentPage.tk-1)">«</a>
-                            </li>
-
-                            <li
-                                v-for="i in totalTKPage"
-                                :key="i"
-                                class="page-item"
-                                :class="{active:i==currentPage.tk}">
-
-                                <a class="page-link"
-                                    @click.prevent="changePage('tk',i)">
-                                    @{{i}}
-                                </a>
-
-                            </li>
-
-                            <li class="page-item"
-                                :class="{disabled:currentPage.tk==totaltkPage}">
-                                <a class="page-link"
-                                    @click.prevent="changePage('tk',currentPage.tk+1)">»</a>
-                            </li>
-
-                        </ul>
-                    </nav>
+                        <a class="page-link"
+                            @click.prevent="changePage('tk',i)">
+                            @{{i}}
+                        </a>
+                    </li>
+                    <li class="page-item"
+                        :class="{disabled:currentPage.tk==totaltkPage}">
+                        <a class="page-link"
+                            @click.prevent="changePage('tk',currentPage.tk+1)">»</a>
+                    </li>
+                </ul>
+            </nav>
         </div>
     </div>
     <!-- Modal Chi tiết nhân viên -->
