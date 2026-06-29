@@ -6,6 +6,7 @@ createApp({
 
     data() {
         return {
+            show: 'tk',
             tongNV: 0,
             online: 0,
             tongYC: 0,
@@ -21,6 +22,16 @@ createApp({
             thongKeNhanVien: [],
             chiTietNV: [],
 
+            currentPage: {
+                nv: 1,
+                yc: 1,
+                dxl: 1,
+                ht: 1,
+                tk: 1
+            },
+
+            perPage: 8,
+
             tuNgay: new Date().getFullYear() + '-01-01',
             denNgay: new Date().getFullYear() + '-12-31',
             nhanVienDangXem: '',
@@ -28,6 +39,115 @@ createApp({
         }
     },
     computed: {
+        //================ NHÂN VIÊN =================
+        nhanVienPage() {
+
+            let start = (this.currentPage.nv - 1) * this.perPage;
+
+            return this.nhanViens.slice(
+                start,
+                start + this.perPage
+            );
+
+        },
+
+        totalNVPage() {
+
+            return Math.ceil(
+                this.nhanViens.length / this.perPage
+            );
+
+        },
+
+
+        //================ YÊU CẦU =================
+
+        yeuCauPage() {
+
+            let start = (this.currentPage.yc - 1) * this.perPage;
+
+            return this.yeuCaus.slice(
+                start,
+                start + this.perPage
+            );
+
+        },
+
+        totalYCPage() {
+
+            return Math.ceil(
+                this.yeuCaus.length / this.perPage
+            );
+
+        },
+
+
+        //================ ĐANG XỬ LÝ =================
+
+        dangXuLyPage() {
+
+            let start = (this.currentPage.dxl - 1) * this.perPage;
+
+            return this.dangXuLys.slice(
+                start,
+                start + this.perPage
+            );
+
+        },
+
+        totalDXLPage() {
+
+            return Math.ceil(
+                this.dangXuLys.length / this.perPage
+            );
+
+        },
+
+
+        //================ HOÀN THÀNH =================
+
+        hoanThanhPage() {
+
+            let start = (this.currentPage.ht - 1) * this.perPage;
+
+            return this.hoanThanhs.slice(
+                start,
+                start + this.perPage
+            );
+
+        },
+
+        totalHTPage() {
+
+            return Math.ceil(
+                this.hoanThanhs.length / this.perPage
+            );
+
+        },
+
+
+        //================ THỐNG KÊ =================
+
+        thongKePage() {
+
+            let start = (this.currentPage.tk - 1) * this.perPage;
+
+            return this.thongKeNhanVien.slice(
+                start,
+                start + this.perPage
+            );
+
+        },
+
+        totalTKPage() {
+
+            return Math.ceil(
+                this.thongKeNhanVien.length / this.perPage
+            );
+
+        },
+
+
 
         pageTitle() {
 
@@ -86,7 +206,7 @@ createApp({
     },
     methods: {
         openPage(page) {
-            console.log(page); 
+            console.log(page);
             this.show = page;
             switch (page) {
                 case 'nv':
@@ -174,5 +294,36 @@ createApp({
                     this.hoanThanhs = data;
                 });
         },
+        changePage(type, page) {
+
+            let total = 1;
+
+            switch (type) {
+
+                case 'nv':
+                    total = this.totalNVPage;
+                    break;
+
+                case 'yc':
+                    total = this.totalYCPage;
+                    break;
+
+                case 'dxl':
+                    total = this.totalDXLPage;
+                    break;
+
+                case 'ht':
+                    total = this.totalHTPage;
+                    break;
+
+                case 'tk':
+                    total = this.totalTKPage;
+                    break;
+            }
+
+            if (page < 1 || page > total) return;
+
+            this.currentPage[type] = page;
+        }
     }
 }).mount('#app');

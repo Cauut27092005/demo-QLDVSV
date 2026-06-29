@@ -13,24 +13,56 @@
 </head>
 
 <body>
-    <div id="app" class="container mt-4">
-        <div class="header d-flex justify-content-between align-items-center">
-            <h2>👨‍💼 Quản lý yêu cầu sinh viên</h2>
-            <div>
-                <button
-                    class="btn btn-light"
-                    @click="moLichSu">
-                    Đã xử lý
-                </button>
-                <a href="/logout"
-                    class="btn btn-danger">
-                    Đăng xuất
-                </a>
+
+<div id="app">
+
+    <div class="wrapper">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+
+            <div class="logo">
             </div>
-        </div>
-        @include('nhanvien.danhsach')
+
+            <ul class="menu">
+
+                <li class="active">
+                    📄 Quản lý yêu cầu
+                </li>
+
+                <li @click="moLichSu">
+                    📋 Đã xử lý
+                </li>
+
+                <li>
+                    <a href="/logout">
+                        🚪 Đăng xuất
+                    </a>
+                </li>
+
+            </ul>
+
+        </aside>
+
+        <!-- Content -->
+        <main class="content">
+
+            <div class="header">
+
+                <h2>Quản lý yêu cầu sinh viên</h2>
+
+            </div>
+
+            @include('nhanvien.danhsach')
+
+        </main>
+
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 
 </html>

@@ -3,120 +3,139 @@
 
 <head>
     <title>Đăng nhập hệ thống</title>
+    <!-- Thêm font chữ Inter hiện đại giống thiết kế mẫu -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
             min-height: 100vh;
-            background: linear-gradient(135deg, #4e73df, #1cc88a);
+            background: url('/img/images.jpg');
+            background-size: cover;
+            background-position: center;
             display: flex;
             justify-content: center;
             align-items: center;
+            position: relative;
         }
 
-        .login-card {
-            width: 450px;
-            border: none;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, .2);
+        .overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, .35);
+            backdrop-filter: blur(5px);
         }
 
-        .login-header {
-            background: #4e73df;
-            color: white;
-            padding: 20px;
+        .login-form {
+            width: 360px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .system-title {
             text-align: center;
+            color: white;
+            font-size: 48px;
+            font-weight: 300;
+            margin-bottom: 40px;
         }
 
-        .login-header h2 {
-            margin: 0;
+        .input-login {
+            background: rgba(255, 255, 255, .08);
+            border: 1px solid rgba(255, 255, 255, .8);
+            border-right: none;
+            color: white;
+            height: 50px;
+            border-radius: 0;
+        }
+
+        .input-login::placeholder {
+            color: white;
+        }
+
+        .input-login:focus {
+            background: rgba(255, 255, 255, .15);
+            color: white;
+            box-shadow: none;
+            border-color: white;
+        }
+
+        .icon-login {
+            background: rgba(255, 255, 255, .08);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, .8);
+            border-left: none;
+            border-radius: 0;
+        }
+
+        .btn-login-custom {
+            width: 100%;
+            height: 50px;
+            background: white;
+            border: none;
+            border-radius: 0;
+            font-size: 22px;
             font-weight: bold;
         }
 
-        .card-body {
-            padding: 30px;
-        }
-
-        .form-control {
-            height: 50px;
-            border-radius: 10px;
-        }
-
-        .btn-login {
-            height: 50px;
-            font-weight: bold;
-            border-radius: 10px;
-        }
-
-        .logo {
-            font-size: 55px;
-            margin-bottom: 10px;
+        .btn-login-custom:hover {
+            background: #ececec;
         }
     </style>
 </head>
-
 <body>
+    <div class="overlay"></div>
     <div id="app">
-        <div class="card login-card">
-            <div class="login-header">
-                <div class="logo">
-                    🎓
-                </div>
-                <h2>
-                    Đăng nhập hệ thống
-                </h2>
+        <div class="login-form">
+            <h1 class="system-title">
+                HỆ THỐNG
+            </h1>
+            @if(session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
             </div>
-            <div class="card-body">
-                @if(session('error'))
-                <div class="alert alert-danger">
-                    {{ session('error') }}
+            @endif
+            <form method="POST" action="/login">
+                @csrf
+                <div class="input-group mb-3">
+                    <input
+                        type="text"
+                        name="username"
+                        class="form-control input-login"
+                        placeholder="Tài khoản"
+                        v-model="username"
+                        required>
+                    <span class="input-group-text icon-login">
+                        👤
+                    </span>
                 </div>
-                @endif
-                <form method="POST" action="/login">
-                    @csrf
-                    <div class="mb-3">
-
-                        <label class="form-label fw-bold">
-                            Tài khoản
-                        </label>
+                <div class="input-group mb-3">
+                    <input
+                        :type="showPassword ? 'text' : 'password'"
+                        name="password"
+                        class="form-control input-login"
+                        placeholder="Mật khẩu"
+                        v-model="password"
+                        required>
+                    <span class="input-group-text icon-login">
+                        🔒
+                    </span>
+                </div>
+                <button class="btn btn-login-custom">
+                    ĐĂNG NHẬP
+                </button>
+                <div class="mt-3 text-white d-flex justify-content-between">
+                    <label>
                         <input
-                            type="text"
-                            name="username"
-                            class="form-control"
-                            placeholder="Nhập tài khoản"
-                            v-model="username"
-                            required>
-                    </div>
-                    <div class="mb-4">
-                        <label class="form-label fw-bold">
-                            Mật khẩu
-                        </label>
-                        <input
-                            :type="showPassword ? 'text' : 'password'"
-                            name="password"
-                            class="form-control"
-                            placeholder="Nhập mật khẩu"
-                            v-model="password"
-                            required>
-                    </div>
-                    <div class="form-check mb-3">
-                        <input
-                            class="form-check-input"
+                            class="form-check-input form-check-input-custom"
                             type="checkbox"
                             id="showPass"
                             v-model="showPassword">
-                        <label
-                            class="form-check-label"
-                            for="showPass">
-                            Hiện mật khẩu
-                        </label>
-                    </div>
-                    <button
-                        class="btn btn-success btn-login w-100">
-                        Đăng nhập
-                    </button>
-                </form>
-            </div>
+                        Hiện mật khẩu
+                    </label>
+                </div>
+            </form>
         </div>
     </div>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>

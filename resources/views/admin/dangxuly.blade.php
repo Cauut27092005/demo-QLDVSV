@@ -14,7 +14,7 @@
             </thead>
             <tbody>
                 <tr
-                    v-for="item in dangXuLys"
+                    v-for="item in dangXuLyPage"
                     :key="item.MaYC">
                     <td>@{{ item.MaYC }}</td>
                     <td>@{{ item.MaSV }}</td>
@@ -23,5 +23,35 @@
                 </tr>
             </tbody>
         </table>
+        <nav class="mt-3">
+            <ul class="pagination justify-content-center">
+
+                <li class="page-item"
+                    :class="{disabled:currentPage.dxl==1}">
+                    <a class="page-link"
+                        @click.prevent="changePage('dxl',currentPage.dxl-1)">«</a>
+                </li>
+
+                <li
+                    v-for="i in totalDXLPage"
+                    :key="i"
+                    class="page-item"
+                    :class="{active:i==currentPage.dxl}">
+
+                    <a class="page-link"
+                        @click.prevent="changePage('dxl',i)">
+                        @{{i}}
+                    </a>
+
+                </li>
+
+                <li class="page-item"
+                    :class="{disabled:currentPage.dxl==totaldxlPage}">
+                    <a class="page-link"
+                        @click.prevent="changePage('dxl',currentPage.dxl+1)">»</a>
+                </li>
+
+            </ul>
+        </nav>
     </div>
 </div>

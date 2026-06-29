@@ -1,0 +1,51 @@
+.keyboard-box {
+    width: 900px;
+    margin: 20px auto;
+    background: #f8fafc;
+    border: 1px solid #dbeafe;
+    border-radius: 16px;
+    padding: 18px;
+}
+
+.keyboard-row {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.key {
+    width: 58px;
+    height: 52px;
+
+    border: none;
+    border-radius: 12px;
+
+    background: #fff;
+
+    font-size: 22px;
+    font-weight: 600;
+
+    box-shadow: 0 3px 8px rgba(0, 0, 0, .08);
+    transition: .2s;
+}
+
+.key:hover {
+    transform: translateY(-2px);
+}
+
+.backspace {
+    width: 80px;
+    height: 52px;
+
+    margin-left: 10px;
+
+    border: none;
+    border-radius: 12px;
+
+    background: #ef4444;
+    color: white;
+
+    font-size: 24px;
+    font-weight: bold;
+}

@@ -3,7 +3,10 @@
 
 <head>
     <title>Bảng thông báo</title>
-    @vite(['resources/js/app.js'])
+    @vite([
+    'resources/js/app.js',
+    'resources/js/bang-thongbao.js'
+])
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
         rel="stylesheet">
     <style>
@@ -73,36 +76,6 @@
             </div>
         </div>
     </div>
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    <script>
-        const {
-            createApp
-        } = Vue;
-        createApp({
-            delimiters: ['[[', ']]'],
-            data() {
-                return {
-                    yeucaus: []
-                }
-            },
-            methods: {
-                loadData() {
-                    fetch('/api-thongbao')
-                        .then(res => res.json())
-                        .then(data => {
-                            this.yeucaus = data;
-                        });
-                }
-            },
-            mounted() {
-                this.loadData();
-                window.Echo.channel('yeucau')
-                    .listen('.DuLieuCapNhat', () => {
-                        this.loadData();
-                    });
-            }
-        }).mount('#app');
-    </script>
 </body>
 
 </html>

@@ -1,32 +1,118 @@
-body {
-    background: #f4f6f9;
+body{
+    background:#f5f7fb;
 }
 
-.dashboard-card {
-    border: none;
-    border-radius: 15px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, .1);
-    cursor: pointer;
-    transition: .3s;
-    height: 150px;
+.top-header{
+    background:#fff;
+    padding:25px 35px;
+    border-radius:18px;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
 }
 
-.dashboard-card:hover {
-    transform: translateY(-5px);
+.menu-tabs{
+
+    margin-top:25px;
+
+    display:flex;
+
+    background:#fff;
+
+    border-radius:18px;
+
+    overflow:hidden;
+
+    box-shadow:0 5px 20px rgba(0,0,0,.08);
+
 }
 
-.dashboard-card .card-body {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+.tab-item{
+
+    flex:1;
+
+    height:75px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:10px;
+
+    cursor:pointer;
+
+    font-size:18px;
+
+    font-weight:600;
+
+    transition:.3s;
+
+    border-bottom:4px solid transparent;
+
 }
 
-.number {
-    font-size: 42px;
-    font-weight: bold;
+.tab-item:hover{
+
+    background:#f4f7ff;
+
 }
 
-.table-box {
-    margin-top: 20px;
+.tab-item.active{
+
+    color:#0d6efd;
+
+    border-bottom:4px solid #0d6efd;
+
+    background:#eef5ff;
+
+}
+
+.table-box{
+
+    margin-top:25px;
+
+    border:none;
+
+    border-radius:18px;
+
+    overflow:hidden;
+
+    box-shadow:0 8px 30px rgba(0,0,0,.08);
+
+}
+
+.table-box .card-header{
+
+    background:white;
+
+    font-size:24px;
+
+    font-weight:700;
+
+    border:none;
+
+    padding:20px;
+
+}
+
+.table{
+
+    margin-bottom:0;
+
+}
+
+.table th{
+
+    background:#f5f6fa;
+
+    text-align:center;
+
+}
+
+.table td{
+
+    vertical-align:middle;
+
+    text-align:center;
+
 }
