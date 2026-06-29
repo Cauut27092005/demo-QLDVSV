@@ -1,0 +1,16 @@
+body {
+    background: #f4f6f9;
+}
+
+.header {
+    background: linear-gradient(135deg, #4e73df, #1cc88a);
+    color: white;
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+}
+
+.table th,
+.table td {
+    vertical-align: middle;
+}

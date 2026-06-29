@@ -98,7 +98,7 @@
                 this.loadData();
                 window.Echo.channel('yeucau')
                     .listen('.DuLieuCapNhat', () => {
-                        this.loadYeuCau();
+                        this.loadData();
                     });
             }
         }).mount('#app');

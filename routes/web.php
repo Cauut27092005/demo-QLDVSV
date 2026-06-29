@@ -1,14 +1,13 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Illuminate\Http\Request;
 
-use App\Models\TaiKhoan;
-use App\Models\YeuCauDichVu;
-use App\Models\Admin;
-use App\Models\NhanVienXuLy;
-use Illuminate\Support\Facades\Http;
-use App\Events\DuLieuCapNhat;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\NhanVienController;
+use App\Http\Controllers\YeuCauController;
+use App\Http\Controllers\ThongBaoController;
+
 
 Route::get('/', function () {
     return redirect('/login');
@@ -16,125 +15,12 @@ Route::get('/', function () {
 
 
 // ======================
-// ĐĂNG NHẬP
+// ĐĂNG NHẬP, ĐĂNG XUẤT
 // ======================
 
-Route::get('/login', function () {
-    return view('login');
-});
-
-Route::post('/login', function (Request $request) {
-    // Admin
-    $admin = Admin::where(
-        'Username',
-        $request->username
-    )->first();
-    if (
-        $admin &&
-        $admin->Password == $request->password
-    ) {
-        session([
-            'login' => true,
-            'VaiTro' => 'Admin'
-        ]);
-        return redirect('/admin');
-    }
-    // Nhân viên
-    $user = TaiKhoan::where(
-        'Username',
-        $request->username
-    )->where(
-        'VaiTro',
-        'NhanVien'
-    )->first();
-
-    if (
-        $user &&
-        $user->Password == $request->password
-    ) {
-
-        // Cập nhật trạng thái online
-        NhanVienXuLy::where(
-            'MaNV',
-            $user->MaNV
-        )->update([
-            'TrangThaiOnline' => 1
-        ]);
-
-        // Nếu có yêu cầu đang chờ thì giao ngay cho nhân viên vừa đăng nhập
-        $yeuCauCho = YeuCauDichVu::where(
-            'TrangThai',
-            'ChoXuLy'
-        )
-            ->whereNull('MaNV')
-            ->orderBy('MaYC')
-            ->first();
-
-        if ($yeuCauCho) {
-
-            // Kiểm tra nhân viên có đang xử lý yêu cầu nào không
-            $dangXuLy = YeuCauDichVu::where(
-                'MaNV',
-                $user->MaNV
-            )
-                ->where(
-                    'TrangThai',
-                    'DangXuLy'
-                )
-                ->exists();
-
-            if (!$dangXuLy) {
-                $yeuCauCho->update([
-                    'MaNV' => $user->MaNV,
-                    'TrangThai' => 'DangXuLy'
-                ]);
-                event(new DuLieuCapNhat());
-            }
-        }
-
-        session([
-            'login' => true,
-            'VaiTro' => 'NhanVien',
-            'MaNV' => $user->MaNV
-        ]);
-
-        return redirect('/nhanvien');
-    }
-    return back()->with(
-        'error',
-        'Sai tài khoản hoặc mật khẩu'
-    );
-});
-
-Route::get('/api-admin', function () {
-    return [
-        'tongNV' => NhanVienXuLy::count(),
-        'tongYC' => YeuCauDichVu::count(),
-        'dangXuLy' => YeuCauDichVu::where('TrangThai', 'DangXuLy')->count(),
-        'hoanThanh' => YeuCauDichVu::where('TrangThai', 'HoanThanh')->count(),
-
-        'nhanViens' => NhanVienXuLy::all(),
-
-        'yeuCaus' => YeuCauDichVu::all(),
-
-        'dangXuLys' => YeuCauDichVu::where(
-            'TrangThai',
-            'DangXuLy'
-        )->get(),
-
-        'hoanThanhs' => YeuCauDichVu::where(
-            'TrangThai',
-            'HoanThanh'
-        )->get()
-    ];
-});
-
-Route::get('/admin', function () {
-    if (session('VaiTro') != 'Admin') {
-        return redirect('/login');
-    }
-    return view('admin');
-});
+Route::get('/login', [AuthController::class, 'index']);
+Route::post('/login', [AuthController::class, 'login']);
+Route::get('/logout', [AuthController::class, 'logout']);
 
 // ======================
 // Sinh Viên
@@ -145,288 +31,46 @@ Route::get('/home', function () {
 });
 
 // ======================
-// Nhân Viên
+// Nhân Viên, ADMIN
 // ======================
 
-use Illuminate\Support\Facades\DB;
+Route::get('/admin', [AdminController::class, 'index']);
 
-Route::get('/api-thongke-nhanvien', function (Request $request) {
+Route::get('/api-admin', [AdminController::class, 'api_admin']);
 
-    $query = DB::table('yeucau_dichvu')
-        ->join(
-            'nhanvien_xuly',
-            'yeucau_dichvu.MaNV',
-            '=',
-            'nhanvien_xuly.MaNV'
-        )
-        ->select(
-            'nhanvien_xuly.MaNV',
-            'nhanvien_xuly.HoTen',
-            DB::raw('COUNT(*) as SoLuong')
-        )
-        ->where('TrangThai', 'HoanThanh');
+Route::get('/api-dashboard', [AdminController::class, 'dashboard']);
 
-    if ($request->tuNgay && $request->denNgay) {
-        $query->whereBetween(
-            'NgayHoanThanh',
-            [$request->tuNgay, $request->denNgay]
-        );
-    }
+Route::get('/api-thongke-nhanvien', [AdminController::class, 'api_THK_NV']);
 
-    return $query
-        ->groupBy(
-            'nhanvien_xuly.MaNV',
-            'nhanvien_xuly.HoTen'
-        )
-        ->orderByDesc('SoLuong')
-        ->get();
-});
+Route::get('/api-chitiet-nhanvien/{maNV}', [AdminController::class, 'api_CHT_NV']);
 
-Route::get('/api-nhanvien', function () {
-    return App\Models\NhanVienXuLy::all();
-});
+Route::get('/api-nhanvien', [AdminController::class, 'nhanVien']);
 
-Route::get('/nhanvien', function () {
-    if (session('VaiTro') != 'NhanVien') {
-        return redirect('/login');
-    }
-    $maNV = session('MaNV');
-    $data = YeuCauDichVu::where(function ($q) use ($maNV) {
-        $q->whereNull('MaNV')
-            ->orWhere('MaNV', $maNV);
-    })
-        ->where('TrangThai', '!=', 'HoanThanh')
-        ->orderBy('MaYC', 'desc')
-        ->get();
-    return view(
-        'nhanvien',
-        compact('data')
-    );
-});
+Route::get('/quanly-nhanvien', [AdminController::class, 'QL_NV']);
 
-Route::get('/quanly-nhanvien', function () {
-    if (session('VaiTro') != 'Admin') {
-        return redirect('/login');
-    }
-    $data = NhanVienXuLy::all();
-    return view(
-        'quanly_nhanvien',
-        compact('data')
-    );
-});
+Route::get('/api-yeucau-admin',[AdminController::class,'yeuCau']);
 
-Route::post('/them-nhanvien', function (Request $request) {
-    $nv = App\Models\NhanVienXuLy::create([
-        'HoTen' => $request->hoten,
-        'BoPhan' => $request->bophan,
-        'TrangThaiOnline' => 0
-    ]);
-    TaiKhoan::create([
-        'Username' => $request->username,
-        'Password' => $request->password,
-        'VaiTro' => 'NhanVien',
-        'MaNV' => $nv->MaNV
-    ]);
-    return back();
-});
+Route::get('/api-dangxuly',[AdminController::class,'dangXuLy']);
 
-Route::post('/sua-nhanvien/{id}', function (Request $request, $id) {
-    $nv = NhanVienXuLy::findOrFail($id);
-    $nv->update([
-        'HoTen' => $request->hoten,
-        'BoPhan' => $request->bophan
-    ]);
-    return back();
-});
+Route::get('/api-hoanthanh',[AdminController::class,'hoanThanh']);
 
-Route::get('/xoa-nhanvien/{id}', function ($id) {
-    $dangXuLy = YeuCauDichVu::where(
-        'MaNV',
-        $id
-    )
-        ->where(
-            'TrangThai',
-            'DangXuLy'
-        )
-        ->exists();
-    if ($dangXuLy) {
-        return back()->with(
-            'error',
-            'Nhân viên đang xử lý yêu cầu'
-        );
-    }
-    TaiKhoan::where(
-        'MaNV',
-        $id
-    )->delete();
-    NhanVienXuLy::destroy($id);
-    return back();
-});
+Route::get('/nhanvien', [NhanVienController::class, 'index']);
 
 // ======================
-// YÊU CẦU DV
+// YÊU CẦU, HOÀN THÀNH
 // ======================
 
-Route::post('/yeucau', function (Request $request) {
-    // Gọi API JSON Server
-    $response = Http::get(
-        'http://localhost:3000/sinhvien',
-        [
-            'MaSV' => $request->masv
-        ]
-    );
-    $sinhVien = $response->json();
-    if (count($sinhVien) == 0) {
-        return back()->with(
-            'error',
-            'Mã sinh viên không tồn tại trong hệ thống'
-        );
-    }
-    // Tìm nhân viên rảnh
-    $nv = NhanVienXuLy::where(
-        'TrangThaiOnline',
-        1
-    )
-        ->whereNotIn(
-            'MaNV',
-            YeuCauDichVu::where(
-                'TrangThai',
-                'DangXuLy'
-            )->pluck('MaNV')
-        )
-        ->first();
-    YeuCauDichVu::create([
-        'MaSV' => $request->masv,
-        'LoaiDichVu' => $request->loai,
-        'NgayGui' => now(),
-        'TrangThai' => $nv
-            ? 'DangXuLy'
-            : 'ChoXuLy',
-        'MaNV' => $nv
-            ? $nv->MaNV
-            : null
-    ]);
-    event(new DuLieuCapNhat());
-    return back()->with(
-        'success',
-        'Gửi yêu cầu thành công'
-    );
-});
-// ======================
-// HOÀN THÀNH YÊU CẦU
-// ======================
+Route::post('/yeucau', [YeuCauController::class, 'store']);
 
-Route::get('/capnhat-hoanthanh/{id}', function ($id) {
-    $maNV = session('MaNV');
-    $yc = YeuCauDichVu::findOrFail($id);
+Route::get('/api-yeucau', [NhanVienController::class, 'api_YC']);
 
-    if ($yc->MaNV != $maNV) {
-        return back();
-    }
-    // Hoàn thành yêu cầu hiện tại
-    $yc->update([
-        'TrangThai' => 'HoanThanh',
-        'NgayHoanThanh' => now()
-    ]);
-    event(new DuLieuCapNhat());
-    // Tìm yêu cầu chờ xử lý lâu nhất
-    $yeuCauMoi = YeuCauDichVu::where(
-        'TrangThai',
-        'ChoXuLy'
-    )
-        ->whereNull('MaNV')
-        ->orderBy('MaYC')
-        ->first();
-    // Tự nhận yêu cầu mới
-    if ($yeuCauMoi) {
-        $yeuCauMoi->update([
-            'MaNV' => $maNV,
-            'TrangThai' => 'DangXuLy'
-        ]);
-        event(new DuLieuCapNhat());
-    }
-    return redirect('/nhanvien');
-});
+Route::get('/capnhat-hoanthanh/{id}', [NhanVienController::class, 'CN_HT']);
 
-Route::get('/api-hoanthanh', function () {
-    return App\Models\YeuCauDichVu::where(
-        'TrangThai',
-        'HoanThanh'
-    )
-        ->orderBy('MaYC', 'desc')
-        ->get();
-});
+Route::get('/api-lichsu', [NhanVienController::class, 'da_xu_ly']);
 
-// ======================
-// DANH SÁCH HOÀN THÀNH
-// ======================
+Route::get('/bang-thongbao', [ThongBaoController::class, 'index']);
 
-Route::get('/danhsach-hoanthanh', function () {
-    $data = YeuCauDichVu::where(
-        'TrangThai',
-        'HoanThanh'
-    )->get();
-    return view(
-        'hoanthanh',
-        compact('data')
-    );
-});
-
-Route::get('/api-yeucau', function () {
-    return YeuCauDichVu::where(
-        'MaNV',
-        session('MaNV')
-    )
-        ->where(
-            'TrangThai',
-            '!=',
-            'HoanThanh'
-        )
-        ->orderBy('MaYC', 'desc')
-        ->get();
-});
-
-// ======================
-// THÔNG BÁO
-// ======================
-
-Route::get('/bang-thongbao', function () {
-    return view('bang_thongbao');
-});
-
-Route::get('/api-thongbao', function () {
-    return YeuCauDichVu::whereIn(
-        'TrangThai',
-        ['ChoXuLy', 'DangXuLy']
-    )
-        ->orderByRaw("
-        CASE
-            WHEN TrangThai='DangXuLy' THEN 1
-            WHEN TrangThai='ChoXuLy' THEN 2
-        END
-    ")
-        ->orderBy('MaYC', 'desc')
-        ->get();
-});
-
-// ======================
-// ĐĂNG XUẤT
-// ======================
-
-Route::get('/logout', function () {
-    if (
-        session('VaiTro') == 'NhanVien'
-    ) {
-        NhanVienXuLy::where(
-            'MaNV',
-            session('MaNV')
-        )->update([
-            'TrangThaiOnline' => 0
-        ]);
-    }
-    session()->flush();
-    return redirect('/login');
-});
+Route::get('/api-thongbao', [ThongBaoController::class, 'api_TB']);
 
 Route::get('/test-socket', function () {
     event(new \App\Events\DuLieuCapNhat('hello'));
