@@ -9,14 +9,16 @@ use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
-    public function index(){
+    public function index()
+    {
         if (session('VaiTro') != 'Admin') {
             return redirect('/login');
         }
         return view('admin');
     }
 
-    public function api_admin(){
+    public function api_admin()
+    {
         return [
             'tongNV' => NhanVienXuLy::count(),
 
@@ -58,7 +60,8 @@ class AdminController extends Controller
         ];
     }
 
-    public function api_THK_NV(Request $request){
+    public function api_THK_NV(Request $request)
+    {
         $query = DB::table('yeucau_dichvu')
             ->join(
                 'nhanvien_xuly',
@@ -91,7 +94,8 @@ class AdminController extends Controller
             ->get();
     }
 
-    public function api_CHT_NV($maNV){
+    public function api_CHT_NV($maNV)
+    {
         return YeuCauDichVu::where('MaNV', $maNV)
             ->where('TrangThai', 'HoanThanh')
             ->select(
@@ -104,7 +108,8 @@ class AdminController extends Controller
             ->get();
     }
 
-    public function QL_NV(){
+    public function QL_NV()
+    {
         if (session('VaiTro') != 'Admin') {
             return redirect('/login');
         }
@@ -115,7 +120,8 @@ class AdminController extends Controller
         );
     }
 
-    public function dashboard(){
+    public function dashboard()
+    {
         return [
             'tongNV' => NhanVienXuLy::count(),
 
@@ -140,25 +146,57 @@ class AdminController extends Controller
         ];
     }
 
-    public function nhanVien(){
+    public function nhanVien()
+    {
         return NhanVienXuLy::all();
     }
 
-    public function yeuCau(){
+    public function yeuCau()
+    {
         return YeuCauDichVu::all();
     }
 
-    public function dangXuLy(){
+    public function dangXuLy()
+    {
         return YeuCauDichVu::where(
             'TrangThai',
             'DangXuLy'
         )->get();
     }
 
-    public function hoanThanh(){
+    public function hoanThanh()
+    {
         return YeuCauDichVu::where(
             'TrangThai',
             'HoanThanh'
         )->get();
+    }
+
+    public function addNV(Request $request)
+    {
+        NhanVienXuLy::create($request->all());
+        return response()->json(true);
+    }
+
+    public function updateNV(Request $request)
+    {
+        NhanVienXuLy::where(
+            'MaNV',
+            $request->MaNV
+        )->update([
+            'HoTen' => $request->HoTen,
+            'BoPhan' => $request->BoPhan
+
+        ]);
+        return response()->json(true);
+    }
+
+    public function deleteNV($id)
+    {
+        NhanVienXuLy::where(
+            'MaNV',
+            $id
+        )->delete();
+        return response()->json(true);
     }
 }

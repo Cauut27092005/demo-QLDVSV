@@ -67,7 +67,6 @@
                                     📝 Cấp giấy tờ
                                 </label>
                             </div>
-
                             <div class="col">
                                 <input
                                     class="btn-check"
@@ -81,7 +80,6 @@
                                     🎓 Hỗ trợ học vụ
                                 </label>
                             </div>
-
                             <div class="col">
                                 <input
                                     class="btn-check"
@@ -95,7 +93,6 @@
                                     📚 Bảo lưu
                                 </label>
                             </div>
-
                             <div class="col">
                                 <input
                                     class="btn-check"
@@ -109,7 +106,6 @@
                                     🪪 Cấp lại thẻ
                                 </label>
                             </div>
-
                             <div class="col">
                                 <input
                                     class="btn-check"
@@ -126,12 +122,10 @@
                         </div>
                     </div>
                     <!-- Giữ nguyên toàn bộ phần radio của bạn -->
-
                     <div class="mb-3">
                         <label class="fw-bold">
                             Mã sinh viên
                         </label>
-
                         <input
                             type="text"
                             id="masv"
@@ -141,9 +135,7 @@
                             readonly
                             required>
                     </div>
-
                     <div class="keyboard-box">
-
                         <div class="keyboard-row">
                             <button class="key"
                                 v-for="k in numbers"
@@ -152,7 +144,6 @@
                                 [[ k ]]
                             </button>
                         </div>
-
                         <div class="keyboard-row">
                             <button class="key"
                                 v-for="k in row1"
@@ -161,7 +152,6 @@
                                 [[ k ]]
                             </button>
                         </div>
-
                         <div class="keyboard-row">
                             <button class="key"
                                 v-for="k in row2"
@@ -170,7 +160,6 @@
                                 [[ k ]]
                             </button>
                         </div>
-
                         <div class="keyboard-row">
 
                             <button class="key"
@@ -179,24 +168,18 @@
                                 type="button">
                                 [[ k ]]
                             </button>
-
                             <button
                                 class="backspace"
                                 @click="backspace"
                                 type="button">
                                 ⌫
                             </button>
-
                         </div>
-
                     </div>
-
                     <button class="btn btn-success w-100 mt-4">
                         Gửi yêu cầu
                     </button>
-
                 </form>
-
             </div>
         </div>
     </div>
