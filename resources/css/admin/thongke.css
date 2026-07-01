@@ -1,0 +1,102 @@
+/* =========================
+   CARD THỐNG KÊ
+========================= */
+
+.tk-box{
+    border:none;
+    border-radius:10px;
+    overflow:hidden;
+}
+
+/* HEADER */
+.tk-header{
+    background: linear-gradient(135deg, #212529, #343a40);
+    padding:14px 18px;
+}
+
+.tk-header h5{
+    font-weight:600;
+    margin:0;
+}
+
+.tk-header small{
+    opacity:.75;
+}
+
+/* INPUT */
+.tk-input{
+    border-radius:6px;
+    font-size:14px;
+}
+
+/* BUTTON */
+.tk-btn{
+    font-weight:500;
+    border-radius:6px;
+}
+
+/* TABLE */
+.tk-table thead th{
+    background:#f8f9fa;
+    font-weight:600;
+    font-size:14px;
+}
+
+.tk-table tbody td{
+    font-size:14px;
+    vertical-align:middle;
+}
+
+.tk-table tbody tr:hover{
+    background:#f1f3f5;
+}
+
+/* BADGE SỐ LƯỢNG */
+.tk-badge{
+    display:inline-block;
+    padding:6px 10px;
+    border-radius:20px;
+    background:#198754;
+    color:#fff;
+    font-size:12px;
+    font-weight:600;
+}
+
+/* DETAIL BUTTON */
+.tk-detail-btn{
+    font-size:13px;
+    padding:4px 10px;
+}
+
+/* PAGINATION */
+.tk-pagination .page-link{
+    border-radius:6px;
+    margin:0 3px;
+}
+
+.tk-pagination .page-item.active .page-link{
+    background:#212529;
+    border-color:#212529;
+}
+/* SỐ HOÀN THÀNH (clean number) */
+.tk-number{
+    font-weight:600;
+    color:#198754;
+    font-size:15px;
+}
+/* BUTTON CHI TIẾT CHUẨN ADMIN */
+
+.tk-detail-btn{
+    font-size:13px;
+    padding:4px 10px;
+    border-radius:6px;
+    font-weight:500;
+
+    width:auto;        /* QUAN TRỌNG */
+    height:auto;       /* QUAN TRỌNG */
+    white-space:nowrap; /* không xuống dòng */
+}
+
+.tk-detail-btn:focus{
+    box-shadow:none;
+}

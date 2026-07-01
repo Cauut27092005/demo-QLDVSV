@@ -19,7 +19,13 @@ Route::get('/', function () {
 // ======================
 
 Route::get('/login', [AuthController::class, 'index']);
+
 Route::post('/login', [AuthController::class, 'login']);
+
+Route::get('/doi-mat-khau', [AuthController::class, 'doiMatKhau']);
+
+Route::post('/doi-mat-khau', [AuthController::class, 'luuMatKhau']);
+
 Route::get('/logout', [AuthController::class, 'logout']);
 
 // ======================
@@ -50,6 +56,8 @@ Route::post('/api-nhanvien/update', [AdminController::class, 'updateNV']);
 
 Route::delete('/api-nhanvien/delete/{id}', [AdminController::class, 'deleteNV']);
 
+Route::post('/api-nhanvien/reset-password/{maNV}', [AdminController::class,'resetPassword']);
+
 Route::get('/api-nhanvien', [AdminController::class, 'nhanVien']);
 
 Route::get('/quanly-nhanvien', [AdminController::class, 'QL_NV']);
@@ -71,6 +79,8 @@ Route::get('/api-yeucau', [NhanVienController::class, 'api_YC']);
 Route::get('/capnhat-hoanthanh/{id}', [NhanVienController::class, 'CN_HT']);
 
 Route::get('/api-lichsu', [NhanVienController::class, 'da_xu_ly']);
+
+Route::post('/api-doi-mat-khau', [NhanVienController::class, 'doiMatKhau']);
 
 // ======================
 // YÊU CẦU, HOÀN THÀNH

@@ -1,53 +1,53 @@
-    <div class="card shadow table-box">
-        <div class="card-header bg-dark text-white">
+<div class="card shadow table-box tk-box">
+
+    <div class="card-header tk-header text-white">
+        <h5 class="mb-0">
+            <i class="fa-solid fa-chart-line me-2"></i>
             Thống kê số yêu cầu đã xử lý
-        </div>
-        <div class="card-body">
-            <div class="row mb-3">
-                <div class="col-md-4">
-                    <label>Từ ngày</label>
-                    <input
-                        type="date"
-                        class="form-control"
-                        v-model="tuNgay">
-                </div>
-                <div class="col-md-4">
-                    <label>Đến ngày</label>
-                    <input
-                        type="date"
-                        class="form-control"
-                        v-model="denNgay">
-                </div>
-                <div class="col-md-4 d-flex align-items-end">
-                    <button
-                        class="btn btn-primary w-100"
-                        @click="loadThongKe()">
-                        Thống kê
-                    </button>
-                </div>
+        </h5>
+        <small>Báo cáo theo nhân viên và khoảng thời gian</small>
+    </div>
+    <div class="card-body">
+        <!-- FILTER -->
+        <div class="row mb-3 g-3">
+            <div class="col-md-4">
+                <label class="form-label">Từ ngày</label>
+                <input type="date" class="form-control tk-input" v-model="tuNgay">
             </div>
-            <table class="table table-bordered">
+            <div class="col-md-4">
+                <label class="form-label">Đến ngày</label>
+                <input type="date" class="form-control tk-input" v-model="denNgay">
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
+                <button class="btn btn-primary w-100 tk-btn"
+                    @click="loadThongKe()">
+                    Thống kê
+                </button>
+            </div>
+        </div>
+        <!-- TABLE -->
+        <div class="table-responsive">
+            <table class="table tk-table align-middle">
                 <thead>
                     <tr>
                         <th>Mã NV</th>
                         <th>Họ tên</th>
-                        <th>Số yêu cầu hoàn thành</th>
+                        <th>Số hoàn thành</th>
                         <th>Chi tiết</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr
-                        v-for="item in thongKePage"
-                        :key="item.MaNV">
-                        <td>@{{ item.MaNV }}</td>
+                    <tr v-for="item in thongKePage" :key="item.MaNV">
+                        <td><strong>@{{ item.MaNV }}</strong></td>
                         <td>@{{ item.HoTen }}</td>
                         <td>
-                            <span class="badge bg-success">
+                            <span class="tk-number">
                                 @{{ item.SoLuong }}
                             </span>
                         </td>
                         <td>
-                            <button class="btn btn-primary btn-sm"
+                            <button type="button"
+                                class="btn btn-primary btn-sm tk-detail-btn"
                                 @click="xemChiTiet(item.MaNV)">
                                 Chi tiết
                             </button>
@@ -55,53 +55,54 @@
                     </tr>
                 </tbody>
             </table>
-            <nav class="mt-3">
-                <ul class="pagination justify-content-center">
-                    <li class="page-item"
-                        :class="{disabled:currentPage.tk==1}">
-                        <a class="page-link"
-                            @click.prevent="changePage('tk',currentPage.tk-1)">«</a>
-                    </li>
-                    <li
-                        v-for="i in totalTKPage"
-                        :key="i"
-                        class="page-item"
-                        :class="{active:i==currentPage.tk}">
-
-                        <a class="page-link"
-                            @click.prevent="changePage('tk',i)">
-                            @{{i}}
-                        </a>
-                    </li>
-                    <li class="page-item"
-                        :class="{disabled:currentPage.tk==totaltkPage}">
-                        <a class="page-link"
-                            @click.prevent="changePage('tk',currentPage.tk+1)">»</a>
-                    </li>
-                </ul>
-            </nav>
         </div>
+        <!-- PAGINATION -->
+        <nav class="tk-pagination mt-3">
+            <ul class="pagination justify-content-center">
+                <li class="page-item"
+                    :class="{disabled:currentPage.tk==1}">
+                    <a class="page-link"
+                        @click.prevent="changePage('tk',currentPage.tk-1)">
+                        «
+                    </a>
+                </li>
+                <li v-for="i in totalTKPage"
+                    :key="i"
+                    class="page-item"
+                    :class="{active:i==currentPage.tk}">
+                    <a class="page-link"
+                        @click.prevent="changePage('tk',i)">
+                        @{{ i }}
+                    </a>
+                </li>
+                <li class="page-item"
+                    :class="{disabled:currentPage.tk==totalTKPage}">
+                    <a class="page-link"
+                        @click.prevent="changePage('tk',currentPage.tk+1)">
+                        »
+                    </a>
+                </li>
+
+            </ul>
+        </nav>
     </div>
-    <!-- Modal Chi tiết nhân viên -->
-    <div class="modal fade" id="chiTietModal" tabindex="-1">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title">
-                        Chi tiết nhân viên @{{ nhanVienDangXem }}
-                    </h5>
-
-                    <button type="button"
-                        class="btn-close btn-close-white"
-                        data-bs-dismiss="modal">
-                    </button>
-                </div>
-
-                <div class="modal-body">
-
-                    <table class="table table-bordered">
-                        <thead class="table-light">
+</div>
+<div class="modal fade" id="chiTietModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content tk-modal">
+            <div class="modal-header tk-modal-header text-white">
+                <h5 class="modal-title">
+                    Chi tiết nhân viên @{{ nhanVienDangXem }}
+                </h5>
+                <button type="button"
+                    class="btn-close btn-close-white"
+                    data-bs-dismiss="modal">
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table tk-modal-table align-middle">
+                        <thead>
                             <tr>
                                 <th>Mã YC</th>
                                 <th>Mã SV</th>
@@ -111,13 +112,16 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="item in chiTietNV"
-                                :key="item.MaYC">
-                                <td>@{{ item.MaYC }}</td>
+                            <tr v-for="item in chiTietNV" :key="item.MaYC">
+                                <td><strong>@{{ item.MaYC }}</strong></td>
                                 <td>@{{ item.MaSV }}</td>
                                 <td>@{{ item.LoaiDichVu }}</td>
                                 <td>@{{ item.NgayGui }}</td>
-                                <td>@{{ item.NgayHoanThanh }}</td>
+                                <td>
+                                    <span class="text-success fw-semibold">
+                                        @{{ item.NgayHoanThanh }}
+                                    </span>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -125,3 +129,4 @@
             </div>
         </div>
     </div>
+</div>

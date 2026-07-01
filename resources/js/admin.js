@@ -200,7 +200,6 @@ createApp({
                 MaNV: '',
                 HoTen: '',
                 BoPhan: 'Công tác sinh viên',
-                TrangThaiOnline: 1
             };
             new bootstrap.Modal(
                 document.getElementById("nhanVienModal")
@@ -246,11 +245,20 @@ createApp({
                     body: JSON.stringify(this.formNV)
                 }
             )
-                .then(res => {
+                .then(async res => {
+                    const data = await res.json();
+                    console.log(data);
                     if (!res.ok) {
-                        throw new Error("Lưu thất bại");
+                        alert(data.message);
+                        return;
                     }
-                    return res.json();
+                    bootstrap.Modal
+                        .getInstance(document.getElementById("nhanVienModal"))
+                        .hide();
+                    this.loadNhanVien();
+                    this.loadDashboard();
+                    alert(this.isEdit ? "Đã cập nhật nhân viên" : "Đã thêm nhân viên");
+
                 })
                 .then(() => {
                     bootstrap.Modal
@@ -272,6 +280,28 @@ createApp({
                 })
                 .finally(() => {
                     this.loading = false;
+                });
+
+        },
+
+        resetPassword(maNV) {
+
+            if (!confirm("Reset mật khẩu về 123456?")) {
+                return;
+            }
+
+            fetch('/api-nhanvien/reset-password/' + maNV, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN':
+                        document.querySelector(
+                            'meta[name=csrf-token]'
+                        ).content
+                }
+            })
+                .then(res => res.json())
+                .then(() => {
+                    alert("Đã reset mật khẩu.");
                 });
 
         },
@@ -376,6 +406,21 @@ createApp({
                     );
                     modal.show();
                 });
+        },
+
+        getTrangThaiClass(trangThai) {
+            if (trangThai === null || trangThai === undefined) {
+                return 'yc-other';
+            }
+            const t = String(trangThai)
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '') // bỏ dấu tiếng Việt
+                .toLowerCase()
+                .trim();
+            if (t.includes('cho')) return 'yc-wait';
+            if (t.includes('dang')) return 'yc-process';
+            if (t.includes('hoan')) return 'yc-done';
+            return 'yc-other';
         },
 
         loadNhanVien() {

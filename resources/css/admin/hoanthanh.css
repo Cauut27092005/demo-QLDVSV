@@ -1,0 +1,74 @@
+/* =========================
+   CARD HOÀN THÀNH (ARCHIVE)
+========================= */
+
+.ht-box{
+    border:none;
+    border-radius:10px;
+    overflow:hidden;
+}
+
+/* HEADER */
+.ht-header{
+    background: linear-gradient(135deg, #198754, #146c43);
+    padding:14px 18px;
+}
+
+.ht-header h5{
+    font-weight:600;
+    margin:0;
+}
+
+.ht-header small{
+    opacity:.85;
+}
+
+/* TABLE */
+.ht-table thead th{
+    background:#f8f9fa;
+    font-weight:600;
+    font-size:14px;
+}
+
+.ht-table tbody td{
+    font-size:14px;
+    vertical-align:middle;
+}
+
+.ht-table tbody tr:hover{
+    background:#f1f3f5;
+}
+
+/* SERVICE */
+.ht-service{
+    color:#495057;
+    font-weight:500;
+}
+
+/* =========================
+   BADGE HOÀN THÀNH
+========================= */
+
+.ht-badge{
+    display:inline-block;
+    padding:6px 10px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:600;
+    background: none !important;
+    color: #198754 !important;
+}
+
+/* =========================
+   PAGINATION
+========================= */
+
+.ht-pagination .page-link{
+    border-radius:6px;
+    margin:0 3px;
+}
+
+.ht-pagination .page-item.active .page-link{
+    background:#198754;
+    border-color:#198754;
+}

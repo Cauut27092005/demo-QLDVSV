@@ -26,6 +26,9 @@
                     <li @click="moLichSu">
                         📋 Đã xử lý
                     </li>
+                    <li @click="moDoiMK">
+                        🔑 Đổi mật khẩu
+                    </li>
                     <li>
                         <a href="/logout">
                             🚪 Đăng xuất
@@ -39,6 +42,7 @@
                     <h2>Quản lý yêu cầu sinh viên</h2>
                 </div>
                 @include('nhanvien.danhsach')
+                @include('nhanvien.doimatkhau')
             </main>
         </div>
     </div>

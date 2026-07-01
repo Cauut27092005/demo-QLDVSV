@@ -10,8 +10,11 @@ class NhanVienXuLy extends Model
     protected $primaryKey = 'MaNV';
     public $timestamps = false;
     protected $fillable = [
+        'MaNV',
         'HoTen',
         'BoPhan',
         'TrangThaiOnline'
     ];
+    public $incrementing = false;
+    protected $keyType = 'string';
 }

@@ -1,51 +1,213 @@
-.keyboard-box {
-    width: 900px;
-    margin: 20px auto;
-    background: #f8fafc;
-    border: 1px solid #dbeafe;
-    border-radius: 16px;
-    padding: 18px;
+body {
+    background: #eef3f8;
 }
+
+.main-card {
+    max-width: 1100px;
+    margin: 5px auto;
+    border: none;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 12px 30px rgba(0,0,0,.08);
+}
+
+.card-header{
+    background: linear-gradient(135deg,#2563eb,#3b82f6);
+    padding:18px 24px;
+    text-align:center;
+}
+
+.card-header h2{
+    font-size:22px;
+    font-weight:700;
+    margin:0;
+}
+
+.card-header small{
+    font-size:16px;
+    opacity:.9;
+    display:none;
+}
+
+.service-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:5px;
+}
+
+.service-btn{
+    min-height:60px;
+    padding:8px;
+    border-radius:14px;
+    border:1px solid #e5e7eb;
+    background:#fff;
+    transition:.2s;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+}
+
+.service-btn span {
+    font-size: 16px;
+}
+
+.service-btn:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 18px rgba(0, 0, 0, .08);
+    border-color: #60a5fa;
+}
+
+.btn-check:checked+.service-btn {
+    background: #2563eb;
+    color: white;
+    border-color: #2563eb;
+}
+
+/* ========================= */
+
+.form-title {
+    display: block;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    margin-left: 10px;
+}
+
+
+/* ========================= */
+
+.student-input {
+    width: 98%;
+    margin-left: 10px;
+    margin-right: 10px;  
+    height: 50px;
+    border: 2px solid #dbeafe;
+    border-radius: 10px;
+    background: #f8fbff;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    letter-spacing: 3px;
+    color: #1e3a8a;
+    outline: none;
+}
+
+
+/* ========================= */
+
+.keyboard-box {
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+    padding: 10px;
+    background: #eef4ff;
+    border-radius: 20px;
+    border: 1px solid #dbeafe;
+}
+
+/* ========================= */
 
 .keyboard-row {
     display: flex;
     justify-content: center;
-    gap: 10px;
-    margin-bottom: 10px;
+    gap: 15px;
+    margin-bottom: 7px;
 }
 
+
+/* ========================= */
+
 .key {
-    width: 58px;
-    height: 52px;
-
+    width: 70px;
+    height: 64px;
     border: none;
-    border-radius: 12px;
-
-    background: #fff;
-
-    font-size: 22px;
-    font-weight: 600;
-
-    box-shadow: 0 3px 8px rgba(0, 0, 0, .08);
-    transition: .2s;
+    border-radius: 10px;
+    background: white;
+    font-size: 28px;
+    font-weight: bold;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .08);
+    transition: .15s;
+    border:1px solid #000000;
 }
 
 .key:hover {
-    transform: translateY(-2px);
+    background: #eff6ff;
+    transform: translateY(-3px);
 }
 
+.key:active {
+    transform: scale(.95);
+}
+
+
+/* ========================= */
+
 .backspace {
-    width: 80px;
-    height: 52px;
-
-    margin-left: 10px;
-
+    width: 90px;
+    height: 64px;
     border: none;
-    border-radius: 12px;
-
+    border-radius: 16px;
     background: #ef4444;
     color: white;
-
-    font-size: 24px;
+    font-size: 30px;
     font-weight: bold;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .12);
+}
+
+.backspace:hover {
+    background: #dc2626;
+}
+
+
+/* ========================= */
+
+.submit-btn {
+    width: 98%;
+    height: 70px;
+    margin: 11px;
+    border: none;
+    border-radius: 18px;
+    background: #16a34a;
+    color: white;
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    transition: .2s;
+}
+
+.submit-btn:hover {
+    background: #15803d;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(22, 163, 74, .25);
+}
+
+/* ========================= */
+/* Responsive */
+/* ========================= */
+
+@media (max-width:1100px) {
+    .main-card {
+        width: 95%;
+    }
+    .service-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .key {
+        width: 60px;
+        height: 58px;
+        font-size: 24px;
+    }
+}
+
+@media (max-width:768px) {
+    .service-grid {
+        grid-template-columns: 1fr;
+    }
+    .keyboard-box {
+        overflow-x: auto;
+    }
+    .keyboard-row {
+        min-width: 700px;
+    }
 }

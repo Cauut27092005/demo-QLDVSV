@@ -1,0 +1,127 @@
+/* =========================
+   CARD YÊU CẦU
+========================= */
+
+.yc-box{
+    border: none;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+/* HEADER */
+.yc-header{
+    background: linear-gradient(135deg, #ffc107, #ffb300);
+    color: #212529;
+    padding: 14px 18px;
+}
+
+.yc-header h5{
+    font-weight: 600;
+    margin: 0;
+}
+
+.yc-header small{
+    opacity: .8;
+    font-size: 12px;
+}
+
+/* =========================
+   TABLE
+========================= */
+
+.yc-table{
+    margin-bottom: 0;
+}
+
+.yc-table thead th{
+    background: #f8f9fa;
+    font-weight: 600;
+    font-size: 14px;
+    color: #495057;
+    border-bottom: 2px solid #dee2e6;
+    white-space: nowrap;
+}
+
+.yc-table tbody td{
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+.yc-table tbody tr:hover{
+    background: #f1f3f5;
+    transition: 0.2s;
+}
+
+/* =========================
+   BADGE TRẠNG THÁI
+========================= */
+
+.yc-badge{
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+/* Chờ xử lý */
+.yc-wait{
+    background: #ffc107;
+    color: #212529;
+}
+
+/* CHỈ MÀU CHỮ - KHÔNG BACKGROUND */
+
+.yc-status{
+    font-weight:500;
+}
+
+/* Chờ xử lý */
+.yc-wait{
+    background: none !important;
+    color: #ffc107 !important;
+}
+
+/* Đang xử lý */
+.yc-process{
+    background: none !important;
+    color: #0dcaf0 !important;
+}
+
+/* Hoàn thành */
+.yc-done{
+    background: none !important;
+    color: #198754 !important;
+}
+
+/* khác */
+.yc-other{
+    background: none !important;
+    color: #6c757d !important;
+}
+
+/* =========================
+   PAGINATION
+========================= */
+
+.yc-pagination .page-link{
+    color: #495057;
+    border-radius: 6px;
+    margin: 0 3px;
+    padding: 6px 10px;
+}
+
+.yc-pagination .page-item.active .page-link{
+    background: #ffc107;
+    border-color: #ffc107;
+    color: #212529;
+}
+
+.yc-pagination .page-item.disabled .page-link{
+    opacity: 0.5;
+}
+.yc-badge{
+    display:inline-block;
+    min-width:90px;
+    text-align:center;
+    white-space:nowrap;
+}

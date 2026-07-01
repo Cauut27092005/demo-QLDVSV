@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\NhanVienXuLy;
 use App\Models\YeuCauDichVu;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use App\Models\TaiKhoan;
 
 class AdminController extends Controller
 {
@@ -174,8 +176,29 @@ class AdminController extends Controller
 
     public function addNV(Request $request)
     {
-        NhanVienXuLy::create($request->all());
-        return response()->json(true);
+        DB::beginTransaction();
+        try {
+            NhanVienXuLy::create([
+                'MaNV' => $request->MaNV,
+                'HoTen' => $request->HoTen,
+                'BoPhan' => $request->BoPhan,
+                'TrangThaiOnline' => 0
+            ]);
+            TaiKhoan::create([
+                'Username' => $request->MaNV,
+                'Password' => '123456',
+                'VaiTro' => 'NhanVien',
+                'MaNV' => $request->MaNV,
+                'DaDoiMatKhau' => 0
+            ]);
+            DB::commit();
+            return response()->json([
+                'success' => true
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            dd($e->getMessage());
+        }
     }
 
     public function updateNV(Request $request)
@@ -198,5 +221,17 @@ class AdminController extends Controller
             $id
         )->delete();
         return response()->json(true);
+    }
+    public function resetPassword($maNV)
+    {
+        TaiKhoan::where('MaNV', $maNV)
+            ->update([
+                'Password' => '123456',
+                'DaDoiMatKhau' => 0
+            ]);
+
+        return response()->json([
+            'success' => true
+        ]);
     }
 }

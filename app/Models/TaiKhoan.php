@@ -13,6 +13,7 @@ class TaiKhoan extends Model
         'Username',
         'Password',
         'VaiTro',
-        'MaNV'
+        'MaNV',
+        'DaDoiMatKhau'
     ];
 }
