@@ -42,34 +42,16 @@ class AuthController extends Controller
                 ]);
                 return redirect('/doi-mat-khau');
             }
-            // Online
-            NhanVienXuLy::where('MaNV', $user->MaNV)
-                ->update([
-                    'TrangThaiOnline' => 1
-                ]);
-            // Lấy yêu cầu chờ
-            $yeuCauCho = YeuCauDichVu::where('TrangThai', 'ChoXuLy')
-                ->whereNull('MaNV')
-                ->orderBy('MaYC')
-                ->first();
-            if ($yeuCauCho) {
-                $dangXuLy = YeuCauDichVu::where('MaNV', $user->MaNV)
-                    ->where('TrangThai', 'DangXuLy')
-                    ->exists();
-                if (!$dangXuLy) {
-                    $yeuCauCho->update([
-                        'MaNV' => $user->MaNV,
-                        'TrangThai' => 'DangXuLy'
-                    ]);
-                    event(new DuLieuCapNhat());
-                }
-            }
+            // On
             session([
                 'login' => true,
                 'VaiTro' => 'NhanVien',
                 'MaNV' => $user->MaNV
             ]);
             return redirect('/nhanvien');
+        }
+        if ($user->VaiTro == "TruongPhong") {
+            return redirect('/truongphong');
         }
         return back()->with(
             'error',
@@ -116,14 +98,7 @@ class AuthController extends Controller
 
     public function logout()
     {
-        if (session('VaiTro') == 'NhanVien') {
-            NhanVienXuLy::where(
-                'MaNV',
-                session('MaNV')
-            )->update([
-                'TrangThaiOnline' => 0
-            ]);
-        }
+
         session()->flush();
         return redirect('/login');
     }

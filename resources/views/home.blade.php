@@ -9,16 +9,16 @@
     'resources/js/home.js'
     ])
 </head>
+
 <body>
-    <div id="app" class="container py-4">
-        <div class="card shadow-lg main-card">
-            <div class="card-header text-center text-white">
-                <h2 class="mb-0">
-                    🎓 GỬI YÊU CẦU DỊCH VỤ
-                </h2>
-                <small>
-                    Vui lòng chọn loại dịch vụ và nhập mã sinh viên
-                </small>
+    <div id="app" class="container mt-4">
+        <div class="card shadow main-card">
+            <div class="top-title">
+                <h2>Hệ thống xếp hàng tự động - Automatic queuing system</h2>
+                <p>
+                    Vui lòng đăng ký thông tin để được phục vụ /
+                    Please fill in the required information.
+                </p>
             </div>
             <div class="card-body">
                 @if(session('success'))
@@ -33,145 +33,105 @@
                 @endif
                 <form action="/yeucau" method="POST">
                     @csrf
-                    <div class="mb-4">
-                        <h5 class="mb-3 fw-bold">
-                            Chọn loại dịch vụ
-                        </h5>
-                        <div class="service-grid">
-                            <input
-                                class="btn-check"
-                                type="radio"
-                                name="loai"
-                                id="dv1"
-                                value="Xác nhận sinh viên"
-                                required>
-                            <label class="service-btn" for="dv1">
-                                📄
-                                <span>Xác nhận sinh viên</span>
-                            </label>
-                            <input
-                                class="btn-check"
-                                type="radio"
-                                name="loai"
-                                id="dv2"
-                                value="Cấp giấy tờ">
-                            <label class="service-btn" for="dv2">
-                                📑
-                                <span>Cấp giấy tờ</span>
-                            </label>
-                            <input
-                                class="btn-check"
-                                type="radio"
-                                name="loai"
-                                id="dv3"
-                                value="Hỗ trợ học vụ">
-                            <label class="service-btn" for="dv3">
-                                🎓
-                                <span>Hỗ trợ học vụ</span>
-                            </label>
-                            <input
-                                class="btn-check"
-                                type="radio"
-                                name="loai"
-                                id="dv4"
-                                value="Bảo lưu">
-                            <label class="service-btn" for="dv4">
-                                🛑
-                                <span>Bảo lưu</span>
-                            </label>
-                            <input
-                                class="btn-check"
-                                type="radio"
-                                name="loai"
-                                id="dv5"
-                                value="Cấp lại thẻ">
-                            <label class="service-btn" for="dv5">
-                                💳
-                                <span>Cấp lại thẻ</span>
-                            </label>
-                            <input
-                                class="btn-check"
-                                type="radio"
-                                name="loai"
-                                id="dv6"
-                                value="Khác">
-                            <label class="service-btn" for="dv6">
-                                ⚙️
-                                <span>Khác</span>
-                            </label>
+                    <div class="mb-3">
+                        <label class="service-title">
+                            Vui lòng chọn loại thủ tục cần phục vụ /
+                            Please select the service
+                        </label>
+                        <div class="row g-2">
+                            <div class="service-list">
+                                <label>
+                                    <input type="radio" name="loai" value="Hành chính" required>
+                                    Thủ tục hành chính (thẻ, giấy xác nhận)
+                                </label>
+                                <label>
+                                    <input type="radio" name="loai" value="Hỗ trợ học vụ">
+                                    Thủ tục học vụ
+                                </label>
+                                <label>
+                                    <input type="radio" name="loai" value="Tài chính">
+                                    Tài chính
+                                </label>
+                                <label>
+                                    <input type="radio" name="loai" value="Khác">
+                                    Khác
+                                </label>
+                                <label>
+                                    <input type="radio" name="loai" value="QHDN">
+                                    QHDN
+                                </label>
+                                <label>
+                                    <input type="radio" name="loai" value="Nhà trọ, phòng trọ">
+                                    Nhà trọ, phòng trọ
+                                </label>
+                                <label>
+                                    <input type="radio" name="loai" value="Hỗ trợ CNTT">
+                                    Hỗ trợ CNTT
+                                </label>
+                            </div>
                         </div>
                     </div>
+                    <div class="mb-4 text-center">
+                        <label class="form-title text-center w-100">
+                            MSSV hoặc họ tên /
+                            Roll number or full name
+                        </label>
+                        <input
+                            type="text"
+                            id="masv"
+                            name="masv"
+                            class="student-input "
+                            v-model="masv"
+                            readonly
+                            required>
+                    </div>
+                    <button type="submit" class="submit-btn">
+                        Gửi yêu cầu
+                    </button>
+                    <div class="keyboard-box">
+                        <div class="keyboard-row">
+                            <button class="key"
+                                v-for="k in numbers"
+                                @click="addKey(k)"
+                                type="button">
+                                [[ k ]]
+                            </button>
+                        </div>
+                        <div class="keyboard-row">
+                            <button class="key"
+                                v-for="k in row1"
+                                @click="addKey(k)"
+                                type="button">
+                                [[ k ]]
+                            </button>
+                        </div>
+                        <div class="keyboard-row">
+                            <button class="key"
+                                v-for="k in row2"
+                                @click="addKey(k)"
+                                type="button">
+                                [[ k ]]
+                            </button>
+                        </div>
+                        <div class="keyboard-row">
+                            <button class="key"
+                                v-for="k in row3"
+                                @click="addKey(k)"
+                                type="button">
+                                [[ k ]]
+                            </button>
+                            <button
+                                class="backspace"
+                                @click="backspace"
+                                type="button">
+                                ⌫
+                            </button>
+                        </div>
+                    </div>
+                    
+                </form>
             </div>
-            <!-- Mã sinh viên -->
-            <div class="mb-4">
-                <label class="form-title">
-                    Mã sinh viên
-                </label>
-                <input
-                    type="text"
-                    id="masv"
-                    name="masv"
-                    class="student-input"
-                    v-model="masv"
-                    readonly
-                    required>
-            </div>
-            <!-- Keyboard -->
-            <div class="keyboard-box">
-                <div class="keyboard-row">
-                    <button
-                        class="key"
-                        v-for="k in numbers"
-                        @click="addKey(k)"
-                        type="button">
-                        [[ k ]]
-                    </button>
-                </div>
-                <div class="keyboard-row">
-                    <button
-                        class="key"
-                        v-for="k in row1"
-                        @click="addKey(k)"
-                        type="button">
-                        [[ k ]]
-                    </button>
-                </div>
-                <div class="keyboard-row">
-                    <button
-                        class="key"
-                        v-for="k in row2"
-                        @click="addKey(k)"
-                        type="button">
-                        [[ k ]]
-                    </button>
-                </div>
-                <div class="keyboard-row">
-                    <button
-                        class="key"
-                        v-for="k in row3"
-                        @click="addKey(k)"
-                        type="button">
-                        [[ k ]]
-                    </button>
-                    <button
-                        class="backspace"
-                        @click="backspace"
-                        type="button">
-                        ⌫
-                    </button>
-                </div>
-            </div>
-            <button
-                type="submit"
-                class="submit-btn">
-                📤 GỬI YÊU CẦU
-            </button>
-            </form>
         </div>
-    </div>
-    </div>
-    </div>
-    </div>
     </div>
 </body>
 

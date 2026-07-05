@@ -1,99 +1,91 @@
-body {
-    background: #eef3f8;
+body{
+    background:#ececec;
+    font-family:Arial, Helvetica, sans-serif;
 }
 
-.main-card {
-    max-width: 1100px;
-    margin: 5px auto;
-    border: none;
-    border-radius: 18px;
-    overflow: hidden;
-    box-shadow: 0 12px 30px rgba(0,0,0,.08);
+.main-card{
+    max-width:100%;
+    margin:20px auto;
+    border-radius:0;
+    box-shadow:none;
+    border:1px solid #ccc;
 }
 
+/* bỏ header xanh */
 .card-header{
-    background: linear-gradient(135deg,#2563eb,#3b82f6);
-    padding:18px 24px;
-    text-align:center;
-}
-
-.card-header h2{
-    font-size:22px;
-    font-weight:700;
-    margin:0;
-}
-
-.card-header small{
-    font-size:16px;
-    opacity:.9;
     display:none;
 }
 
-.service-grid{
+.top-title{
+    text-align:center;
+    padding:20px 20px 5px;
+}
+
+.top-title h2{
+    font-size:34px;
+    font-weight:bold;
+    margin-bottom:8px;
+}
+
+.top-title p{
+    font-size:22px;
+    margin:0;
+}
+
+.form-title{
+    font-size:26px;
+    font-weight:500;
+    color:#555;
+    margin-top:20px;
+    margin-bottom:15px;
+}
+
+.student-input{
+    height:60px;
+    font-size:30px;
+    border:2px solid #4da3ff;
+    background:white;
+}
+
+.service-title{
+    display:block;
+    text-align:center;
+    color:#d2691e;
+    font-size:26px;
+    font-weight:bold;
+    margin:25px 0;
+}
+
+.service-list{
     display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:5px;
+    grid-template-columns:1fr 1fr;
+    gap:15px 60px;
+    width:90%;
+    margin:auto;
 }
 
-.service-btn{
-    min-height:60px;
-    padding:8px;
-    border-radius:14px;
-    border:1px solid #e5e7eb;
-    background:#fff;
-    transition:.2s;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
+.service-list label{
+    font-size:22px;
+    cursor:pointer;
 }
 
-.service-btn span {
-    font-size: 16px;
+.service-list input{
+    margin-right:10px;
+    transform:scale(1.4);
 }
 
-.service-btn:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 10px 18px rgba(0, 0, 0, .08);
-    border-color: #60a5fa;
+.submit-btn{
+    width:260px;
+    display:block;
+    margin:30px auto;
+    height:55px;
+    font-size:24px;
+    background:#c47d36;
 }
 
-.btn-check:checked+.service-btn {
-    background: #2563eb;
-    color: white;
-    border-color: #2563eb;
+.submit-btn:hover{
+    background:#a96522;
 }
-
-/* ========================= */
-
-.form-title {
-    display: block;
-    font-size: 22px;
-    font-weight: 700;
-    margin-bottom: 12px;
-    margin-left: 10px;
-}
-
-
-/* ========================= */
-
-.student-input {
-    width: 98%;
-    margin-left: 10px;
-    margin-right: 10px;  
-    height: 50px;
-    border: 2px solid #dbeafe;
-    border-radius: 10px;
-    background: #f8fbff;
-    text-align: center;
-    font-size: 24px;
-    font-weight: bold;
-    letter-spacing: 3px;
-    color: #1e3a8a;
-    outline: none;
-}
-
-
 /* ========================= */
 
 .keyboard-box {
@@ -163,12 +155,10 @@ body {
 /* ========================= */
 
 .submit-btn {
-    width: 98%;
-    height: 70px;
-    margin: 11px;
+    width: 50%;
+    height: 50px;
     border: none;
-    border-radius: 18px;
-    background: #16a34a;
+    background: #a35a16;
     color: white;
     font-size: 26px;
     font-weight: 700;

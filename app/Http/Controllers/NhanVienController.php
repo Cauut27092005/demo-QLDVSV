@@ -6,6 +6,9 @@ use App\Models\YeuCauDichVu;
 use App\Events\DuLieuCapNhat;
 use Illuminate\Http\Request;
 use App\Models\TaiKhoan;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\YeuCauExport;
+use App\Models\NhanVienXuLy;
 
 class NhanVienController extends Controller
 {
@@ -15,12 +18,9 @@ class NhanVienController extends Controller
             return redirect('/login');
         }
         $maNV = session('MaNV');
-        $data = YeuCauDichVu::where(function ($q) use ($maNV) {
-            $q->whereNull('MaNV')
-                ->orWhere('MaNV', $maNV);
-        })
+        $data = YeuCauDichVu::where('MaNV', $maNV)
             ->where('TrangThai', '!=', 'HoanThanh')
-            ->orderBy('MaYC', 'desc')
+            ->orderByDesc('MaYC')
             ->get();
         return view(
             'nhanvien',
@@ -28,62 +28,168 @@ class NhanVienController extends Controller
         );
     }
 
-    public function api_YC()
+    public function api_YC(Request $request)
     {
-        return YeuCauDichVu::where(
-            'MaNV',
-            session('MaNV')
+        
+        $query = YeuCauDichVu::leftJoin(
+            'nhanvien_xuly',
+            'yeucau_dichvu.MaNV',
+            '=',
+            'nhanvien_xuly.MaNV'
         )
-            ->where(
+            ->select(
+                'yeucau_dichvu.*',
+                'nhanvien_xuly.HoTen as TenNhanVien'
+            );
+        switch ($request->tab) {
+            case 'xuly':
+                $query->where(function ($q) {
+                    $q->where('TrangThai', 'ChoXuLy')
+                        ->orWhere(function ($q2) {
+                            $q2->where('TrangThai', 'DangXuLy')
+                                ->where(
+                                    'yeucau_dichvu.MaNV',
+                                    session('MaNV')
+                                );
+                        });
+                });
+                break;
+            case 'lichsu':
+                $query->where('TrangThai', 'HoanThanh')
+                    ->where(
+                        'yeucau_dichvu.MaNV',
+                        session('MaNV')
+                    );
+                break;
+        }
+        // ====== TÌM KIẾM ======
+        if ($request->keyword) {
+            $keyword = $request->keyword;
+            $query->where(function ($q) use ($keyword) {
+                $q->where('yeucau_dichvu.MaSV', 'like', "%$keyword%")
+                    ->orWhere('yeucau_dichvu.MaYC', 'like', "%$keyword%")
+                    ->orWhere('yeucau_dichvu.LoaiDichVu', 'like', "%$keyword%");
+            });
+        }
+        if ($request->filled('tuNgay')) {
+
+            $query->whereDate(
+                'NgayGui',
+                '>=',
+                $request->tuNgay
+            );
+        }
+        if ($request->filled('denNgay')) {
+            $query->whereDate(
+                'NgayGui',
+                '<=',
+                $request->denNgay
+            );
+        }
+        return response()->json(
+            $query->orderByDesc('MaYC')->paginate(10)
+        );
+    }
+
+    public function xuatExcel()
+    {
+        return Excel::download(
+            new YeuCauExport(),
+            'DanhSachYeuCau.xlsx'
+        );
+    }
+
+    public function thongKe()
+    {
+        $maNV = session('MaNV');
+        return response()->json([
+            'cho' => YeuCauDichVu::where(
                 'TrangThai',
-                '!=',
+                'ChoXuLy'
+            )->count(),
+            'dang' => YeuCauDichVu::where(
+                'TrangThai',
+                'DangXuLy'
+            )
+                ->where('MaNV', $maNV)
+                ->count(),
+            'tong' => YeuCauDichVu::where(
+                'TrangThai',
                 'HoanThanh'
             )
-            ->orderBy('MaYC', 'desc')
-            ->get();
+                ->where('MaNV', $maNV)
+                ->count()
+        ]);
+    }
+    public function nhanYeuCau($id)
+    {
+        $yc = YeuCauDichVu::findOrFail($id);
+
+        if ($yc->TrangThai != 'ChoXuLy') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Yêu cầu đã có người nhận.'
+            ]);
+        }
+
+        $yc->TrangThai = 'DangXuLy';
+        $yc->MaNV = session('MaNV');
+        $yc->save();
+
+        event(new DuLieuCapNhat());
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Nhận yêu cầu thành công.'
+        ]);
+    }
+
+    public function tuDongNhan(Request $request)
+    {
+        $maNV = session('MaNV');
+
+        $yeuCau = YeuCauDichVu::where('TrangThai', 'ChoXuLy')
+            ->orderBy('NgayGui', 'asc')
+            ->first();
+
+        if (!$yeuCau) {
+            return response()->json([
+                'message' => 'Không còn yêu cầu cần xử lý.'
+            ], 404);
+        }
+
+        $yeuCau->TrangThai = 'DangXuLy';
+        $yeuCau->MaNV = $maNV;
+        $yeuCau->save();
+
+        return response()->json([
+            'message' => 'Đã tự động nhận yêu cầu ' . $yeuCau->MaYC
+        ]);
     }
 
     public function CN_HT($id)
     {
-        $maNV = session('MaNV');
         $yc = YeuCauDichVu::findOrFail($id);
 
-        if ($yc->MaNV != $maNV) {
-            return back();
+        if ($yc->MaNV != session('MaNV')) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Bạn không có quyền hoàn thành yêu cầu này.'
+            ]);
         }
-        // Hoàn thành yêu cầu hiện tại
+
         $yc->update([
             'TrangThai' => 'HoanThanh',
             'NgayHoanThanh' => now()
         ]);
-        event(new DuLieuCapNhat());
-        // Tìm yêu cầu chờ xử lý lâu nhất
-        $yeuCauMoi = YeuCauDichVu::where(
-            'TrangThai',
-            'ChoXuLy'
-        )
-            ->whereNull('MaNV')
-            ->orderBy('MaYC')
-            ->first();
-        // Tự nhận yêu cầu mới
-        if ($yeuCauMoi) {
-            $yeuCauMoi->update([
-                'MaNV' => $maNV,
-                'TrangThai' => 'DangXuLy'
-            ]);
-            event(new DuLieuCapNhat());
-        }
-        return redirect('/nhanvien');
-    }
 
-    public function da_xu_ly()
-    {
-        return YeuCauDichVu::where('MaNV', session('MaNV'))
-            ->where('TrangThai', 'HoanThanh')
-            ->orderByDesc('MaYC')
-            ->get();
+        event(new DuLieuCapNhat());
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Đã hoàn thành yêu cầu.'
+        ]);
     }
-    
     public function doiMatKhau(Request $request)
     {
         $tk = TaiKhoan::where(

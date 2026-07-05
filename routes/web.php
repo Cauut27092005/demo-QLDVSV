@@ -42,14 +42,6 @@ Route::get('/home', function () {
 
 Route::get('/admin', [AdminController::class, 'index']);
 
-Route::get('/api-admin', [AdminController::class, 'api_admin']);
-
-Route::get('/api-dashboard', [AdminController::class, 'dashboard']);
-
-Route::get('/api-thongke-nhanvien', [AdminController::class, 'api_THK_NV']);
-
-Route::get('/api-chitiet-nhanvien/{maNV}', [AdminController::class, 'api_CHT_NV']);
-
 Route::post('/api-nhanvien/add', [AdminController::class, 'addNV']);
 
 Route::post('/api-nhanvien/update', [AdminController::class, 'updateNV']);
@@ -62,12 +54,6 @@ Route::get('/api-nhanvien', [AdminController::class, 'nhanVien']);
 
 Route::get('/quanly-nhanvien', [AdminController::class, 'QL_NV']);
 
-Route::get('/api-yeucau-admin', [AdminController::class, 'yeuCau']);
-
-Route::get('/api-dangxuly', [AdminController::class, 'dangXuLy']);
-
-Route::get('/api-hoanthanh', [AdminController::class, 'hoanThanh']);
-
 // ======================
 //  Nhân Viên
 // ======================
@@ -75,6 +61,14 @@ Route::get('/api-hoanthanh', [AdminController::class, 'hoanThanh']);
 Route::get('/nhanvien', [NhanVienController::class, 'index']);
 
 Route::get('/api-yeucau', [NhanVienController::class, 'api_YC']);
+
+Route::get('/api-thongke-nhanvien', [NhanVienController::class, 'thongKe']);
+
+Route::get('/xuat-excel', [NhanVienController::class, 'xuatExcel']);
+
+Route::get('/nhan-yeu-cau/{id}', [NhanVienController::class,'nhanYeuCau']);
+
+Route::post('/nhanvien/tu-dong-nhan', [NhanVienController::class, 'tuDongNhan']);
 
 Route::get('/capnhat-hoanthanh/{id}', [NhanVienController::class, 'CN_HT']);
 

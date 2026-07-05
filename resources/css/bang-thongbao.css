@@ -1,102 +1,128 @@
 body {
-            background: #eef2f7;
-            font-family: 'Segoe UI', sans-serif;
-        }
+    background: #f4f6f9;
+    font-family: Arial, Helvetica, sans-serif;
+}
 
-        .header {
-            background: linear-gradient(135deg, #0d6efd, #3b82f6);
-            color: white;
-            padding: 25px;
-            border-radius: 15px;
-            margin-bottom: 25px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, .15);
-        }
+/* Header */
 
-        .header h2 {
-            font-weight: bold;
-            margin: 0;
-        }
+.header {
+    background: linear-gradient(135deg, #f58220, #ff9f43);
+    color: #fff;
+    border-radius: 12px;
+    padding: 22px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    box-shadow: 0 6px 18px rgba(245, 130, 32, .25);
+}
 
-        .header p {
-            margin: 5px 0 0;
-            opacity: .9;
-        }
+.title-area{
+    display:flex;
+    align-items:center;
+    gap:16px;
+}
 
-        .card-custom {
-            border: none;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 5px 18px rgba(0, 0, 0, .1);
-        }
+.title-icon{
+    width:58px;
+    height:58px;
+    border-radius:14px;
+    background:#fff;
+    color:#f58220;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:26px;
+}
 
-        .card-header {
-            background: white;
-            border-bottom: 1px solid #eee;
-            padding: 18px;
-        }
+.header h3 {
+    margin: 0;
+    color: #fff;
+    font-size: 28px;
+    font-weight: 700;
+}
 
-        .card-header h4 {
-            margin: 0;
-            color: #0d6efd;
-            font-weight: 700;
-        }
+.header small {
+    color: rgba(255, 255, 255, .9);
+    font-size: 15px;
+}
 
-        .table {
-            margin: 0;
-        }
+.counter{
 
-        .table thead {
-            background: #0d6efd;
-            color: white;
-        }
+    background:#fff;
+    color:#f58220;
+    padding:10px 20px;
+    border-radius:30px;
+    font-weight:bold;
+    font-size:15px;
+}
 
-        .table th {
-            text-align: center;
-            padding: 15px;
-            font-size: 16px;
-        }
+/* Card */
 
-        .table td {
-            text-align: center;
-            vertical-align: middle;
-            padding: 16px;
-            font-size: 15px;
-        }
+.card-custom{
+    border:none;
+    border-radius:12px;
+    overflow:hidden;
+    box-shadow:0 3px 12px rgba(0,0,0,.08);
+}
 
-        tbody tr {
-            transition: .3s;
-        }
+.card-header {
 
-        tbody tr:hover {
-            background: #f5faff;
-            transform: scale(1.003);
-        }
+    background: #fff;
+    font-size: 20px;
+    color: #005596;
+    font-weight: bold;
+    padding: 18px 22px;
+    border-bottom: 2px solid #f1f1f1;
+}
 
-        .badge {
-            font-size: 14px;
-            padding: 8px 15px;
-            border-radius: 30px;
-        }
+/* Table */
 
-        .bg-warning {
-            color: #000 !important;
-        }
+.table th {
+    background: #005596;
+    color: white;
+    text-align: center;
+    padding: 14px;
+}
 
-        .empty-box {
-            padding: 40px;
-            color: #888;
-            font-size: 18px;
-        }
+.table td {
+    text-align: center;
+    vertical-align: middle;
+    padding: 15px;
+}
 
-        .footer {
-            text-align: center;
-            color: #777;
-            margin-top: 20px;
-            font-size: 14px;
-        }
+.table tbody tr:hover {
+    background: #fff8f1;
+}
 
-        .icon {
-            font-size: 22px;
-            color: #0d6efd;
-            margin-right: 8px;
-        }
+/* Badge */
+
+.badge {
+    padding: 8px 15px;
+    font-size: 13px;
+    border-radius: 20px;
+}
+
+.bg-orange {
+    background: #f58220;
+    color: white;
+}
+
+/* Empty */
+
+.empty-box {
+    padding: 60px;
+    color: #888;
+}
+
+.empty-box i {
+    color: #d1d5db;
+}
+
+/* Footer */
+
+.footer {
+    text-align: center;
+    margin-top: 20px;
+    color: #777;
+}

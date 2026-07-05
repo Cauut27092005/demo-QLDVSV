@@ -18,7 +18,6 @@ try {
         forceTLS: false,
         enabledTransports: ['ws', 'wss'],
     });
-
     console.log('Echo created:', window.Echo);
 } catch (e) {
     console.error('Echo error:', e);

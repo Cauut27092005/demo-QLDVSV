@@ -3,7 +3,6 @@ import './app';
 
 createApp({
     delimiters: ['[[', ']]'],
-
     data() {
         return {
             yeucaus: []

@@ -10,49 +10,37 @@ use App\Events\DuLieuCapNhat;
 
 class YeuCauController extends Controller
 {
-    public function store(Request $request){
-        // Gọi API JSON Server
+    public function store(Request $request)
+{
+    // Kiểm tra sinh viên có tồn tại không
     $response = Http::get(
         'http://localhost:3000/sinhvien',
-        [
-            'MaSV' => $request->masv
-        ]
+        ['MaSV' => $request->masv]
     );
+
     $sinhVien = $response->json();
+
     if (count($sinhVien) == 0) {
         return back()->with(
             'error',
             'Mã sinh viên không tồn tại trong hệ thống'
         );
     }
-    // Tìm nhân viên rảnh
-    $nv = NhanVienXuLy::where(
-        'TrangThaiOnline',
-        1
-    )
-        ->whereNotIn(
-            'MaNV',
-            YeuCauDichVu::where(
-                'TrangThai',
-                'DangXuLy'
-            )->pluck('MaNV')
-        )
-        ->first();
+
+    // Tạo yêu cầu mới
     YeuCauDichVu::create([
-        'MaSV' => $request->masv,
-        'LoaiDichVu' => $request->loai,
-        'NgayGui' => now(),
-        'TrangThai' => $nv
-            ? 'DangXuLy'
-            : 'ChoXuLy',
-        'MaNV' => $nv
-            ? $nv->MaNV
-            : null
+        'MaSV'        => $request->masv,
+        'LoaiDichVu'  => $request->loai,
+        'NgayGui'     => now(),
+        'TrangThai'   => 'ChoXuLy',
+        'MaNV'        => null
     ]);
+
     event(new DuLieuCapNhat());
+
     return back()->with(
         'success',
         'Gửi yêu cầu thành công'
     );
-    }
+}
 }

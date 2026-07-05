@@ -23,32 +23,35 @@
 <body>
     <div id="app" class="container py-4">
         <div class="header">
-            <h2>
-                <i class="fa-solid fa-bullhorn"></i>
-                HỆ THỐNG THÔNG BÁO DỊCH VỤ SINH VIÊN
-            </h2>
-            <p>
-                Danh sách các yêu cầu đang chờ xử lý và đang được xử lý
-            </p>
+            <div class="title-area">
+                <div class="title-icon">
+                    <i class="fa-solid fa-bullhorn"></i>
+                </div>
+                <div>
+                    <h3>Bảng thông báo dịch vụ sinh viên</h3>
+                    <small>
+                        Theo dõi trạng thái xử lý và quầy phục vụ
+                    </small>
+                </div>
+            </div>
+            <div class="counter">
+                [[ yeucaus.length ]] yêu cầu
+            </div>
         </div>
-        <div class="card card-custom">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h4>
-                    <i class="fa-solid fa-list-check"></i>
-                    Danh sách yêu cầu
-                </h4>
-                <span class="badge bg-primary">
-                    [[ yeucaus.length ]] yêu cầu
-                </span>
+        <div class="card shadow-sm card-custom">
+            <div class="card-header">
+                <i class="fa-solid fa-list-check me-2"></i>
+                Danh sách yêu cầu
             </div>
             <div class="table-responsive">
-                <table class="table table-hover align-middle">
+                <table class="table align-middle table-hover mb-0">
                     <thead>
                         <tr>
-                            <th width="10%">Mã YC</th>
-                            <th width="20%">Mã Sinh viên</th>
-                            <th width="45%">Loại dịch vụ</th>
-                            <th width="25%">Trạng thái</th>
+                            <th>Mã YC</th>
+                            <th>Mã sinh viên</th>
+                            <th>Dịch vụ</th>
+                            <th>Quầy</th>
+                            <th>Trạng thái</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -56,10 +59,10 @@
                             v-for="item in yeucaus"
                             :key="item.MaYC">
                             <td>
-                                <strong>#[[ item.MaYC ]]</strong>
+                                <strong># [[ item.MaYC ]]</strong>
                             </td>
                             <td>
-                                <i class="fa-solid fa-user-graduate text-primary"></i>
+                                <i class="fa-solid fa-user-graduate text-primary me-1"></i>
                                 [[ item.MaSV ]]
                             </td>
                             <td>
@@ -67,38 +70,32 @@
                             </td>
                             <td>
                                 <span
+                                    v-if="item.TrangThai=='DangXuLy'"
+                                    class="badge bg-orange">
+                                    Quầy [[ item.Quay ]]
+                                </span>
+                                <span
+                                    v-else
+                                    class="badge bg-secondary">
+                                    Chờ
+                                </span>
+                            </td>
+                            <td>
+                                <span
                                     v-if="item.TrangThai=='ChoXuLy'"
-                                    class="badge bg-warning">
-                                    <i class="fa-solid fa-clock"></i>
+                                    class="badge bg-warning text-dark">
                                     Chờ xử lý
                                 </span>
                                 <span
                                     v-else-if="item.TrangThai=='DangXuLy'"
                                     class="badge bg-primary">
-                                    <i class="fa-solid fa-spinner"></i>
                                     Đang xử lý
-                                </span>
-                                <span
-                                    v-else-if="item.TrangThai=='HoanThanh'"
-                                    class="badge bg-success">
-
-                                    <i class="fa-solid fa-circle-check"></i>
-                                    Hoàn thành
-                                </span>
-                                <span
-                                    v-else
-                                    class="badge bg-secondary">
-                                    [[ item.TrangThai ]]
                                 </span>
                             </td>
                         </tr>
                         <tr v-if="yeucaus.length==0">
-                            <td colspan="4">
-                                <div class="empty-box">
-                                    <i class="fa-regular fa-folder-open fa-3x mb-3"></i>
-                                    <br>
-                                    Chưa có yêu cầu dịch vụ nào
-                                </div>
+                            <td colspan="5">
+                                
                             </td>
                         </tr>
                     </tbody>

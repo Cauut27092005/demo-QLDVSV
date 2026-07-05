@@ -11,21 +11,17 @@ use Illuminate\Queue\SerializesModels;
 class DuLieuCapNhat implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-
     public $message;
-
     public function __construct($message = 'update')
     {
         $this->message = $message;
     }
-
     public function broadcastOn(): array
     {
         return [
             new Channel('yeucau')
         ];
     }
-
     public function broadcastAs(): string
     {
         return 'DuLieuCapNhat';

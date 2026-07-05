@@ -7,8 +7,9 @@
                     <th>Mã SV</th>
                     <th>Loại dịch vụ</th>
                     <th>Ngày gửi</th>
+                    <th>Nhân viên xử lý</th>
                     <th>Trạng thái</th>
-                    <th>Thao tác</th>
+                    <th v-if="tab=='xuly'">Thao tác</th>
                 </tr>
             </thead>
             <tbody>
@@ -20,28 +21,52 @@
                     <td>[[ item.LoaiDichVu ]]</td>
                     <td>[[ item.NgayGui ]]</td>
                     <td>
-                        <span
-                            v-if="item.TrangThai=='ChoXuLy'"
-                            class="badge bg-warning">
-                            Chờ xử lý
+                        <span v-if="item.TenNhanVien">
+                            [[ item.TenNhanVien ]]
                         </span>
                         <span
                             v-else
-                            class="badge bg-primary">
-                            Đang xử lý
+                            class="text-secondary">
+                            Chưa có
                         </span>
                     </td>
                     <td>
+                        <span
+                            v-if="item.TrangThai=='ChoXuLy'"
+                            class="badge bg-warning text-dark">
+                            Chờ xử lý
+                        </span>
+                        <span
+                            v-else-if="item.TrangThai=='DangXuLy'"
+                            class="badge bg-primary">
+                            Đang xử lý
+                        </span>
+                        <span
+                            v-else
+                            class="badge bg-success">
+                            Hoàn thành
+                        </span>
+                    </td>
+                    <td v-if="tab=='xuly'">
+                        <!-- Tab Chờ -->
                         <button
-                            v-if="item.TrangThai=='DangXuLy'"
+                            v-if="item.TrangThai=='ChoXuLy'"
+                            class="btn btn-primary btn-sm"
+                            @click="nhanYeuCau(item.MaYC)">
+                            Nhận
+                        </button>
+                        <!-- Tab Đang xử lý -->
+                        <button
+                            v-else-if="item.TrangThai=='DangXuLy'"
                             class="btn btn-success btn-sm"
                             @click="hoanThanh(item.MaYC)">
                             Hoàn thành
                         </button>
+                        <!-- Tab Lịch sử -->
                     </td>
                 </tr>
                 <tr v-if="yeucaus.length==0">
-                    <td colspan="6" class="text-center">
+                    <td :colspan="tab=='xuly' ? 7 : 6" class="text-center">
                         Không có yêu cầu
                     </td>
                 </tr>
@@ -97,3 +122,41 @@
         </div>
     </div>
 </div>
+<nav
+    class="mt-3"
+    v-if="pagination.last_page>1">
+    <ul class="pagination justify-content-center">
+        <li
+            class="page-item"
+            :class="{disabled: pagination.current_page==1}">
+            <a
+                href="#"
+                class="page-link"
+                @click.prevent="loadYeuCau(pagination.current_page-1)">
+                «
+            </a>
+        </li>
+        <li
+            v-for="page in pagination.last_page"
+            :key="page"
+            class="page-item"
+            :class="{active: page==pagination.current_page}">
+            <a
+                href="#"
+                class="page-link"
+                @click.prevent="loadYeuCau(page)">
+                [[ page ]]
+            </a>
+        </li>
+        <li
+            class="page-item"
+            :class="{disabled: pagination.current_page==pagination.last_page}">
+            <a
+                href="#"
+                class="page-link"
+                @click.prevent="loadYeuCau(pagination.current_page+1)">
+                »
+            </a>
+        </li>
+    </ul>
+</nav>

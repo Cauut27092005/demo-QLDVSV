@@ -12,8 +12,7 @@ class NhanVienXuLy extends Model
     protected $fillable = [
         'MaNV',
         'HoTen',
-        'BoPhan',
-        'TrangThaiOnline'
+        'Quay'
     ];
     public $incrementing = false;
     protected $keyType = 'string';
