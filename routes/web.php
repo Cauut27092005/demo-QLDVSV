@@ -5,9 +5,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\NhanVienController;
+use App\Http\Controllers\TruongPhongController;
 use App\Http\Controllers\YeuCauController;
 use App\Http\Controllers\ThongBaoController;
-
 
 Route::get('/', function () {
     return redirect('/login');
@@ -75,6 +75,16 @@ Route::get('/capnhat-hoanthanh/{id}', [NhanVienController::class, 'CN_HT']);
 Route::get('/api-lichsu', [NhanVienController::class, 'da_xu_ly']);
 
 Route::post('/api-doi-mat-khau', [NhanVienController::class, 'doiMatKhau']);
+
+// ======================
+//  Trưởng phòng
+// ======================
+
+Route::get('/truongphong', [TruongPhongController::class,'index']);
+
+Route::get('/api-truongphong', [TruongPhongController::class,'api']);
+
+Route::get('/truongphong/excel', [TruongPhongController::class,'excel']);
 
 // ======================
 // YÊU CẦU, HOÀN THÀNH

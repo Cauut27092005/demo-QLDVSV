@@ -20,17 +20,6 @@
             position: relative;
         }
 
-        body {
-            min-height: 100vh;
-            background: url('/img/images.jpg');
-            background-size: cover;
-            background-position: center;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-        }
-
         .overlay {
             position: absolute;
             inset: 0;
