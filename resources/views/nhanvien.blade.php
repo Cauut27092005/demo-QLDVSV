@@ -14,7 +14,7 @@
 </head>
 
 <body>
-    <div id="app" data-manv="{{ session('MaNV') }}">
+    <div id="app" data-username="{{ session('Username') }}">
     <div class="wrapper">
         @include('nhanvien.sidebar')
         <main class="content">

@@ -12,8 +12,6 @@ class TaiKhoan extends Model
     protected $fillable = [
         'Username',
         'Password',
-        'VaiTro',
-        'MaNV',
-        'DaDoiMatKhau'
+        'VaiTro'
     ];
 }

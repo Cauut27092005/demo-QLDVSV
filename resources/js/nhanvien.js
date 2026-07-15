@@ -5,7 +5,6 @@ createApp({
     data() {
         const today = new Date().toISOString().split('T')[0];
         return {
-
             tuNgay: today,
             denNgay: today,
             yeucaus: [],
@@ -45,7 +44,6 @@ createApp({
             initEcho();
         }
     },
-
     methods: {
         xoaTimKiem() {
             this.keyword = "";
@@ -56,7 +54,6 @@ createApp({
                 this.loadYeuCau();
             }
         },
-
         loadThongKe() {
             fetch("/api-thongke-nhanvien")
                 .then(r => r.json())
@@ -64,15 +61,12 @@ createApp({
                     this.thongKe = data;
                 });
         },
-
         xuatExcel() {
             window.location = "/xuat-excel";
         },
-
         doiTab(tab) {
             this.tab = tab;
             this.loadYeuCau();
-
         },
         hoanThanh(id) {
             fetch('/capnhat-hoanthanh/' + id)

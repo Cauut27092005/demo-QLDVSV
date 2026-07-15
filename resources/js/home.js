@@ -18,5 +18,17 @@ createApp({
         backspace() {
             this.masv = this.masv.slice(0, -1);
         },
+    },
+    mounted() {
+        setTimeout(() => {
+            document.querySelectorAll('.alert').forEach(alert => {
+                alert.style.transition = 'opacity 0.5s';
+                alert.style.opacity = '0';
+
+                setTimeout(() => {
+                    alert.remove();
+                }, 500);
+            });
+        }, 3000); // Ẩn sau 3 giây
     }
 }).mount('#app');

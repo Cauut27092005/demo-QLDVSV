@@ -17,7 +17,7 @@ class NhanVienController extends Controller
         if (session('VaiTro') != 'NhanVien') {
             return redirect('/login');
         }
-        $maNV = session('MaNV');
+        $maNV = session('Username');
         $data = YeuCauDichVu::where('MaNV', $maNV)
             ->where('TrangThai', '!=', 'HoanThanh')
             ->orderByDesc('MaYC')
@@ -49,7 +49,7 @@ class NhanVienController extends Controller
                             $q2->where('TrangThai', 'DangXuLy')
                                 ->where(
                                     'yeucau_dichvu.MaNV',
-                                    session('MaNV')
+                                    session('Username')
                                 );
                         });
                 });
@@ -58,7 +58,7 @@ class NhanVienController extends Controller
                 $query->where('TrangThai', 'HoanThanh')
                     ->where(
                         'yeucau_dichvu.MaNV',
-                        session('MaNV')
+                        session('Username')
                     );
                 break;
         }
@@ -101,7 +101,7 @@ class NhanVienController extends Controller
 
     public function thongKe()
     {
-        $maNV = session('MaNV');
+        $maNV = session('Username');
         return response()->json([
             'cho' => YeuCauDichVu::where(
                 'TrangThai',
@@ -124,20 +124,16 @@ class NhanVienController extends Controller
     public function nhanYeuCau($id)
     {
         $yc = YeuCauDichVu::findOrFail($id);
-
         if ($yc->TrangThai != 'ChoXuLy') {
             return response()->json([
                 'success' => false,
                 'message' => 'Yêu cầu đã có người nhận.'
             ]);
         }
-
         $yc->TrangThai = 'DangXuLy';
-        $yc->MaNV = session('MaNV');
+        $yc->MaNV = session('Username');
         $yc->save();
-
         event(new DuLieuCapNhat());
-
         return response()->json([
             'success' => true,
             'message' => 'Nhận yêu cầu thành công.'
@@ -146,18 +142,15 @@ class NhanVienController extends Controller
 
     public function tuDongNhan(Request $request)
     {
-        $maNV = session('MaNV');
-
+        $maNV = session('Username');
         $yeuCau = YeuCauDichVu::where('TrangThai', 'ChoXuLy')
             ->orderBy('NgayGui', 'asc')
             ->first();
-
         if (!$yeuCau) {
             return response()->json([
                 'message' => 'Không còn yêu cầu cần xử lý.'
             ], 404);
         }
-
         $yeuCau->TrangThai = 'DangXuLy';
         $yeuCau->MaNV = $maNV;
         $yeuCau->save();
@@ -171,7 +164,7 @@ class NhanVienController extends Controller
     {
         $yc = YeuCauDichVu::findOrFail($id);
 
-        if ($yc->MaNV != session('MaNV')) {
+        if ($yc->MaNV != session('Username')) {
             return response()->json([
                 'success' => false,
                 'message' => 'Bạn không có quyền hoàn thành yêu cầu này.'
@@ -193,8 +186,8 @@ class NhanVienController extends Controller
     public function doiMatKhau(Request $request)
     {
         $tk = TaiKhoan::where(
-            'MaNV',
-            session('MaNV')
+            'Username',
+            session('Username')
         )->first();
         if (!$tk) {
             return response()->json([
@@ -209,7 +202,6 @@ class NhanVienController extends Controller
             ]);
         }
         $tk->Password = $request->moi;
-        $tk->DaDoiMatKhau = 1;
         $tk->save();
         return response()->json([
             'success' => true,

@@ -35,7 +35,7 @@ class AdminController extends Controller
             'taikhoan',
             'nhanvien_xuly.MaNV',
             '=',
-            'taikhoan.MaNV'
+            'taikhoan.Username'
         )
             ->select(
                 'nhanvien_xuly.MaNV',
@@ -57,9 +57,7 @@ class AdminController extends Controller
             TaiKhoan::create([
                 'Username' => $request->MaNV,
                 'Password' => '123456',
-                'VaiTro' => $request->VaiTro,
-                'MaNV' => $request->MaNV,
-                'DaDoiMatKhau' => 0
+                'VaiTro' => $request->VaiTro
             ]);
             DB::commit();
             return response()->json([
@@ -80,7 +78,7 @@ class AdminController extends Controller
                 'HoTen' => $request->HoTen,
                 'Quay' => $request->Quay
             ]);
-        TaiKhoan::where('MaNV', $request->MaNV)
+        TaiKhoan::where('Username', $request->MaNV)
             ->update([
                 'VaiTro' => $request->VaiTro
             ]);
@@ -93,7 +91,7 @@ class AdminController extends Controller
     {
         DB::beginTransaction();
         try {
-            TaiKhoan::where('MaNV', $id)->delete();
+            TaiKhoan::where('Username', $id)->delete();
             NhanVienXuLy::where('MaNV', $id)->delete();
             DB::commit();
             return response()->json(true);
@@ -105,10 +103,9 @@ class AdminController extends Controller
     }
     public function resetPassword($maNV)
     {
-        TaiKhoan::where('MaNV', $maNV)
+        TaiKhoan::where('Username', $maNV)
             ->update([
                 'Password' => '123456',
-                'DaDoiMatKhau' => 0
             ]);
 
         return response()->json([

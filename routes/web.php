@@ -22,19 +22,13 @@ Route::get('/login', [AuthController::class, 'index']);
 
 Route::post('/login', [AuthController::class, 'login']);
 
-Route::get('/doi-mat-khau', [AuthController::class, 'doiMatKhau']);
-
-Route::post('/doi-mat-khau', [AuthController::class, 'luuMatKhau']);
-
 Route::get('/logout', [AuthController::class, 'logout']);
 
 // ======================
 // Sinh Viên
 // ======================
 
-Route::get('/home', function () {
-    return view('home');
-});
+Route::get('/home', function () {return view('home');});
 
 // ======================
 //  ADMIN

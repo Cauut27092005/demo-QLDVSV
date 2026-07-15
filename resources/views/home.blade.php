@@ -22,12 +22,12 @@
             </div>
             <div class="card-body">
                 @if(session('success'))
-                <div class="alert alert-success">
+                <div id="alert-message" class="alert alert-success">
                     {{ session('success') }}
                 </div>
                 @endif
                 @if(session('error'))
-                <div class="alert alert-danger">
+                <div id="alert-message" class="alert alert-danger">
                     {{ session('error') }}
                 </div>
                 @endif
@@ -128,7 +128,7 @@
                             </button>
                         </div>
                     </div>
-                    
+
                 </form>
             </div>
         </div>
