@@ -14,7 +14,7 @@
             </thead>
             <tbody>
                 <tr
-                    v-for="item in yeucaus"
+                    v-for="item in danhSachHienTai"
                     :key="item.MaYC">
                     <td>[[ item.MaYC ]]</td>
                     <td>[[ item.MaSV ]]</td>
@@ -65,7 +65,7 @@
                         <!-- Tab Lịch sử -->
                     </td>
                 </tr>
-                <tr v-if="yeucaus.length==0">
+                <tr v-if="danhSachHienTai.length==0">
                     <td :colspan="tab=='xuly' ? 7 : 6" class="text-center">
                         Không có yêu cầu
                     </td>
@@ -122,41 +122,3 @@
         </div>
     </div>
 </div>
-<nav
-    class="mt-3"
-    v-if="pagination.last_page>1">
-    <ul class="pagination justify-content-center">
-        <li
-            class="page-item"
-            :class="{disabled: pagination.current_page==1}">
-            <a
-                href="#"
-                class="page-link"
-                @click.prevent="loadYeuCau(pagination.current_page-1)">
-                «
-            </a>
-        </li>
-        <li
-            v-for="page in pagination.last_page"
-            :key="page"
-            class="page-item"
-            :class="{active: page==pagination.current_page}">
-            <a
-                href="#"
-                class="page-link"
-                @click.prevent="loadYeuCau(page)">
-                [[ page ]]
-            </a>
-        </li>
-        <li
-            class="page-item"
-            :class="{disabled: pagination.current_page==pagination.last_page}">
-            <a
-                href="#"
-                class="page-link"
-                @click.prevent="loadYeuCau(pagination.current_page+1)">
-                »
-            </a>
-        </li>
-    </ul>
-</nav>

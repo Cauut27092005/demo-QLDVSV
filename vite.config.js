@@ -11,12 +11,10 @@ export default defineConfig({
             vue: resolve(__dirname, 'node_modules/vue/dist/vue.esm-bundler.js'),
         },
     },
-
     server: {
         host: '0.0.0.0',
-
         hmr: {
-            host: '192.168.1.101'
+            host: '10.82.1.134'
         },
         watch: {
             ignored: ['**/storage/framework/views/**'],
@@ -35,7 +33,8 @@ export default defineConfig({
                 'resources/js/bang-thongbao.js',
                 'resources/css/bang-thongbao.css',
                 'resources/js/home.js',
-                'resources/css/home.css'
+                'resources/css/home.css',
+                'resources/css/login.css'
             ],
             refresh: true,
             fonts: [
@@ -47,13 +46,20 @@ export default defineConfig({
         tailwindcss(),
         VitePWA({
             registerType: 'autoUpdate',
+            injectRegister: 'auto',
+
+            devOptions: {
+                enabled: true
+            },
+
             manifest: {
                 name: 'Hệ thống xếp hàng sinh viên',
                 short_name: 'Queue System',
-                theme_color: '#0d6efd',
-                background_color: '#ffffff',
-                display: 'standalone',
                 start_url: '/',
+                scope: '/',
+                display: 'standalone',
+                background_color: '#ffffff',
+                theme_color: '#0d6efd',
                 icons: [
                     {
                         src: '/icon-192.png',
@@ -66,15 +72,17 @@ export default defineConfig({
                         type: 'image/png'
                     }
                 ]
+            },
+
+            workbox: {
+                navigateFallback: null
             }
         })
     ],
-
     define: {
         __VUE_OPTIONS_API__: true,
         __VUE_PROD_DEVTOOLS__: false,
         __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: false,
     },
-
 
 });

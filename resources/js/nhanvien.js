@@ -7,11 +7,12 @@ createApp({
         return {
             tuNgay: today,
             denNgay: today,
-            yeucaus: [],
+            xuLy: [],
+            daXuLy: [],
             lichSu: [],
             keyword: '',
             tab: 'xuly',
-            moMenu: true,
+            moMenu: false,
             maNV: null,
             mk: {
                 cu: '',
@@ -27,7 +28,15 @@ createApp({
                 current_page: 1,
                 last_page: 1
             },
+
         };
+    },
+    computed: {
+        danhSachHienTai() {
+            return this.tab === 'xuly'
+                ? this.xuLy
+                : this.daXuLy;
+        }
     },
     mounted() {
         this.maNV = document.getElementById('app').dataset.manv;
@@ -66,7 +75,12 @@ createApp({
         },
         doiTab(tab) {
             this.tab = tab;
-            this.loadYeuCau();
+            if (tab == "xuly" && this.xuLy.length == 0) {
+                this.loadYeuCau();
+            }
+            if (tab == "lichsu" && this.daXuLy.length == 0) {
+                this.loadYeuCau();
+            }
         },
         hoanThanh(id) {
             fetch('/capnhat-hoanthanh/' + id)
@@ -118,7 +132,6 @@ createApp({
                     alert("Không còn yêu cầu để nhận.");
                 });
         },
-
         moDoiMK() {
             console.log(document.getElementById('doiMKModal'));
             const modal = new bootstrap.Modal(
@@ -161,7 +174,6 @@ createApp({
                     }
                 });
         },
-
         loadYeuCau(page = 1) {
             let url = "/api-yeucau?page=" + page + "&tab=" + this.tab;
             if (this.keyword != "") {
@@ -176,13 +188,17 @@ createApp({
             fetch(url)
                 .then(r => r.json())
                 .then(data => {
-                    this.yeucaus = data.data;
+
+                    if (this.tab == "xuly") {
+                        this.xuLy = data.data;
+                    } else {
+                        this.daXuLy = data.data;
+                    }
                     this.pagination = {
                         current_page: data.current_page,
                         last_page: data.last_page
                     };
                 });
-
         }
     }
 }).mount('#app');

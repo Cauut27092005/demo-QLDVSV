@@ -30,7 +30,7 @@ class NhanVienController extends Controller
 
     public function api_YC(Request $request)
     {
-        
+
         $query = YeuCauDichVu::leftJoin(
             'nhanvien_xuly',
             'yeucau_dichvu.MaNV',
@@ -95,7 +95,7 @@ class NhanVienController extends Controller
     {
         return Excel::download(
             new YeuCauExport(),
-            'DanhSachYeuCau.xlsx'
+            'LichSuDaXuLy_' . session('Username') . '.xlsx'
         );
     }
 

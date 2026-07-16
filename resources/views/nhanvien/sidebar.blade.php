@@ -1,32 +1,38 @@
 <aside class="sidebar">
-    <div class="logo"></div>
-    <ul class="menu">
-        <li @click="moMenu=!moMenu">
-            📄 Quản lý yêu cầu
-        </li>
-        <ul
-            v-show="moMenu"
-            class="submenu">
-            <li
-                :class="{active:tab=='xuly'}"
-                @click="doiTab('xuly')">
-                📥 Yêu cầu cần xử lý
-            </li>
-            <li
-                :class="{active:tab=='lichsu'}"
-                @click="doiTab('lichsu')">
-                ✅ Đã xử lý
-            </li>
-        </ul>
-        <li @click="moDoiMK">
-            🔑 Đổi mật khẩu
-        </li>
-        <li>
-            <a href="/logout">
-                🚪 Đăng xuất
-            </a>
-        </li>
-    </ul>
+    <div class="sidebar-logo">
+        <h2>Dịch vụ SV</h2>
+        <span>Queue System</span>
+    </div>
+    <div class="sidebar-menu">
+        <div class="menu-item" @click="moMenu=!moMenu">
+            <i>📄</i>
+            <span>Quản lý yêu cầu</span>
+        </div>
+        <transition name="slide">
+            <div class="submenu" v-show="moMenu">
+                <div
+                    class="submenu-item"
+                    :class="{active:tab=='xuly'}"
+                    @click="doiTab('xuly')">
+                    📥 Yêu cầu cần xử lý
+                </div>
+                <div
+                    class="submenu-item"
+                    :class="{active:tab=='lichsu'}"
+                    @click="doiTab('lichsu')">
+                    ✅ Đã xử lý
+                </div>
+            </div>
+        </transition>
+        <div class="menu-item" @click="moDoiMK">
+            <i>🔑</i>
+            <span>Đổi mật khẩu</span>
+        </div>
+        <a href="/logout" class="menu-item logout">
+            <i>🚪</i>
+            <span>Đăng xuất</span>
+        </a>
+    </div>
 </aside>
 <div
     class="modal fade"

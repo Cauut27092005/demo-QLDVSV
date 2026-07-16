@@ -2,6 +2,11 @@ import { createApp } from 'vue';
 import Echo from 'laravel-echo';
 import Pusher from 'pusher-js';
 import * as bootstrap from 'bootstrap';
+import { registerSW } from 'virtual:pwa-register';
+
+registerSW({
+    immediate: true
+});
 
 window.bootstrap = bootstrap;
 window.Pusher = Pusher;

@@ -14,12 +14,11 @@ class YeuCauController extends Controller
     {
 
         $ip = $request->ip();
-        // if (!str_starts_with($ip, '192.168.1.'))
-        if (
-            $ip !== '127.0.0.1' &&
+        // if (!str_starts_with($ip, '10.82.'))
+        if ( $ip !== '127.0.0.1' &&
             $ip !== '::1' &&
-            !str_starts_with($ip, '192.168.1.')
-        ) {
+            !str_starts_with($ip, '10.82.') ) 
+        {
             return back()->with(
                 'error',
                 'Hệ thống chỉ được sử dụng trong khu vực của trường.'

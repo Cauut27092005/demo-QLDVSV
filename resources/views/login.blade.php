@@ -3,86 +3,22 @@
 
 <head>
     <title>Đăng nhập hệ thống</title>
+    <meta name="theme-color" content="#0d6efd">
+    <link rel="manifest" href="/build/manifest.webmanifest">
+    <link rel="icon" href="/icon-192.png">
+    <link rel="apple-touch-icon" href="/icon-192.png">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <!-- Thêm font chữ Inter hiện đại giống thiết kế mẫu -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            min-height: 100vh;
-            background: url('/img/images.jpg');
-            background-size: cover;
-            background-position: center;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-        }
-
-        .overlay {
-            position: absolute;
-            inset: 0;
-            background: rgba(0, 0, 0, .35);
-            backdrop-filter: blur(5px);
-        }
-
-        .login-form {
-            width: 360px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .system-title {
-            text-align: center;
-            color: white;
-            font-size: 48px;
-            font-weight: 300;
-            margin-bottom: 40px;
-        }
-
-        .input-login {
-            background: rgba(255, 255, 255, .08);
-            border: 1px solid rgba(255, 255, 255, .8);
-            border-right: none;
-            color: white;
-            height: 50px;
-            border-radius: 0;
-        }
-
-        .input-login::placeholder {
-            color: white;
-        }
-
-        .input-login:focus {
-            background: rgba(255, 255, 255, .15);
-            color: white;
-            box-shadow: none;
-            border-color: white;
-        }
-
-        .icon-login {
-            background: rgba(255, 255, 255, .08);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, .8);
-            border-left: none;
-            border-radius: 0;
-        }
-
-        .btn-login-custom {
-            width: 100%;
-            height: 50px;
-            background: white;
-            border: none;
-            border-radius: 0;
-            font-size: 22px;
-            font-weight: bold;
-        }
-
-        .btn-login-custom:hover {
-            background: #ececec;
-        }
-    </style>
+    @vite([
+    'resources/css/app.css',
+    'resources/js/app.js',
+    'resources/css/login.css'
+    ])
 </head>
 
 <body>
