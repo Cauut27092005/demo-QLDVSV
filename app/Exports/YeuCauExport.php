@@ -10,20 +10,26 @@ class YeuCauExport implements FromCollection, WithHeadings
 {
     public function collection()
     {
-        return YeuCauDichVu::where(
-                'MaNV',
+        return YeuCauDichVu::join(
+                'loai_dichvu',
+                'yeucau_dichvu.MaLoai',
+                '=',
+                'loai_dichvu.MaLoai'
+            )
+            ->where(
+                'yeucau_dichvu.MaNV',
                 session('Username')
             )
             ->where(
-                'TrangThai',
+                'yeucau_dichvu.TrangThai',
                 'HoanThanh'
             )
             ->select(
-                'MaYC',
-                'MaSV',
-                'LoaiDichVu',
-                'NgayGui',
-                'NgayHoanThanh'
+                'yeucau_dichvu.MaYC',
+                'yeucau_dichvu.MaSV',
+                'loai_dichvu.TenLoai as LoaiDichVu',
+                'yeucau_dichvu.NgayGui',
+                'yeucau_dichvu.NgayHoanThanh'
             )
             ->get();
     }

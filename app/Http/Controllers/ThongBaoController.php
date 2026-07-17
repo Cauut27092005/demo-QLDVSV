@@ -20,9 +20,16 @@ class ThongBaoController extends Controller
             '=',
             'nhanvien_xuly.MaNV'
         )
+            ->leftJoin(
+                'loai_dichvu',
+                'yeucau_dichvu.MaLoai',
+                '=',
+                'loai_dichvu.MaLoai'
+            )
             ->select(
                 'yeucau_dichvu.*',
-                'nhanvien_xuly.Quay'
+                'nhanvien_xuly.Quay',
+                'loai_dichvu.TenLoai as LoaiDichVu'
             )
             ->whereIn(
                 'yeucau_dichvu.TrangThai',

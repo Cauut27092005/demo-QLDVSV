@@ -37,9 +37,16 @@ class NhanVienController extends Controller
             '=',
             'nhanvien_xuly.MaNV'
         )
+            ->leftJoin(
+                'loai_dichvu',
+                'yeucau_dichvu.MaLoai',
+                '=',
+                'loai_dichvu.MaLoai'
+            )
             ->select(
                 'yeucau_dichvu.*',
-                'nhanvien_xuly.HoTen as TenNhanVien'
+                'nhanvien_xuly.HoTen as TenNhanVien',
+                'loai_dichvu.TenLoai as LoaiDichVu'
             );
         switch ($request->tab) {
             case 'xuly':
@@ -66,9 +73,21 @@ class NhanVienController extends Controller
         if ($request->keyword) {
             $keyword = $request->keyword;
             $query->where(function ($q) use ($keyword) {
-                $q->where('yeucau_dichvu.MaSV', 'like', "%$keyword%")
-                    ->orWhere('yeucau_dichvu.MaYC', 'like', "%$keyword%")
-                    ->orWhere('yeucau_dichvu.LoaiDichVu', 'like', "%$keyword%");
+                $q->where(
+                    'yeucau_dichvu.MaSV',
+                    'like',
+                    "%$keyword%"
+                )
+                    ->orWhere(
+                        'yeucau_dichvu.MaYC',
+                        'like',
+                        "%$keyword%"
+                    )
+                    ->orWhere(
+                        'loai_dichvu.TenLoai',
+                        'like',
+                        "%$keyword%"
+                    );
             });
         }
         if ($request->filled('tuNgay')) {

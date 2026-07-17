@@ -41,31 +41,31 @@
                         <div class="row g-2">
                             <div class="service-list">
                                 <label>
-                                    <input type="radio" name="loai" value="Hành chính" required>
+                                    <input type="radio" name="loai" value="1" required>
                                     Thủ tục hành chính (thẻ, giấy xác nhận)
                                 </label>
                                 <label>
-                                    <input type="radio" name="loai" value="Hỗ trợ học vụ">
+                                    <input type="radio" name="loai" value="2">
                                     Thủ tục học vụ
                                 </label>
                                 <label>
-                                    <input type="radio" name="loai" value="Tài chính">
+                                    <input type="radio" name="loai" value="3">
                                     Tài chính
                                 </label>
                                 <label>
-                                    <input type="radio" name="loai" value="Khác">
+                                    <input type="radio" name="loai" value="4">
                                     Khác
                                 </label>
                                 <label>
-                                    <input type="radio" name="loai" value="QHDN">
+                                    <input type="radio" name="loai" value="5">
                                     QHDN
                                 </label>
                                 <label>
-                                    <input type="radio" name="loai" value="Nhà trọ, phòng trọ">
+                                    <input type="radio" name="loai" value="6">
                                     Nhà trọ, phòng trọ
                                 </label>
                                 <label>
-                                    <input type="radio" name="loai" value="Hỗ trợ CNTT">
+                                    <input type="radio" name="loai" value="7">
                                     Hỗ trợ CNTT
                                 </label>
                             </div>
@@ -128,7 +128,6 @@
                             </button>
                         </div>
                     </div>
-
                 </form>
             </div>
         </div>

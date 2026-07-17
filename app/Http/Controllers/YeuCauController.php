@@ -39,7 +39,7 @@ class YeuCauController extends Controller
         // Tạo yêu cầu mới
         YeuCauDichVu::create([
             'MaSV'        => $request->masv,
-            'LoaiDichVu'  => $request->loai,
+            'MaLoai'  => $request->loai,
             'NgayGui'     => now(),
             'TrangThai'   => 'ChoXuLy',
             'MaNV'        => null

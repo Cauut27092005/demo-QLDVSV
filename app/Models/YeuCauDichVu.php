@@ -11,7 +11,7 @@ class YeuCauDichVu extends Model
     protected $fillable = [
         'MaSV',
         'MaNV',
-        'LoaiDichVu',
+        'MaLoai',
         'NgayGui',
         'TrangThai',
         'NgayHoanThanh'

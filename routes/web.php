@@ -76,9 +76,23 @@ Route::post('/api-doi-mat-khau', [NhanVienController::class, 'doiMatKhau']);
 
 Route::get('/truongphong', [TruongPhongController::class,'index']);
 
-Route::get('/api-truongphong', [TruongPhongController::class,'api']);
+Route::get('/api-tp-dashboard', [TruongPhongController::class,'dashboard']);
+
+Route::get('/api-tp-yeucau', [TruongPhongController::class,'yeuCau']);
+
+Route::get('/api-tp-chart-trangthai', [TruongPhongController::class, 'chartTrangThai']);
+
+Route::get('/api-tp-chart-loaidv', [TruongPhongController::class, 'chartLoaiDichVu']);
+
+Route::get('/api-tp-thongke', [TruongPhongController::class,'thongKe']);
+
+Route::get("/api-tp-top",[TruongPhongController::class,"topNhanVien"]);
+
+Route::get('/api-tp-chitiet/{maNV}', [TruongPhongController::class,'chiTiet']);
 
 Route::get('/truongphong/excel', [TruongPhongController::class,'excel']);
+
+Route::post('/tp-doi-mat-khau', [TruongPhongController::class,'doiMatKhau']);
 
 // ======================
 // YÊU CẦU, HOÀN THÀNH
