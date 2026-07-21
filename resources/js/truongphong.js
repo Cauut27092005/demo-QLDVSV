@@ -7,10 +7,9 @@ createApp({
     data() {
         const today = new Date().toISOString().split('T')[0];
         return {
-            statusChart: null,
             serviceChart: null,
-            staffChart: null,
             menu: 'dashboard',
+            moExcel: false,
             keyword: '',
             trangThai: '',
             tuNgay: today,
@@ -27,7 +26,6 @@ createApp({
             yeuCaus: [],
             thongKe: [],
             topNhanVien: [],
-            chiTiet: [],
             pagination: {
                 current_page: 1,
                 last_page: 1
@@ -41,26 +39,20 @@ createApp({
                     return 'Dashboard';
                 case 'yeucau':
                     return 'Quản lý yêu cầu';
-                case 'thongke':
-                    return 'Thống kê nhân viên';
             }
             return '';
         }
     },
     mounted() {
-        this.loadChartTrangThai();
         this.loadChartLoaiDV();
         this.loadDashboard();
-        this.loadThongKe();
         this.loadTop();
         this.loadYeuCau();
         if (window.Echo) {
             window.Echo.channel('yeucau')
                 .listen('.DuLieuCapNhat', () => {
-                    this.loadChartTrangThai();
                     this.loadChartLoaiDV();
                     this.loadDashboard();
-                    this.loadThongKe();
                     this.loadTop();
                     this.loadYeuCau(
                         this.pagination.current_page
@@ -76,69 +68,89 @@ createApp({
                     this.dashboard = data;
                 });
         },
-        loadChartTrangThai() {
-            fetch('/api-tp-chart-trangthai')
-                .then(async r => {
-                    let text = await r.text();
-                    console.log(text);
-                    return JSON.parse(text);
-                })
-                .then(data => {
-                    if (this.statusChart) {
-                        this.statusChart.destroy();
-                    }
-                    this.statusChart = new Chart(
-                        document.getElementById('statusChart'),
-                        {
-                            type: 'doughnut',
-                            data: {
-                                labels: [
-                                    'Chờ xử lý',
-                                    'Đang xử lý',
-                                    'Hoàn thành'
-                                ],
-                                datasets: [{
-                                    data: [
-                                        data.ChoXuLy,
-                                        data.DangXuLy,
-                                        data.HoanThanh
-                                    ]
-                                }]
-                            }
-                        }
-                    );
-                });
-        },
         loadChartLoaiDV() {
             fetch('/api-tp-chart-loaidv')
                 .then(r => r.json())
                 .then(data => {
+
                     if (this.serviceChart) {
                         this.serviceChart.destroy();
                     }
                     this.serviceChart = new Chart(
-                        document.getElementById('serviceChart'),
+                        document.getElementById("serviceChart"),
                         {
-                            type: 'bar',
+                            type: "bar",
                             data: {
                                 labels: data.map(x => x.TenLoai),
                                 datasets: [{
-                                    label: 'Số yêu cầu',
-                                    data: data.map(x => x.Tong)
+                                    data: data.map(x => x.Tong),
+                                    backgroundColor: "#a9d18e",
+                                    hoverBackgroundColor: "#8bc34a",
+                                    borderRadius: 4,
+                                    barThickness: 24,
+                                    categoryPercentage: 2,
+                                    barPercentage: 2
                                 }]
                             },
                             options: {
+                                indexAxis: "y",
+                                maintainAspectRatio: false,
+                                layout: {
+                                    padding: {
+                                        right: 40
+                                    }
+                                },
+                                plugins: {
+                                    legend: {
+                                        display: false
+                                    },
+                                    tooltip: {
+                                        enabled: true
+                                    },
+                                    datalabels: {
+                                        color: "#333",
+                                        anchor: "end",
+                                        align: "end",      // đổi từ right thành end
+                                        offset: 6,
+                                        clip: false,       // rất quan trọng
+                                        clamp: true,
+                                        font: {
+                                            size: 13,
+                                            weight: "bold"
+                                        },
+                                        formatter: (value) => value
+                                    }
+                                },
                                 scales: {
-                                    y: {
+                                    x: {
                                         beginAtZero: true,
+                                        display: false,
+                                        grid: {
+                                            display: false
+                                        },
+                                        border: {
+                                            display: false
+                                        }
+                                    },
+                                    y: {
+                                        grid: {
+                                            display: false
+                                        },
+                                        border: {
+                                            display: false
+                                        },
                                         ticks: {
-                                            stepSize: 1
+                                            color: "#555",
+                                            font: {
+                                                size: 13
+                                            }
                                         }
                                     }
                                 }
                             }
                         }
                     );
+
                 });
         },
         loadTop() {
@@ -190,23 +202,27 @@ createApp({
                     };
                 });
         },
-        xemChiTiet(maNV) {
-            fetch(
-                "/api-tp-chitiet/" + maNV
-            )
+        xemThongKeNhanVien() {
+            fetch('/api-tp-thongke')
                 .then(r => r.json())
                 .then(data => {
-                    this.chiTiet = data;
+                    this.thongKe = data;
                     new bootstrap.Modal(
                         document.getElementById(
-                            "chiTietModal"
+                            'thongKeNVModal'
                         )
                     ).show();
+
                 });
+
         },
-        xuatExcel() {
+        xuatExcelTopNhanVien() {
             window.location =
-                "/truongphong/excel";
+                "/truongphong/excel/topnhanvien";
+        },
+        xuatExcelYeuCau() {
+            window.location =
+                "/truongphong/excel/yeucau";
         }
     },
 

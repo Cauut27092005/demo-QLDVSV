@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\YeuCauDichVu;
 use App\Models\NhanVienXuLy;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\TopNhanVienExport;
 use App\Exports\YeuCauExport;
 use App\Models\LoaiDichVu;
 
@@ -160,16 +161,13 @@ class TruongPhongController extends Controller
     /*Thống kê nhân viên*/
     public function thongKe()
     {
-
         return response()->json(
-
             NhanVienXuLy::leftJoin(
                 "yeucau_dichvu",
                 "nhanvien_xuly.MaNV",
                 "=",
                 "yeucau_dichvu.MaNV"
             )
-
                 ->selectRaw("
             nhanvien_xuly.MaNV,
             nhanvien_xuly.HoTen,
@@ -177,7 +175,6 @@ class TruongPhongController extends Controller
                 SUM(
                     CASE
                     WHEN TrangThai='DangXuLy'
-
                     THEN 1
                     ELSE 0
                     END
@@ -260,12 +257,19 @@ class TruongPhongController extends Controller
         );
     }
     /*Xuất Excel */
-    public function excel()
+    public function excelTopNhanVien()
+    {
+        return Excel::download(
+            new TopNhanVienExport(),
+            'TopNhanVien.xlsx'
+        );
+    }
+
+    public function excelYeuCau()
     {
         return Excel::download(
             new YeuCauExport(),
-            'BaoCaoTruongPhong.xlsx'
-
+            'DanhSachYeuCau.xlsx'
         );
     }
 }

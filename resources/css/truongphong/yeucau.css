@@ -1,0 +1,68 @@
+/* ====================== YÊU CẦU ====================== */
+
+.yeucau {
+    padding: 28px;
+    background: #f5f7fb;
+}
+
+/* Card */
+
+.yeucau .card {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, .05);
+}
+
+.yeucau .card-header {
+    background: #fff;
+    border-bottom: 1px solid #eef2f7;
+    padding: 20px;
+}
+
+.yeucau .card-body {
+    padding: 20px;
+}
+
+/* Form */
+
+.yeucau .form-control,
+.yeucau .form-select {
+    border-radius: 10px;
+    height: 42px;
+}
+
+.yeucau .btn-primary {
+    border-radius: 10px;
+    height: 42px;
+}
+
+/* Table */
+
+.yeucau .table {
+    margin-bottom: 0;
+    vertical-align: middle;
+}
+
+.yeucau .table thead th {
+    background: #f8fafc;
+    color: #475569;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 14px;
+    font-weight: 600;
+}
+
+.yeucau .table tbody td {
+    padding: 14px;
+}
+
+.yeucau .table-hover tbody tr:hover {
+    background: #f8fbff;
+}
+
+/* Badge */
+
+.yeucau .badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+}

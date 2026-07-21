@@ -3,11 +3,14 @@ import Echo from 'laravel-echo';
 import Pusher from 'pusher-js';
 import * as bootstrap from 'bootstrap';
 import { registerSW } from 'virtual:pwa-register';
+import Chart from 'chart.js/auto';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 registerSW({
     immediate: true
 });
 
+Chart.register(ChartDataLabels);
 window.bootstrap = bootstrap;
 window.Pusher = Pusher;
 window.createApp = createApp;

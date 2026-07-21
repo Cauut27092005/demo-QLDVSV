@@ -1,0 +1,23 @@
+/* ================= GLOBAL ================= */
+
+body {
+    margin: 0;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: #f4f6f9;
+    color: #333;
+}
+
+/* ================= WRAPPER ================= */
+
+.wrapper {
+    display: flex;
+    min-height: 100vh;
+}
+
+.content {
+    margin-left: 270px;
+    width: calc(100% - 270px);
+    padding: 20px;
+    background: #f4f6f9;
+    box-sizing: border-box;
+}

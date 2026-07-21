@@ -90,7 +90,9 @@ Route::get("/api-tp-top",[TruongPhongController::class,"topNhanVien"]);
 
 Route::get('/api-tp-chitiet/{maNV}', [TruongPhongController::class,'chiTiet']);
 
-Route::get('/truongphong/excel', [TruongPhongController::class,'excel']);
+Route::get('/truongphong/excel/topnhanvien', [TruongPhongController::class, 'excelTopNhanVien']);
+
+Route::get('/truongphong/excel/yeucau', [TruongPhongController::class, 'excelYeuCau']);
 
 Route::post('/tp-doi-mat-khau', [TruongPhongController::class,'doiMatKhau']);
 

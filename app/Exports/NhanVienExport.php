@@ -6,32 +6,31 @@ use App\Models\YeuCauDichVu;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 
-class YeuCauExport implements FromCollection, WithHeadings
+class NhanVienExport implements FromCollection, WithHeadings
 {
     public function collection()
     {
-        return YeuCauDichVu::leftJoin(
-                'nhanvien_xuly',
-                'yeucau_dichvu.MaNV',
-                '=',
-                'nhanvien_xuly.MaNV'
-            )
-            ->leftJoin(
+        return YeuCauDichVu::join(
                 'loai_dichvu',
                 'yeucau_dichvu.MaLoai',
                 '=',
                 'loai_dichvu.MaLoai'
             )
+            ->where(
+                'yeucau_dichvu.MaNV',
+                session('Username')
+            )
+            ->where(
+                'yeucau_dichvu.TrangThai',
+                'HoanThanh'
+            )
             ->select(
                 'yeucau_dichvu.MaYC',
                 'yeucau_dichvu.MaSV',
                 'loai_dichvu.TenLoai as LoaiDichVu',
-                'nhanvien_xuly.HoTen as TenNhanVien',
-                'yeucau_dichvu.TrangThai',
                 'yeucau_dichvu.NgayGui',
                 'yeucau_dichvu.NgayHoanThanh'
             )
-            ->orderByDesc('yeucau_dichvu.MaYC')
             ->get();
     }
 
@@ -41,8 +40,6 @@ class YeuCauExport implements FromCollection, WithHeadings
             'Mã yêu cầu',
             'Mã sinh viên',
             'Loại dịch vụ',
-            'Nhân viên xử lý',
-            'Trạng thái',
             'Ngày gửi',
             'Ngày hoàn thành'
         ];

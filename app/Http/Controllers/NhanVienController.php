@@ -7,7 +7,7 @@ use App\Events\DuLieuCapNhat;
 use Illuminate\Http\Request;
 use App\Models\TaiKhoan;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\YeuCauExport;
+use App\Exports\NhanVienExport;
 use App\Models\NhanVienXuLy;
 
 class NhanVienController extends Controller
@@ -113,7 +113,7 @@ class NhanVienController extends Controller
     public function xuatExcel()
     {
         return Excel::download(
-            new YeuCauExport(),
+            new NhanVienExport(),
             'LichSuDaXuLy_' . session('Username') . '.xlsx'
         );
     }

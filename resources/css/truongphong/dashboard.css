@@ -1,0 +1,188 @@
+/* ================= DASHBOARD ================= */
+
+.dashboard {
+    padding: 28px;
+    background: #f5f7fb;
+}
+
+/* Khoảng cách */
+
+.dashboard .row {
+    --bs-gutter-y: 1.5rem;
+}
+
+/* ================= CARD ================= */
+
+.card {
+    border: none;
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, .05);
+    overflow: hidden;
+    height: 100%;
+}
+
+.card-header {
+    background: #fff;
+    border-bottom: 1px solid #eef2f7;
+    padding: 18px 22px;
+}
+
+.card-header h5 {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.card-body {
+    padding: 22px;
+}
+
+/* ================= THỐNG KÊ ================= */
+
+.card-stat {
+    background: #fff;
+    border-radius: 16px;
+    padding: 22px;
+    border: 1px solid #edf1f5;
+    transition: .25s;
+    height: 100%;
+}
+
+.card-stat:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, .08);
+}
+
+.card-stat h3 {
+    margin: 0;
+    font-size: 36px;
+    font-weight: 700;
+    color: #111827;
+}
+
+.card-stat p {
+    margin-top: 8px;
+    color: #6b7280;
+    font-size: 15px;
+}
+
+.top-card,
+.chart-card {
+    height: 430px;
+    display: flex;
+    flex-direction: column;
+}
+
+.top-card .card-body,
+.chart-card .card-body {
+    flex: 1;
+    overflow: auto;
+}
+
+.chart-card .card-body {
+    position: relative;
+}
+
+#serviceChart {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+
+/* màu thanh trên */
+
+.bg-blue {
+    border-top: 4px solid #3b82f6;
+}
+
+.bg-orange {
+    border-top: 4px solid #f59e0b;
+}
+
+.bg-purple {
+    border-top: 4px solid #8b5cf6;
+}
+
+.bg-green {
+    border-top: 4px solid #10b981;
+}
+
+/* ================= TABLE ================= */
+
+.table {
+    margin-bottom: 0;
+    vertical-align: middle;
+}
+
+.table thead th {
+    background: #f8fafc;
+    color: #475569;
+    border: none;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 14px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.table tbody td {
+    padding: 15px 14px;
+    border-color: #f1f5f9;
+    color: #374151;
+}
+
+.table-hover tbody tr {
+    transition: .2s;
+}
+
+.table-hover tbody tr:hover {
+    background: #f8fbff;
+}
+
+/* Top nhân viên */
+
+.table tbody tr td:first-child {
+    font-weight: 600;
+    color: #2563eb;
+}
+
+/* ================= BUTTON ================= */
+
+.btn-primary {
+    background: #2563eb;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 22px;
+    font-weight: 500;
+}
+
+.btn-primary:hover {
+    background: #1d4ed8;
+}
+
+/* ================= CHART ================= */
+
+#serviceChart {
+    width: 100% !important;
+    height: 320px !important;
+}
+
+
+
+/* ================= BẢNG HOẠT ĐỘNG ================= */
+
+.card:last-child table td {
+    font-size: 14px;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:992px) {
+    .card-stat {
+        margin-bottom: 15px;
+    }
+    #serviceChart {
+        height: 260px !important;
+    }
+}

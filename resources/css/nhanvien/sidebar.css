@@ -1,0 +1,153 @@
+/* ================= SIDEBAR ================= */
+
+.sidebar{
+    width:260px;
+    height:100vh;
+    position:fixed;
+    left:0;
+    top:0;
+    background:#fff;
+    border-right:1px solid #ececec;
+    padding:24px 18px;
+    display:flex;
+    flex-direction:column;
+    box-sizing:border-box;
+}
+
+/* ================= LOGO ================= */
+
+.sidebar-logo{
+    margin-bottom:35px;
+}
+
+.sidebar-logo h2{
+    margin:0;
+    font-size:28px;
+    color:#243b6b;
+    font-weight:700;
+}
+
+.sidebar-logo span{
+    font-size:14px;
+    color:#8a94a6;
+}
+
+/* ================= MENU ================= */
+
+.sidebar-menu{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+}
+
+.menu-item{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    height:46px;
+    padding:0 14px;
+    border-radius:10px;
+    cursor:pointer;
+    color:#6b7280;
+    transition:.25s;
+    font-size:15px;
+    font-weight:500;
+}
+
+.menu-item i{
+    width:22px;
+    text-align:center;
+    color:#818aa3;
+    font-size:16px;
+}
+
+.menu-item:hover{
+    background:#f4f6ff;
+    color:#5b5bd6;
+}
+
+.menu-item.active{
+    background:#ede9fe;
+    color:#5b5bd6;
+}
+
+.menu-item.active i{
+    color:#5b5bd6;
+}
+
+/* ================= SUBMENU ================= */
+
+.submenu{
+    margin-left:36px;
+    display:flex;
+    flex-direction:column;
+    gap:5px;
+    margin-bottom:6px;
+}
+
+.submenu-item{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    height:40px;
+    padding:0 14px;
+    border-radius:8px;
+    cursor:pointer;
+    color:#6b7280;
+    transition:.25s;
+    font-size:14px;
+}
+
+.submenu-item:hover{
+    background:#f7f7ff;
+    color:#5b5bd6;
+}
+
+.submenu-item.active{
+    color:#5b5bd6;
+    background:#f4f2ff;
+    font-weight:600;
+}
+
+.submenu-item::before{
+    content:"";
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:#8b5cf6;
+}
+
+/* ================= LOGOUT ================= */
+
+.logout{
+    margin-top:auto;
+    color:#ef4444;
+}
+
+.logout i{
+    color:#ef4444;
+}
+
+.logout:hover{
+    background:#fef2f2;
+}
+
+/* ================= ANIMATION ================= */
+
+.slide-enter-active,
+.slide-leave-active{
+    transition:all .3s ease;
+    overflow:hidden;
+}
+
+.slide-enter-from,
+.slide-leave-to{
+    max-height:0;
+    opacity:0;
+}
+
+.slide-enter-to,
+.slide-leave-from{
+    max-height:200px;
+    opacity:1;
+}

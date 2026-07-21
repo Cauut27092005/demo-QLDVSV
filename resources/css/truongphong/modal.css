@@ -1,0 +1,20 @@
+/* ================= MODAL ================= */
+
+.modal-content {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, .15);
+}
+
+.modal-header {
+    border-bottom: 1px solid #eef2f7;
+    padding: 18px 24px;
+}
+
+.modal-header h5 {
+    font-weight: 600;
+}
+
+.modal-body {
+    padding: 24px;
+}

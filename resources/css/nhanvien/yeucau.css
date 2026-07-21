@@ -1,0 +1,23 @@
+/* ================= YÊU CẦU ================= */
+
+.card{
+    border:1px solid #ddd;
+    border-radius:5px;
+}
+
+.table{
+    margin:0;
+}
+
+.table th,
+.table td{
+    text-align:center;
+    vertical-align:middle;
+}
+
+/* phân trang */
+
+.pagination{
+    margin-top:15px;
+    justify-content:center;
+}

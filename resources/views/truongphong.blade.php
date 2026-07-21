@@ -20,7 +20,6 @@
         <div class="wrapper">
             @include('truongphong.sidebar')
             <main class="content">
-                @include('truongphong.topheader')
                 <div v-show="menu=='dashboard'">
                     @include('truongphong.dashboard')
                     <div
@@ -66,9 +65,6 @@
                 </div>
                 <div v-show="menu=='yeucau'">
                     @include('truongphong.yeucau')
-                </div>
-                <div v-show="menu=='thongke'">
-                    @include('truongphong.thongke')
                 </div>
             </main>
         </div>

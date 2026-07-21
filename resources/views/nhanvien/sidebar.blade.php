@@ -1,11 +1,10 @@
 <aside class="sidebar">
     <div class="sidebar-logo">
         <h2>Dịch vụ SV</h2>
-        <span>Queue System</span>
     </div>
     <div class="sidebar-menu">
         <div class="menu-item" @click="moMenu=!moMenu">
-            <i>📄</i>
+            <i class="fa-solid fa-folder-open"></i>
             <span>Quản lý yêu cầu</span>
         </div>
         <transition name="slide">
@@ -14,22 +13,22 @@
                     class="submenu-item"
                     :class="{active:tab=='xuly'}"
                     @click="doiTab('xuly')">
-                    📥 Yêu cầu cần xử lý
+                    Yêu cầu cần xử lý
                 </div>
                 <div
                     class="submenu-item"
                     :class="{active:tab=='lichsu'}"
                     @click="doiTab('lichsu')">
-                    ✅ Đã xử lý
+                    Đã xử lý
                 </div>
             </div>
         </transition>
         <div class="menu-item" @click="moDoiMK">
-            <i>🔑</i>
+            <i class="fa-solid fa-key"></i>
             <span>Đổi mật khẩu</span>
         </div>
         <a href="/logout" class="menu-item logout">
-            <i>🚪</i>
+            <i class="fa-solid fa-right-from-bracket"></i>
             <span>Đăng xuất</span>
         </a>
     </div>
@@ -62,7 +61,6 @@
                     class="form-control"
                     placeholder="Nhập lại mật khẩu"
                     v-model="mk.nhaplai">
-
             </div>
             <div class="modal-footer">
                 <button
