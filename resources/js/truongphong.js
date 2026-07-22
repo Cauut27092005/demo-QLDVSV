@@ -72,7 +72,6 @@ createApp({
             fetch('/api-tp-chart-loaidv')
                 .then(r => r.json())
                 .then(data => {
-
                     if (this.serviceChart) {
                         this.serviceChart.destroy();
                     }
@@ -84,20 +83,41 @@ createApp({
                                 labels: data.map(x => x.TenLoai),
                                 datasets: [{
                                     data: data.map(x => x.Tong),
-                                    backgroundColor: "#a9d18e",
-                                    hoverBackgroundColor: "#8bc34a",
-                                    borderRadius: 4,
-                                    barThickness: 24,
-                                    categoryPercentage: 2,
-                                    barPercentage: 2
+                                    backgroundColor: [
+                                        "#4CAF50",
+                                        "#42A5F5",
+                                        "#FFB74D",
+                                        "#AB47BC",
+                                        "#26C6DA",
+                                        "#EF5350",
+                                        "#66BB6A"
+                                    ],
+                                    hoverBackgroundColor: [
+                                        "#43A047",
+                                        "#1E88E5",
+                                        "#FB8C00",
+                                        "#8E24AA",
+                                        "#00ACC1",
+                                        "#E53935",
+                                        "#43A047"
+                                    ],
+                                    borderRadius: 8,
+                                    borderSkipped: false,
+                                    barThickness: 20,
+                                    categoryPercentage: 0.7,
+                                    barPercentage: 0.9
                                 }]
                             },
                             options: {
-                                indexAxis: "y",
+                                responsive: true,
                                 maintainAspectRatio: false,
+                                indexAxis: "y",
                                 layout: {
                                     padding: {
-                                        right: 40
+                                        top: 5,
+                                        right: 20,
+                                        left: 10,
+                                        bottom: 0
                                     }
                                 },
                                 plugins: {
@@ -105,20 +125,19 @@ createApp({
                                         display: false
                                     },
                                     tooltip: {
-                                        enabled: true
+                                        backgroundColor: "#1f2937",
+                                        cornerRadius: 8,
+                                        padding: 10
                                     },
                                     datalabels: {
                                         color: "#333",
                                         anchor: "end",
-                                        align: "end",      // đổi từ right thành end
+                                        align: "end",
                                         offset: 6,
-                                        clip: false,       // rất quan trọng
-                                        clamp: true,
                                         font: {
                                             size: 13,
                                             weight: "bold"
-                                        },
-                                        formatter: (value) => value
+                                        }
                                     }
                                 },
                                 scales: {
@@ -140,9 +159,10 @@ createApp({
                                             display: false
                                         },
                                         ticks: {
-                                            color: "#555",
+                                            color: "#374151",
                                             font: {
-                                                size: 13
+                                                size: 13,
+                                                weight: "600"
                                             }
                                         }
                                     }
@@ -150,7 +170,6 @@ createApp({
                             }
                         }
                     );
-
                 });
         },
         loadTop() {

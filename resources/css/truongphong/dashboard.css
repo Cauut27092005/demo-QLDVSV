@@ -1,188 +1,291 @@
-/* ================= DASHBOARD ================= */
-
-.dashboard {
-    padding: 28px;
-    background: #f5f7fb;
+/* ================= DASHBOARD LAYOUT ================= */
+.dashboard{
+    padding:24px;
+    background:#f3f4f6;
+    min-height:100vh;
 }
 
-/* Khoảng cách */
-
-.dashboard .row {
-    --bs-gutter-y: 1.5rem;
+/* ================= CARD THỐNG KÊ ================= */
+.card-stat{
+    background:#fff;
+    border-radius:18px;
+    padding:22px 24px;
+    box-shadow:0 2px 10px rgba(15,23,42,.06);
+    position:relative;
+    overflow:hidden;
+    min-height:120px;
+    transition:all .25s ease;
 }
 
-/* ================= CARD ================= */
-
-.card {
-    border: none;
-    border-radius: 16px;
-    background: #fff;
-    box-shadow: 0 8px 20px rgba(15, 23, 42, .05);
-    overflow: hidden;
-    height: 100%;
+.card-stat:hover{
+    transform:translateY(-4px);
+    box-shadow:0 10px 25px rgba(15,23,42,.12);
 }
 
-.card-header {
-    background: #fff;
-    border-bottom: 1px solid #eef2f7;
-    padding: 18px 22px;
+.card-stat::before{
+    content:"";
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:4px;
 }
 
-.card-header h5 {
-    margin: 0;
-    font-size: 17px;
-    font-weight: 600;
-    color: #1f2937;
+.bg-blue::before{ background:#2563eb; }
+.bg-orange::before{ background:#f59e0b; }
+.bg-purple::before{ background:#7c3aed; }
+.bg-green::before{ background:#10b981; }
+
+.card-stat h3{
+    font-size:30px;
+    font-weight:800;
+    color:#111827;
+    margin:6px 0 8px;
 }
 
-.card-body {
-    padding: 22px;
+.card-stat p{
+    margin:0;
+    color:#6b7280;
+    font-size:15px;
+    font-weight:500;
 }
 
-/* ================= THỐNG KÊ ================= */
-
-.card-stat {
-    background: #fff;
-    border-radius: 16px;
-    padding: 22px;
-    border: 1px solid #edf1f5;
-    transition: .25s;
-    height: 100%;
+/* ================= CARD CHUNG ================= */
+.card{
+    border:none !important;
+    border-radius:18px !important;
+    box-shadow:0 2px 10px rgba(15,23,42,.06) !important;
+    overflow:hidden;
+    background:#fff;
 }
 
-.card-stat:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, .08);
+.card-header{
+    background:#f3f4f6 !important;
+    border-bottom:1px solid #e5e7eb !important;
+    padding:14px 18px !important;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
 }
 
-.card-stat h3 {
-    margin: 0;
-    font-size: 36px;
-    font-weight: 700;
-    color: #111827;
+.card-header h5{
+    margin:0;
+    font-size:20px;
+    font-weight:700;
+    color:#111827;
 }
 
-.card-stat p {
-    margin-top: 8px;
-    color: #6b7280;
-    font-size: 15px;
+.card-body{
+    padding:18px !important;
 }
 
-.top-card,
-.chart-card {
-    height: 430px;
-    display: flex;
-    flex-direction: column;
+/* ================= TOP NHÂN VIÊN ================= */
+.top-card{
+    min-height:360px;
 }
 
-.top-card .card-body,
-.chart-card .card-body {
-    flex: 1;
-    overflow: auto;
+.top-card table{
+    margin-bottom:0;
 }
 
-.chart-card .card-body {
-    position: relative;
+.top-card thead th{
+    background:#f9fafb;
+    color:#374151;
+    font-size:13px;
+    font-weight:700;
+    border-bottom:1px solid #e5e7eb;
 }
 
-#serviceChart {
-    width: 100% !important;
-    height: 100% !important;
+.top-card tbody td{
+    font-size:14px;
+    color:#111827;
+    vertical-align:middle;
 }
 
-
-/* màu thanh trên */
-
-.bg-blue {
-    border-top: 4px solid #3b82f6;
+.top-card tbody tr:hover{
+    background:#f9fafb;
 }
 
-.bg-orange {
-    border-top: 4px solid #f59e0b;
+.top-card tbody td:first-child{
+    color:#4f46e5;
+    font-weight:700;
 }
 
-.bg-purple {
-    border-top: 4px solid #8b5cf6;
+/* ================= NÚT ================= */
+.btn-primary{
+    background:#2563eb !important;
+    border:none !important;
+    border-radius:10px !important;
+    padding:10px 18px !important;
+    font-weight:600 !important;
+    box-shadow:0 4px 10px rgba(37,99,235,.25);
 }
 
-.bg-green {
-    border-top: 4px solid #10b981;
+.btn-detail{
+    min-width:180px;
+    padding:12px 28px !important;
+    border-radius:14px !important;
+    white-space:nowrap;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    font-size:16px;
+    font-weight:700;
 }
 
-/* ================= TABLE ================= */
-
-.table {
-    margin-bottom: 0;
-    vertical-align: middle;
+.btn-primary:hover{
+    background:#1d4ed8 !important;
 }
 
-.table thead th {
-    background: #f8fafc;
-    color: #475569;
-    border: none;
-    border-bottom: 1px solid #e5e7eb;
-    padding: 14px;
-    font-size: 14px;
-    font-weight: 600;
+/* ================= BIỂU ĐỒ ================= */
+.chart-card{
+    min-height:360px;
 }
 
-.table tbody td {
-    padding: 15px 14px;
-    border-color: #f1f5f9;
-    color: #374151;
+.chart-card .card-body{
+    height:320px;
 }
 
-.table-hover tbody tr {
-    transition: .2s;
+#serviceChart{
+    width:100% !important;
+    height:100% !important;
 }
-
-.table-hover tbody tr:hover {
-    background: #f8fbff;
-}
-
-/* Top nhân viên */
-
-.table tbody tr td:first-child {
-    font-weight: 600;
-    color: #2563eb;
-}
-
-/* ================= BUTTON ================= */
-
-.btn-primary {
-    background: #2563eb;
-    border: none;
-    border-radius: 10px;
-    padding: 10px 22px;
-    font-weight: 500;
-}
-
-.btn-primary:hover {
-    background: #1d4ed8;
-}
-
-/* ================= CHART ================= */
-
-#serviceChart {
-    width: 100% !important;
-    height: 320px !important;
-}
-
-
 
 /* ================= BẢNG HOẠT ĐỘNG ================= */
+.table{
+    margin-bottom:0 !important;
+}
 
-.card:last-child table td {
-    font-size: 14px;
+.table thead th{
+    background:#f9fafb;
+    color:#374151;
+    font-size:13px;
+    font-weight:700;
+    border-bottom:1px solid #e5e7eb;
+    white-space:nowrap;
+}
+
+.table tbody td{
+    vertical-align:middle;
+    font-size:14px;
+    color:#111827;
+}
+
+.table-hover tbody tr:hover{
+    background:#f9fafb;
+}
+
+/* ================= TRẠNG THÁI ================= */
+.status-wait,
+.status-process,
+.status-done{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:6px 12px;
+    border-radius:999px;
+    font-size:12px;
+    font-weight:700;
+}
+
+.status-wait{
+    background:#fef3c7;
+    color:#92400e;
+}
+
+.status-process{
+    background:#dbeafe;
+    color:#1d4ed8;
+}
+
+.status-done{
+    background:#d1fae5;
+    color:#065f46;
+}
+
+/* ================= MODAL ================= */
+.modal-content{
+    border:none;
+    border-radius:18px;
+    overflow:hidden;
+    box-shadow:0 20px 50px rgba(15,23,42,.18);
+}
+
+.modal-header{
+    background:#f9fafb;
+    border-bottom:1px solid #e5e7eb;
+    padding:16px 20px;
+}
+
+.modal-header h5{
+    font-weight:700;
+    color:#111827;
+}
+
+.modal-body{
+    padding:20px;
 }
 
 /* ================= RESPONSIVE ================= */
+@media (max-width: 991px){
 
-@media(max-width:992px) {
-    .card-stat {
-        margin-bottom: 15px;
+    .dashboard{
+        padding:16px;
     }
-    #serviceChart {
-        height: 260px !important;
+
+    .card-stat{
+        min-height:110px;
+    }
+
+    .card-stat h3{
+        font-size:34px;
+    }
+
+    .top-card,
+    .chart-card{
+        min-height:auto;
+    }
+
+    .chart-card .card-body{
+        height:280px;
+    }
+}
+
+@media (max-width: 576px){
+
+    .btn-primary{
+        width:auto;  
+    }
+
+    .btn-detail{
+        width:auto !important;
+        min-width:180px;
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+    }
+
+    .dashboard{
+        padding:12px;
+    }
+
+    .card-stat{
+        padding:18px;
+    }
+
+    .card-stat h3{
+        font-size:30px;
+    }
+
+    .card-header{
+        padding:12px 14px !important;
+    }
+
+    .card-header h5{
+        font-size:18px;
+    }
+
+    .table{
+        font-size:13px;
     }
 }

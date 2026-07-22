@@ -52,9 +52,9 @@
                     </table>
                     <div class="text-center mt-3">
                         <button
-                            class="btn btn-primary"
+                            class="btn btn-primary btn-detail"
                             @click="xemThongKeNhanVien">
-                            Xem chi tiết
+                            <span translate="no">Xem chi tiết</span>
                         </button>
                     </div>
                 </div>
@@ -77,7 +77,7 @@
             <div class="card">
                 <div class="card-header">
                     <h5>Hoạt động hôm nay</h5>
-                    <small class="text-muted">
+                    <small class="text-muted fw-semibold">
                         [[ yeuCaus.length ]] yêu cầu
                     </small>
                 </div>
@@ -94,12 +94,25 @@
                         </thead>
                         <tbody>
                             <tr
-                                v-for="item in yeuCaus.slice(0,5)"
+                                v-for="item in yeuCaus.slice(0,3)"
                                 :key="item.MaYC">
                                 <td>[[ item.MaYC ]]</td>
                                 <td>[[ item.TenNhanVien ?? 'Chưa nhận' ]]</td>
                                 <td>[[ item.LoaiDichVu ]]</td>
-                                <td>[[ item.TrangThai ]] </td>
+                                <td>
+                                    <span
+                                        :class="{
+                                            'status-wait': item.TrangThai=='ChoXuLy',
+                                            'status-process': item.TrangThai=='DangXuLy',
+                                            'status-done': item.TrangThai=='HoanThanh'
+                                        }">[[ item.TrangThai == 'ChoXuLy'
+                                        ? 'Chờ xử lý'
+                                        : item.TrangThai == 'DangXuLy'
+                                        ? 'Đang xử lý'
+                                        : item.TrangThai == 'HoanThanh'
+                                        ? 'Đã xử lý'
+                                        : item.TrangThai ]]</span>
+                                </td>
                                 <td>[[ item.NgayGui ]]</td>
                             </tr>
                         </tbody>
