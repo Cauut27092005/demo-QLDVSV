@@ -58,6 +58,10 @@ Route::get('/api-yeucau', [NhanVienController::class, 'api_YC']);
 
 Route::get('/api-thongke-nhanvien', [NhanVienController::class, 'thongKe']);
 
+Route::get('/api-loai-dv', [NhanVienController::class, 'layLoaiDV']);
+
+Route::post('/api-loai-dv', [NhanVienController::class, 'luuLoaiDV']);
+
 Route::get('/xuat-excel', [NhanVienController::class, 'xuatExcel']);
 
 Route::get('/nhan-yeu-cau/{id}', [NhanVienController::class,'nhanYeuCau']);

@@ -11,10 +11,10 @@ class YeuCauExport implements FromCollection, WithHeadings
     public function collection()
     {
         return YeuCauDichVu::leftJoin(
-                'nhanvien_xuly',
+                'users',
                 'yeucau_dichvu.MaNV',
                 '=',
-                'nhanvien_xuly.MaNV'
+                'users.MaNV'
             )
             ->leftJoin(
                 'loai_dichvu',
@@ -26,7 +26,7 @@ class YeuCauExport implements FromCollection, WithHeadings
                 'yeucau_dichvu.MaYC',
                 'yeucau_dichvu.MaSV',
                 'loai_dichvu.TenLoai as LoaiDichVu',
-                'nhanvien_xuly.HoTen as TenNhanVien',
+                'users.HoTen as TenNhanVien',
                 'yeucau_dichvu.TrangThai',
                 'yeucau_dichvu.NgayGui',
                 'yeucau_dichvu.NgayHoanThanh'

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\YeuCauDichVu;
-use App\Models\NhanVienXuLy;
+use App\Models\Users;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\TopNhanVienExport;
 use App\Exports\YeuCauExport;
@@ -36,7 +36,7 @@ class TruongPhongController extends Controller
                 "TrangThai",
                 "HoanThanh"
             )->count(),
-            "tongNhanVien" => NhanVienXuLy::count(),
+            "tongNhanVien" => Users::count(),
             "homNay" => YeuCauDichVu::whereDate(
                 "NgayGui",
                 today()
@@ -51,10 +51,10 @@ class TruongPhongController extends Controller
     public function yeuCau(Request $request)
     {
         $query = YeuCauDichVu::leftJoin(
-            'nhanvien_xuly',
+            'users',
             'yeucau_dichvu.MaNV',
             '=',
-            'nhanvien_xuly.MaNV'
+            'users.MaNV'
         )
             ->leftJoin(
                 'loai_dichvu',
@@ -64,7 +64,7 @@ class TruongPhongController extends Controller
             )
             ->select(
                 'yeucau_dichvu.*',
-                'nhanvien_xuly.HoTen as TenNhanVien',
+                'users.HoTen as TenNhanVien',
                 'loai_dichvu.TenLoai as LoaiDichVu'
             );
         // =======================
@@ -162,15 +162,15 @@ class TruongPhongController extends Controller
     public function thongKe()
     {
         return response()->json(
-            NhanVienXuLy::leftJoin(
+            Users::leftJoin(
                 "yeucau_dichvu",
-                "nhanvien_xuly.MaNV",
+                "users.MaNV",
                 "=",
                 "yeucau_dichvu.MaNV"
             )
                 ->selectRaw("
-            nhanvien_xuly.MaNV,
-            nhanvien_xuly.HoTen,
+            users.MaNV,
+            users.HoTen,
             COALESCE(
                 SUM(
                     CASE
@@ -197,8 +197,8 @@ class TruongPhongController extends Controller
             as Tong
         ")
                 ->groupBy(
-                    "nhanvien_xuly.MaNV",
-                    "nhanvien_xuly.HoTen"
+                    "users.MaNV",
+                    "users.HoTen"
                 )
                 ->orderByDesc("Tong")
                 ->get()
@@ -208,15 +208,15 @@ class TruongPhongController extends Controller
     public function topNhanVien()
     {
         return response()->json(
-            NhanVienXuLy::leftJoin(
+            Users::leftJoin(
                 "yeucau_dichvu",
-                "nhanvien_xuly.MaNV",
+                "users.MaNV",
                 "=",
                 "yeucau_dichvu.MaNV"
             )
                 ->selectRaw("
-            nhanvien_xuly.MaNV,
-            nhanvien_xuly.HoTen,
+            users.MaNV,
+            users.HoTen,
             COUNT(
                 CASE
                 WHEN TrangThai='HoanThanh'
@@ -226,8 +226,8 @@ class TruongPhongController extends Controller
             as Tong
         ")
                 ->groupBy(
-                    "nhanvien_xuly.MaNV",
-                    "nhanvien_xuly.HoTen"
+                    "users.MaNV",
+                    "users.HoTen"
                 )
                 ->orderByDesc("Tong")
                 ->limit(5)

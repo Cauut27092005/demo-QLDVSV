@@ -15,10 +15,10 @@ class ThongBaoController extends Controller
     public function api_TB()
     {
         return YeuCauDichVu::leftJoin(
-            'nhanvien_xuly',
+            'users',
             'yeucau_dichvu.MaNV',
             '=',
-            'nhanvien_xuly.MaNV'
+            'users.MaNV'
         )
             ->leftJoin(
                 'loai_dichvu',
@@ -28,7 +28,7 @@ class ThongBaoController extends Controller
             )
             ->select(
                 'yeucau_dichvu.*',
-                'nhanvien_xuly.Quay',
+                'users.Quay',
                 'loai_dichvu.TenLoai as LoaiDichVu'
             )
             ->whereIn(

@@ -29,6 +29,9 @@ createApp({
                 last_page: 1
             },
 
+            loaiDV: [],
+            chonLoai: []
+
         };
     },
     computed: {
@@ -39,14 +42,16 @@ createApp({
         }
     },
     mounted() {
-        this.maNV = document.getElementById('app').dataset.manv;
+        this.maNV = document.getElementById('app').dataset.username;
+        this.loadLoaiDV();
         this.loadYeuCau();
         this.loadThongKe();
         const initEcho = () => {
             window.Echo.channel('yeucau')
                 .listen('.DuLieuCapNhat', () => {
-                    this.loadYeuCau()
-                    this.loadThongKe();;
+                    this.loadYeuCau();
+                    this.loadThongKe();
+                    this.loadLoaiDV();
                 });
         };
         if (window.Echo) {
@@ -70,8 +75,69 @@ createApp({
                     this.thongKe = data;
                 });
         },
+        moLoaiDV() {
+            const modal = new bootstrap.Modal(
+                document.getElementById("loaiDVModal")
+            );
+            modal.show();
+        },
         xuatExcel() {
             window.location = "/xuat-excel";
+        },
+        loadLoaiDV() {
+            fetch("/api-loai-dv")
+                .then(r => r.json())
+                .then(data => {
+                    this.loaiDV = data;
+                    this.chonLoai = [];
+                    data.forEach(item => {
+                        if (item.MaNV == this.maNV) {
+                            this.chonLoai.push(item.MaLoai);
+                        }
+                    });
+                });
+        },
+        biKhoa(item) {
+            return item.MaNV != null && item.MaNV != this.maNV;
+        },
+        tenPhuTrach(item) {
+            if (item.MaNV == null) {
+                return "";
+            }
+            if (item.MaNV == this.maNV) {
+                return "Bạn";
+            }
+            return item.HoTen;
+        },
+        luuLoaiDV() {
+            fetch("/api-loai-dv", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN":
+                        document.querySelector(
+                            'meta[name="csrf-token"]'
+                        ).content
+                },
+                body: JSON.stringify({
+                    MaLoai: this.chonLoai
+                })
+            })
+                .then(r => r.json())
+                .then(data => {
+                    alert(data.message);
+                    if (data.success) {
+                        bootstrap.Modal
+                            .getInstance(
+                                document.getElementById(
+                                    "loaiDVModal"
+                                )
+                            )
+                            .hide();
+                        this.loadLoaiDV();
+                        this.loadYeuCau();
+                    }
+                });
         },
         doiTab(tab) {
             this.tab = tab;

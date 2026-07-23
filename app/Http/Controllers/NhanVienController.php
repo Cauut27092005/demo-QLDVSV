@@ -8,7 +8,9 @@ use Illuminate\Http\Request;
 use App\Models\TaiKhoan;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\NhanVienExport;
-use App\Models\NhanVienXuLy;
+use App\Models\Users;
+use App\Models\LoaiDichVu;
+use Illuminate\Support\Facades\DB;
 
 class NhanVienController extends Controller
 {
@@ -28,14 +30,81 @@ class NhanVienController extends Controller
         );
     }
 
+    public function layLoaiDV()
+    {
+        $data = LoaiDichVu::leftJoin(
+            'users',
+            'loai_dichvu.MaNV',
+            '=',
+            'users.MaNV'
+        )
+            ->select(
+                'loai_dichvu.MaLoai',
+                'loai_dichvu.TenLoai',
+                'loai_dichvu.MaNV',
+                'users.HoTen'
+            )
+            ->orderBy('loai_dichvu.MaLoai')
+            ->get();
+        return response()->json($data);
+    }
+
+    public function luuLoaiDV(Request $request)
+    {
+        $maNV = session('Username');
+        DB::beginTransaction();
+        try {
+            // Bỏ tất cả loại đang phụ trách
+            LoaiDichVu::where('MaNV', $maNV)
+                ->update([
+                    'MaNV' => null
+                ]);
+            // Nếu không chọn gì
+            if (!empty($request->MaLoai)) {
+                foreach ($request->MaLoai as $maLoai) {
+                    $loai = LoaiDichVu::where('MaLoai', $maLoai)
+                        ->lockForUpdate()
+                        ->first();
+                    if (!$loai) {
+                        continue;
+                    }
+                    // Đã có người khác phụ trách
+                    if (
+                        $loai->MaNV != null &&
+                        $loai->MaNV != $maNV
+                    ) {
+                        DB::rollBack();
+                        return response()->json([
+                            'success' => false,
+                            'message' => $loai->TenLoai . ' đã có nhân viên khác phụ trách.'
+                        ]);
+                    }
+                    $loai->MaNV = $maNV;
+                    $loai->save();
+                }
+            }
+            DB::commit();
+            event(new DuLieuCapNhat());
+            return response()->json([
+                'success' => true,
+                'message' => 'Lưu loại dịch vụ thành công.'
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ]);
+        }
+    }
+
     public function api_YC(Request $request)
     {
-
         $query = YeuCauDichVu::leftJoin(
-            'nhanvien_xuly',
+            'users',
             'yeucau_dichvu.MaNV',
             '=',
-            'nhanvien_xuly.MaNV'
+            'users.MaNV'
         )
             ->leftJoin(
                 'loai_dichvu',
@@ -45,9 +114,14 @@ class NhanVienController extends Controller
             )
             ->select(
                 'yeucau_dichvu.*',
-                'nhanvien_xuly.HoTen as TenNhanVien',
+                'users.HoTen as TenNhanVien',
                 'loai_dichvu.TenLoai as LoaiDichVu'
             );
+        $maNV = session('Username');
+        $query->where(function ($q) use ($maNV) {
+            $q->where('loai_dichvu.MaNV', $maNV)
+                ->orWhere('yeucau_dichvu.MaNV', $maNV);
+        });
         switch ($request->tab) {
             case 'xuly':
                 $query->where(function ($q) {
@@ -91,7 +165,6 @@ class NhanVienController extends Controller
             });
         }
         if ($request->filled('tuNgay')) {
-
             $query->whereDate(
                 'NgayGui',
                 '>=',
@@ -121,23 +194,25 @@ class NhanVienController extends Controller
     public function thongKe()
     {
         $maNV = session('Username');
+        $cho = YeuCauDichVu::join(
+            'loai_dichvu',
+            'yeucau_dichvu.MaLoai',
+            '=',
+            'loai_dichvu.MaLoai'
+        )
+            ->where('loai_dichvu.MaNV', $maNV)
+            ->where('TrangThai', 'ChoXuLy')
+            ->count();
+        $dang = YeuCauDichVu::where('TrangThai', 'DangXuLy')
+            ->where('MaNV', $maNV)
+            ->count();
+        $tong = YeuCauDichVu::where('TrangThai', 'HoanThanh')
+            ->where('MaNV', $maNV)
+            ->count();
         return response()->json([
-            'cho' => YeuCauDichVu::where(
-                'TrangThai',
-                'ChoXuLy'
-            )->count(),
-            'dang' => YeuCauDichVu::where(
-                'TrangThai',
-                'DangXuLy'
-            )
-                ->where('MaNV', $maNV)
-                ->count(),
-            'tong' => YeuCauDichVu::where(
-                'TrangThai',
-                'HoanThanh'
-            )
-                ->where('MaNV', $maNV)
-                ->count()
+            'cho' => $cho,
+            'dang' => $dang,
+            'tong' => $tong
         ]);
     }
     public function nhanYeuCau($id)
@@ -147,6 +222,21 @@ class NhanVienController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Yêu cầu đã có người nhận.'
+            ]);
+        }
+        $coQuyen = LoaiDichVu::where(
+            'MaLoai',
+            $yc->MaLoai
+        )
+            ->where(
+                'MaNV',
+                session('Username')
+            )
+            ->exists();
+        if (!$coQuyen) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Bạn không phụ trách loại dịch vụ này.'
             ]);
         }
         $yc->TrangThai = 'DangXuLy';
@@ -159,44 +249,20 @@ class NhanVienController extends Controller
         ]);
     }
 
-    public function tuDongNhan(Request $request)
-    {
-        $maNV = session('Username');
-        $yeuCau = YeuCauDichVu::where('TrangThai', 'ChoXuLy')
-            ->orderBy('NgayGui', 'asc')
-            ->first();
-        if (!$yeuCau) {
-            return response()->json([
-                'message' => 'Không còn yêu cầu cần xử lý.'
-            ], 404);
-        }
-        $yeuCau->TrangThai = 'DangXuLy';
-        $yeuCau->MaNV = $maNV;
-        $yeuCau->save();
-
-        return response()->json([
-            'message' => 'Đã tự động nhận yêu cầu ' . $yeuCau->MaYC
-        ]);
-    }
-
     public function CN_HT($id)
     {
         $yc = YeuCauDichVu::findOrFail($id);
-
         if ($yc->MaNV != session('Username')) {
             return response()->json([
                 'success' => false,
                 'message' => 'Bạn không có quyền hoàn thành yêu cầu này.'
             ]);
         }
-
         $yc->update([
             'TrangThai' => 'HoanThanh',
             'NgayHoanThanh' => now()
         ]);
-
         event(new DuLieuCapNhat());
-
         return response()->json([
             'success' => true,
             'message' => 'Đã hoàn thành yêu cầu.'
