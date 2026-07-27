@@ -21,6 +21,12 @@
             <i class="fa-solid fa-list-check"></i>
             <span>Theo dõi yêu cầu</span>
         </li>
+        <li
+            :class="{active:menu=='sla'}"
+            @click="menu='sla'">
+            <i class="fa-solid fa-clock"></i>
+            <span>Quản lý SLA</span>
+        </li>
         <li @click="moExcel = !moExcel">
             <i class="fa-solid fa-file-excel"></i>
             <span>Xuất Excel</span>

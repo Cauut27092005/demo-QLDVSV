@@ -66,6 +66,9 @@
                 <div v-show="menu=='yeucau'">
                     @include('truongphong.yeucau')
                 </div>
+                <div v-show="menu=='sla'">
+                    @include('truongphong.sla')
+                </div>
             </main>
         </div>
     </div>

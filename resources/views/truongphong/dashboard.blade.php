@@ -140,6 +140,9 @@
                             <th>Mã NV</th>
                             <th>Nhân viên</th>
                             <th>Hoàn thành</th>
+                            <th>Đạt SLA</th>
+                            <th>Quá SLA</th>
+                            <th>Tỷ lệ SLA</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -149,6 +152,24 @@
                             <td>[[nv.MaNV]]</td>
                             <td>[[nv.HoTen]]</td>
                             <td>[[nv.HoanThanh]]</td>
+                            <td>
+                                <span class="badge bg-success">
+                                    [[ nv.DatSLA ]]
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge bg-danger">
+                                    [[ nv.QuaSLA ]]
+                                </span>
+                            </td>
+                            <td>
+                                <span :class="{
+                            'text-success fw-bold': nv.TyLe >= 95,
+                            'text-primary fw-bold': nv.TyLe >= 90 && nv.TyLe < 95,
+                            'text-warning fw-bold': nv.TyLe >= 80 && nv.TyLe < 90,
+                            'text-danger fw-bold': nv.TyLe < 80
+                            }">[[ nv.TyLe ]] %</span>
+                            </td>
                         </tr>
                     </tbody>
                 </table>

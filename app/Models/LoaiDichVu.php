@@ -10,6 +10,8 @@ class LoaiDichVu extends Model
     protected $primaryKey = 'MaLoai';
     public $timestamps = false;
     protected $fillable = [
-        'TenLoai'
+        'TenLoai',
+        'MaNV',
+        'SLA_Gio'
     ];
 }

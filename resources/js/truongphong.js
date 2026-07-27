@@ -26,6 +26,7 @@ createApp({
             yeuCaus: [],
             thongKe: [],
             topNhanVien: [],
+            sla: [],
             pagination: {
                 current_page: 1,
                 last_page: 1
@@ -48,12 +49,14 @@ createApp({
         this.loadDashboard();
         this.loadTop();
         this.loadYeuCau();
+        this.loadSLA();
         if (window.Echo) {
             window.Echo.channel('yeucau')
                 .listen('.DuLieuCapNhat', () => {
                     this.loadChartLoaiDV();
                     this.loadDashboard();
                     this.loadTop();
+                    this.loadSLA();
                     this.loadYeuCau(
                         this.pagination.current_page
                     );
@@ -177,6 +180,33 @@ createApp({
                 .then(r => r.json())
                 .then(data => {
                     this.topNhanVien = data;
+                });
+        },
+        loadSLA() {
+            fetch('/api-tp-sla')
+                .then(r => r.json())
+                .then(data => {
+                    this.sla = data;
+                });
+        },
+        luuSLA(item) {
+            fetch('/api-tp-sla', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN':
+                        document.querySelector(
+                            'meta[name=csrf-token]'
+                        ).content
+                },
+                body: JSON.stringify({
+                    MaLoai: item.MaLoai,
+                    SLA_Gio: item.SLA_Gio
+                })
+            })
+                .then(r => r.json())
+                .then(data => {
+                    alert(data.message);
                 });
         },
         loadThongKe() {

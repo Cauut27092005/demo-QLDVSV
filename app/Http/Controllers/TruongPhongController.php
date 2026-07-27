@@ -23,20 +23,21 @@ class TruongPhongController extends Controller
     public function dashboard()
     {
         return response()->json([
-            "tongYC" => YeuCauDichVu::count(),
-            "choXuLy" => YeuCauDichVu::where(
-                "TrangThai",
-                "ChoXuLy"
-            )->count(),
-            "dangXuLy" => YeuCauDichVu::where(
-                "TrangThai",
-                "DangXuLy"
-            )->count(),
-            "hoanThanh" => YeuCauDichVu::where(
-                "TrangThai",
-                "HoanThanh"
-            )->count(),
-            "tongNhanVien" => Users::count(),
+            "tongYC" => YeuCauDichVu::whereMonth("NgayGui", now()->month)
+                ->whereYear("NgayGui", now()->year)
+                ->count(),
+            "choXuLy" => YeuCauDichVu::where("TrangThai", "ChoXuLy")
+                ->whereMonth("NgayGui", now()->month)
+                ->whereYear("NgayGui", now()->year)
+                ->count(),
+            "dangXuLy" => YeuCauDichVu::where("TrangThai", "DangXuLy")
+                ->whereMonth("NgayGui", now()->month)
+                ->whereYear("NgayGui", now()->year)
+                ->count(),
+            "hoanThanh" => YeuCauDichVu::where("TrangThai", "HoanThanh")
+                ->whereMonth("NgayGui", now()->month)
+                ->whereYear("NgayGui", now()->year)
+                ->count(),
             "homNay" => YeuCauDichVu::whereDate(
                 "NgayGui",
                 today()
@@ -126,6 +127,32 @@ class TruongPhongController extends Controller
                 ->paginate(8)
         );
     }
+    public function dsSLA()
+    {
+        return response()->json(
+            LoaiDichVu::select(
+                'MaLoai',
+                'TenLoai',
+                'SLA_Gio'
+            )->get()
+        );
+    }
+    public function capNhatSLA(Request $request)
+    {
+        $request->validate([
+            'MaLoai' => 'required',
+            'SLA_Gio' => 'required|integer|min:1'
+        ]);
+        LoaiDichVu::where(
+            'MaLoai',
+            $request->MaLoai
+        )->update([
+            'SLA_Gio' => $request->SLA_Gio
+        ]);
+        return response()->json([
+            'success' => true
+        ]);
+    }
     /*biểu đồ*/
     public function chartTrangThai()
     {
@@ -163,45 +190,50 @@ class TruongPhongController extends Controller
     {
         return response()->json(
             Users::leftJoin(
-                "yeucau_dichvu",
-                "users.MaNV",
-                "=",
-                "yeucau_dichvu.MaNV"
+                'yeucau_dichvu',
+                'users.MaNV',
+                '=',
+                'yeucau_dichvu.MaNV'
             )
                 ->selectRaw("
             users.MaNV,
             users.HoTen,
-            COALESCE(
-                SUM(
-                    CASE
-                    WHEN TrangThai='DangXuLy'
-                    THEN 1
-                    ELSE 0
-                    END
-                )
-            ,0)
-            as DangXuLy,
-            COALESCE(
-                SUM(
-                    CASE
+            COUNT(
+                CASE
                     WHEN TrangThai='HoanThanh'
                     THEN 1
-                    ELSE 0
-                    END
-                )
-            ,0)
-            as HoanThanh,
+                END
+            ) as HoanThanh,
             COUNT(
-                yeucau_dichvu.MaYC
-            )
-            as Tong
+                CASE
+                    WHEN DatSLA=1
+                    THEN 1
+                END
+            ) as DatSLA,
+            COUNT(
+                CASE
+                    WHEN DatSLA=0
+                    THEN 1
+                END
+            ) as QuaSLA
         ")
                 ->groupBy(
-                    "users.MaNV",
-                    "users.HoTen"
+                    'users.MaNV',
+                    'users.HoTen'
                 )
-                ->orderByDesc("Tong")
                 ->get()
+                ->map(function ($item) {
+                    $item->TyLe =
+                        $item->HoanThanh == 0
+                        ? 0
+                        : round(
+                            $item->DatSLA
+                                * 100
+                                / $item->HoanThanh,
+                            1
+                        );
+                    return $item;
+                })
         );
     }
     /*top nhân viên*/

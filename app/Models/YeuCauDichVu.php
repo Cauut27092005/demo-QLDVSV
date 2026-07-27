@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+
 class YeuCauDichVu extends Model
 {
     protected $table = 'yeucau_dichvu';
@@ -13,7 +14,10 @@ class YeuCauDichVu extends Model
         'MaNV',
         'MaLoai',
         'NgayGui',
+        'NgayNhan',
         'TrangThai',
-        'NgayHoanThanh'
+        'NgayHoanThanh',
+        'SLA_ApDung',
+        'DatSLA'
     ];
 }

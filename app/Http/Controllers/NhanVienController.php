@@ -115,7 +115,8 @@ class NhanVienController extends Controller
             ->select(
                 'yeucau_dichvu.*',
                 'users.HoTen as TenNhanVien',
-                'loai_dichvu.TenLoai as LoaiDichVu'
+                'loai_dichvu.TenLoai as LoaiDichVu',
+                'loai_dichvu.SLA_Gio'
             );
         $maNV = session('Username');
         $query->where(function ($q) use ($maNV) {
@@ -241,6 +242,7 @@ class NhanVienController extends Controller
         }
         $yc->TrangThai = 'DangXuLy';
         $yc->MaNV = session('Username');
+        $yc->NgayNhan = now();
         $yc->save();
         event(new DuLieuCapNhat());
         return response()->json([
@@ -258,14 +260,20 @@ class NhanVienController extends Controller
                 'message' => 'Bạn không có quyền hoàn thành yêu cầu này.'
             ]);
         }
-        $yc->update([
-            'TrangThai' => 'HoanThanh',
-            'NgayHoanThanh' => now()
-        ]);
+        $loai = LoaiDichVu::find($yc->MaLoai);
+        $sla = $loai->SLA_Gio;
+        $gioXuLy = now()->diffInHours(
+            \Carbon\Carbon::parse($yc->NgayNhan)
+        );
+        $yc->TrangThai = 'HoanThanh';
+        $yc->NgayHoanThanh = now();
+        $yc->SLA_ApDung = $sla;
+        $yc->DatSLA = $gioXuLy <= $sla ? 1 : 0;
+        $yc->save();
         event(new DuLieuCapNhat());
         return response()->json([
             'success' => true,
-            'message' => 'Đã hoàn thành yêu cầu.'
+            'message' => 'Đã hoàn thành.'
         ]);
     }
     public function doiMatKhau(Request $request)

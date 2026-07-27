@@ -84,6 +84,10 @@ Route::get('/api-tp-dashboard', [TruongPhongController::class,'dashboard']);
 
 Route::get('/api-tp-yeucau', [TruongPhongController::class,'yeuCau']);
 
+Route::get('/api-tp-sla', [TruongPhongController::class,'dsSLA']);
+
+Route::post('/api-tp-sla', [TruongPhongController::class,'capNhatSLA']);
+
 Route::get('/api-tp-chart-trangthai', [TruongPhongController::class, 'chartTrangThai']);
 
 Route::get('/api-tp-chart-loaidv', [TruongPhongController::class, 'chartLoaiDichVu']);
