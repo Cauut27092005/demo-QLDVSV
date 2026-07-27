@@ -9,8 +9,7 @@
         </div>
     </div>
     <ul class="menu">
-        <li
-            :class="{active:menu=='dashboard'}"
+        <li :class="{active:menu=='dashboard'}"
             @click="menu='dashboard'">
             <i class="fa-solid fa-chart-pie"></i>
             <span>Dashboard</span>

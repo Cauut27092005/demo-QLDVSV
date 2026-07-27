@@ -1,39 +1,52 @@
 <aside class="sidebar">
     <div class="sidebar-logo">
-        <h2>Dịch vụ SV</h2>
+        <div class="logo-icon">
+            <i class="fa-solid fa-bolt"></i>
+        </div>
+        <div>
+            <h4>Dịch vụ SV</h4>
+            <small>Nhân viên</small>
+        </div>
     </div>
-    <div class="sidebar-menu">
-        <div class="menu-item" @click="moMenu=!moMenu">
+    <ul class="menu">
+        <li @click="moMenu=!moMenu">
             <i class="fa-solid fa-folder-open"></i>
             <span>Quản lý yêu cầu</span>
-        </div>
-        <transition name="slide">
-            <div class="submenu" v-show="moMenu">
-                <div
-                    class="submenu-item"
-                    :class="{active:tab=='xuly'}"
-                    @click="doiTab('xuly')">
-                    Yêu cầu cần xử lý
-                </div>
-                <div
-                    class="submenu-item"
-                    :class="{active:tab=='lichsu'}"
-                    @click="doiTab('lichsu')">
-                    Đã xử lý
-                </div>
-            </div>
-        </transition>
-        <div class="menu-item" @click="moLoaiDV">
+            <i
+                class="fa-solid fa-chevron-down ms-auto"
+                :class="{ 'fa-rotate-180': moMenu }">
+            </i>
+        </li>
+        <ul
+            v-show="moMenu"
+            class="submenu">
+            <li
+                :class="{active:tab=='xuly'}"
+                @click="doiTab('xuly')">
+                <i class="fa-solid fa-hourglass-half"></i>
+                <span>Yêu cầu cần xử lý</span>
+            </li>
+            <li
+                :class="{active:tab=='lichsu'}"
+                @click="doiTab('lichsu')">
+                <i class="fa-solid fa-check-circle"></i>
+                <span>Đã xử lý</span>
+            </li>
+        </ul>
+        <li @click="moLoaiDV">
             <i class="fa-solid fa-list-check"></i>
             <span>Loại dịch vụ của tôi</span>
-        </div>
-        <div class="menu-item" @click="moDoiMK">
+        </li>
+        <li @click="moDoiMK">
             <i class="fa-solid fa-key"></i>
             <span>Đổi mật khẩu</span>
-        </div>
-        <a href="/logout" class="menu-item logout">
+        </li>
+
+    </ul>
+    <div class="logout">
+        <a href="/logout">
             <i class="fa-solid fa-right-from-bracket"></i>
-            <span>Đăng xuất</span>
+            Đăng xuất
         </a>
     </div>
 </aside>

@@ -1,23 +1,24 @@
-/* ================= GLOBAL ================= */
-
-body {
+* {
     margin: 0;
-    font-family: "Segoe UI", Arial, sans-serif;
-    background: #f4f6f9;
-    color: #333;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-/* ================= WRAPPER ================= */
+body {
+    font-family: "Segoe UI", sans-serif;
+    background: #f4f7fb;
+    overflow: hidden;
+}
 
 .wrapper {
     display: flex;
-    min-height: 100vh;
+    height: 100vh;
 }
 
 .content {
-    margin-left: 270px;
-    width: calc(100% - 270px);
-    padding: 20px;
-    background: #f4f6f9;
-    box-sizing: border-box;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+    margin: 10px;
 }
