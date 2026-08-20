@@ -8,6 +8,7 @@ use App\Http\Controllers\NhanVienController;
 use App\Http\Controllers\TruongPhongController;
 use App\Http\Controllers\YeuCauController;
 use App\Http\Controllers\ThongBaoController;
+use App\Http\Controllers\GoogleController;
 
 Route::get('/', function () {
     return redirect('/login');
@@ -18,9 +19,11 @@ Route::get('/', function () {
 // ĐĂNG NHẬP, ĐĂNG XUẤT
 // ======================
 
-Route::get('/login', [AuthController::class, 'index']);
+Route::get('/auth/google', [AuthController::class, 'googleRedirect']);
 
-Route::post('/login', [AuthController::class, 'login']);
+Route::get('/auth/google/callback', [AuthController::class, 'googleCallback']);
+
+Route::get('/login', [AuthController::class, 'index']);
 
 Route::get('/logout', [AuthController::class, 'logout']);
 
@@ -48,6 +51,20 @@ Route::get('/api-nhanvien', [AdminController::class, 'nhanVien']);
 
 Route::get('/quanly-nhanvien', [AdminController::class, 'QL_NV']);
 
+//=========================
+// GOOGLE ACCOUNT
+//=========================
+
+Route::get('/quanly-google', [AdminController::class,'QL_Google']);
+
+Route::get('/api-google', [AdminController::class,'apiGoogle']);
+
+Route::get('/api-google', [AdminController::class, 'taiKhoanGoogle']);
+
+Route::post('/api-google/duyet', [AdminController::class, 'duyetGoogle']);
+
+Route::post('/api-google/tuchoi', [AdminController::class,'tuChoiGoogle']);
+
 // ======================
 //  Nhân Viên
 // ======================
@@ -64,15 +81,15 @@ Route::post('/api-loai-dv', [NhanVienController::class, 'luuLoaiDV']);
 
 Route::get('/xuat-excel', [NhanVienController::class, 'xuatExcel']);
 
-Route::get('/nhan-yeu-cau/{id}', [NhanVienController::class,'nhanYeuCau']);
-
 Route::post('/nhanvien/tu-dong-nhan', [NhanVienController::class, 'tuDongNhan']);
+
+Route::get('/nhan-yeu-cau/{id}', [NhanVienController::class,'nhanYeuCau']);
 
 Route::get('/capnhat-hoanthanh/{id}', [NhanVienController::class, 'CN_HT']);
 
-Route::get('/api-lichsu', [NhanVienController::class, 'da_xu_ly']);
+Route::post('/nhanvien/huy/{id}', [NhanVienController::class, 'huyYeuCau']);
 
-Route::post('/api-doi-mat-khau', [NhanVienController::class, 'doiMatKhau']);
+Route::get('/api-canhbao-sla', [NhanVienController::class, 'canhBaoSLA']);
 
 // ======================
 //  Trưởng phòng
@@ -84,13 +101,13 @@ Route::get('/api-tp-dashboard', [TruongPhongController::class,'dashboard']);
 
 Route::get('/api-tp-yeucau', [TruongPhongController::class,'yeuCau']);
 
+Route::get('/api-tp-chart-loaidv', [TruongPhongController::class, 'chartLoaiDichVu']);
+
 Route::get('/api-tp-sla', [TruongPhongController::class,'dsSLA']);
 
 Route::post('/api-tp-sla', [TruongPhongController::class,'capNhatSLA']);
 
-Route::get('/api-tp-chart-trangthai', [TruongPhongController::class, 'chartTrangThai']);
-
-Route::get('/api-tp-chart-loaidv', [TruongPhongController::class, 'chartLoaiDichVu']);
+Route::get('/truongphong/baocao', [TruongPhongController::class,'xuatBaoCao']);
 
 Route::get('/api-tp-thongke', [TruongPhongController::class,'thongKe']);
 
@@ -101,8 +118,6 @@ Route::get('/api-tp-chitiet/{maNV}', [TruongPhongController::class,'chiTiet']);
 Route::get('/truongphong/excel/topnhanvien', [TruongPhongController::class, 'excelTopNhanVien']);
 
 Route::get('/truongphong/excel/yeucau', [TruongPhongController::class, 'excelYeuCau']);
-
-Route::post('/tp-doi-mat-khau', [TruongPhongController::class,'doiMatKhau']);
 
 // ======================
 // YÊU CẦU, HOÀN THÀNH

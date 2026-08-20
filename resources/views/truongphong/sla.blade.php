@@ -11,7 +11,7 @@
                     <th>Loại dịch vụ</th>
                     <th>Nhân viên phụ trách</th>
                     <th width="180">
-                        SLA (giờ)
+                        SLA (phút)
                     </th>
                     <th width="120">
                         Thao tác
@@ -22,18 +22,14 @@
                 <tr
                     v-for="item in sla"
                     :key="item.MaLoai">
-                    <td>
-                        [[ item.TenLoai ]]
-                    </td>
-                    <td>
-                        [[ item.HoTen ?? 'Chưa phân công' ]]
-                    </td>
+                    <td>[[ item.TenLoai ]]</td>
+                    <td>[[ item.HoTen ?? 'Chưa phân công' ]]</td>
                     <td>
                         <input
                             type="number"
                             min="1"
                             class="form-control"
-                            v-model="item.SLA_Gio">
+                            v-model="item.SLA_Phut">
                     </td>
                     <td>
                         <button

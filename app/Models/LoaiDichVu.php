@@ -12,6 +12,5 @@ class LoaiDichVu extends Model
     protected $fillable = [
         'TenLoai',
         'MaNV',
-        'SLA_Gio'
     ];
 }

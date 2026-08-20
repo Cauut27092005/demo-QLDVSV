@@ -1,24 +1,26 @@
 console.log('ECHO FILE LOADED');
 
-import Echo from 'laravel-echo';
-import Pusher from 'pusher-js';
-
-console.log('Echo class:', Echo);
-console.log('Pusher class:', Pusher);
-
-window.Pusher = Pusher;
-
-try {
-    window.Echo = new Echo({
-        broadcaster: 'reverb',
-        key: import.meta.env.VITE_REVERB_APP_KEY,
-        wsHost: import.meta.env.VITE_REVERB_HOST,
-        wsPort: Number(import.meta.env.VITE_REVERB_PORT ?? 8080),
-        wssPort: Number(import.meta.env.VITE_REVERB_PORT ?? 8080),
-        forceTLS: false,
-        enabledTransports: ['ws', 'wss'],
+const connection = window.Echo?.connector?.pusher?.connection;
+if (connection) {
+    connection.bind('connected', () => {
+        console.log('✅ Reverb Connected');
     });
-    console.log('Echo created:', window.Echo);
-} catch (e) {
-    console.error('Echo error:', e);
+    connection.bind('connecting', () => {
+        console.log('🔄 Reverb Connecting...');
+    });
+    connection.bind('disconnected', () => {
+        console.log('❌ Reverb Disconnected');
+    });
+    connection.bind('error', (err) => {
+        console.error('❌ Reverb Error:', err);
+    });
+    connection.bind('state_change', (states) => {
+        console.log(
+            `State: ${states.previous} -> ${states.current}`
+        );
+    });
+} else {
+
+    console.error('Không lấy được Reverb connection');
+
 }

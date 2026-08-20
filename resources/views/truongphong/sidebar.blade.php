@@ -26,28 +26,41 @@
             <i class="fa-solid fa-clock"></i>
             <span>Quản lý SLA</span>
         </li>
-        <li @click="moExcel = !moExcel">
-            <i class="fa-solid fa-file-excel"></i>
-            <span>Xuất Excel</span>
-            <i
-                class="fa-solid fa-chevron-down ms-auto"
-                :class="{ 'fa-rotate-180': moExcel }">
+        <li @click="moBaoCao = !moBaoCao">
+            <i class="fa-solid fa-file-export"></i>
+            <span>Xuất báo cáo</span>
+            <i class="fa-solid fa-chevron-down ms-auto"
+                :class="{ 'fa-rotate-180': moBaoCao }">
             </i>
         </li>
         <ul
-            v-show="moExcel"
+            v-show="moBaoCao"
             class="submenu">
-            <li @click="xuatExcelTopNhanVien()">
-                <i class="fa-solid fa-users"></i>
-                <span>Top nhân viên</span>
+            <li @click="xuatBaoCao()">
+                <i class="fa-solid fa-file-pdf text-danger"></i>
+                <span>Xuất báo cáo PDF</span>
             </li>
-            <li @click="xuatExcelYeuCau()">
-                <i class="fa-solid fa-file-lines"></i>
-                <span>Yêu cầu</span>
+            <li @click="moExcel = !moExcel">
+                <i class="fa-solid fa-file-excel"></i>
+                <span>Xuất Excel</span>
+                <i
+                    class="fa-solid fa-chevron-down ms-auto"
+                    :class="{ 'fa-rotate-180': moExcel }">
+                </i>
             </li>
-
+            <ul
+                v-show="moExcel"
+                class="submenu">
+                <li @click="xuatExcelTopNhanVien()">
+                    <i class="fa-solid fa-users"></i>
+                    <span>Top nhân viên</span>
+                </li>
+                <li @click="xuatExcelYeuCau()">
+                    <i class="fa-solid fa-file-lines"></i>
+                    <span>Yêu cầu</span>
+                </li>
+            </ul>
         </ul>
-    </ul>
     </ul>
     <div class="logout">
         <a href="/logout">

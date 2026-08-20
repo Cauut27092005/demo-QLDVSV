@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Quản lý người dùng</title>
+    <title>Quản lý nhân viên</title>
     @vite(['resources/css/admin.css',
     'resources/js/admin.js'])
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
@@ -47,6 +47,46 @@
                     </button>
                 </div>
             </div>
+            <div
+                class="alert alert-warning"
+                v-if="googleChoDuyet.length">
+                <h5>
+                    Tài khoản Google chờ duyệt
+                </h5>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>Họ tên</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                            v-for="item in googleChoDuyet"
+                            :key="item.MaND">
+                            <td>
+                                @{{ item.Email }}
+                            </td>
+                            <td>
+                                @{{ item.HoTen }}
+                            </td>
+                            <td>
+                                <button
+                                    class="btn btn-success btn-sm"
+                                    @click="openGoogleModal(item)">
+                                    Phê duyệt
+                                </button>
+                                <button
+                                    class="btn btn-danger btn-sm"
+                                    @click="tuChoi(item.MaND)">
+                                    Từ chối
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
             <div class="card-body">
                 <!-- Search -->
                 <div class="row mb-4">
@@ -67,10 +107,12 @@
                         <thead>
                             <tr>
                                 <th width="70">STT</th>
-                                <th>Đăng nhập</th>
+                                <th>Mã NV</th>
                                 <th>Họ tên</th>
+                                <th>Email Google</th>
                                 <th>Quầy</th>
                                 <th>Vai trò</th>
+                                <th>Trạng thái</th>
                                 <th width="90" class="text-center">Thao tác</th>
                             </tr>
                         </thead>
@@ -81,6 +123,18 @@
                                 <td>@{{ index+1 }}</td>
                                 <td>@{{ item.MaNV }}</td>
                                 <td>@{{ item.HoTen }}</td>
+                                <td>
+                                    <span v-if="item.Email">
+                                        @{{ item.Email }}
+                                    </span>
+
+                                    <span
+                                        v-else
+                                        class="text-secondary">
+                                        Chưa liên kết
+                                    </span>
+                                </td>
+
                                 <td>@{{ item.Quay }}</td>
                                 <td>
                                     <span class="badge bg-danger"
@@ -93,6 +147,23 @@
                                     </span>
                                     <span class="badge bg-primary" v-else>
                                         Nhân viên
+                                    </span>
+                                </td>
+                                <td>
+                                    <span
+                                        class="badge bg-success"
+                                        v-if="item.TrangThai=='HoatDong'">
+                                        Hoạt động
+                                    </span>
+                                    <span
+                                        class="badge bg-warning text-dark"
+                                        v-else-if="item.TrangThai=='ChoDuyet'">
+                                        Chờ duyệt
+                                    </span>
+                                    <span
+                                        class="badge bg-danger"
+                                        v-else>
+                                        Từ chối
                                     </span>
                                 </td>
                                 <td class="text-center">
@@ -110,15 +181,6 @@
                                                     @click.prevent="editNV(item)">
                                                     <i class="fa-solid fa-pen me-2"></i>
                                                     Sửa
-                                                </button>
-                                            </li>
-                                            <li>
-                                                <button
-                                                    class="dropdown-item"
-                                                    href="#"
-                                                    @click.prevent="resetPassword(item.MaNV)">
-                                                    <i class="fa-solid fa-key me-2"></i>
-                                                    Reset mật khẩu
                                                 </button>
                                             </li>
                                             <li>
@@ -154,7 +216,7 @@
                     <div class="modal-body">
                         <div class="form-card">
                             <div v-if="!isEdit">
-                                <label>Tên đăng nhập</label>
+                                <label>Mã nhân viên</label>
                                 <input class="form-control"
                                     v-model="formNV.MaNV">
                             </div>
@@ -191,6 +253,58 @@
                         <button class="btn btn-success"
                             @click="saveNV">
                             Lưu
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade"
+            id="googleModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5>Phê duyệt Google</h5>
+                    </div>
+                    <div class="modal-body">
+                        <label>Mã nhân viên</label>
+                        <select
+                            class="form-select"
+                            v-model="formGoogle.MaNV">
+                            <option
+                                v-for="nv in nhanViens"
+                                :value="nv.MaNV">
+                                @{{ nv.MaNV }}
+                                -
+                                @{{ nv.HoTen }}
+                            </option>
+                        </select>
+                        <label class="mt-3">
+                            Vai trò
+                        </label>
+                        <select
+                            class="form-select"
+                            v-model="formGoogle.VaiTro">
+                            <option value="Admin">
+                                Admin
+                            </option>
+                            <option value="TruongPhong">
+                                Trưởng phòng
+                            </option>
+                            <option value="NhanVien">
+                                Nhân viên
+                            </option>
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button
+                            class="btn btn-secondary"
+                            data-bs-dismiss="modal">
+                            Hủy
+                        </button>
+                        <button
+                            class="btn btn-success"
+                            @click="duyetGoogle">
+                            Phê duyệt
                         </button>
                     </div>
                 </div>

@@ -8,7 +8,6 @@ createApp({
             yeucaus: []
         }
     },
-
     methods: {
         loadData() {
             fetch('/api-thongbao')
@@ -18,15 +17,19 @@ createApp({
                 });
         }
     },
-
     mounted() {
         this.loadData();
-        console.log(window.Echo);
         if (window.Echo) {
-            window.Echo.channel('yeucau')
-                .listen('.DuLieuCapNhat', (e) => {
-                    console.log("🎉 NHẬN EVENT", e);
-                    this.loadData();
+            window.Echo.channel("yeucau")
+                .listen(".DuLieuCapNhat", (e) => {
+                    console.log("Realtime:", e.type, e.data);
+                    switch (e.type) {
+                        case "TaoYeuCau":
+                        case "NhanYeuCau":
+                        case "HoanThanh":
+                            this.loadData();
+                            break;
+                    }
                 });
         } else {
             console.log("Echo chưa được khởi tạo");

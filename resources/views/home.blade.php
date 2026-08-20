@@ -31,6 +31,13 @@
                     {{ session('error') }}
                 </div>
                 @endif
+                @if ($errors->any())
+                <div class="alert alert-danger">
+                    @foreach ($errors->all() as $error)
+                    <div>{{ $error }}</div>
+                    @endforeach
+                </div>
+                @endif
                 <form action="/yeucau" method="POST">
                     @csrf
                     <div class="mb-3">
@@ -39,33 +46,55 @@
                             Please select the service
                         </label>
                         <div class="row g-2">
+                            <input type="hidden" name="loai" :value="loai">
                             <div class="service-list">
-                                <label>
-                                    <input type="radio" name="loai" value="1" required>
+                                <label @click.prevent="chonLoai(1)">
+                                    <input
+                                        type="checkbox"
+                                        :checked="loai === 1"
+                                        @click.prevent>
                                     Thủ tục hành chính (thẻ, giấy xác nhận)
                                 </label>
-                                <label>
-                                    <input type="radio" name="loai" value="2">
+                                <label @click.prevent="chonLoai(2)">
+                                    <input
+                                        type="checkbox"
+                                        :checked="loai === 2"
+                                        @click.prevent>
                                     Thủ tục học vụ
                                 </label>
-                                <label>
-                                    <input type="radio" name="loai" value="3">
+                                <label @click.prevent="chonLoai(3)">
+                                    <input
+                                        type="checkbox"
+                                        :checked="loai === 3"
+                                        @click.prevent>
                                     Tài chính
                                 </label>
-                                <label>
-                                    <input type="radio" name="loai" value="4">
+                                <label @click.prevent="chonLoai(4)">
+                                    <input
+                                        type="checkbox"
+                                        :checked="loai === 4"
+                                        @click.prevent>
                                     Khác
                                 </label>
-                                <label>
-                                    <input type="radio" name="loai" value="5">
+                                <label @click.prevent="chonLoai(5)">
+                                    <input
+                                        type="checkbox"
+                                        :checked="loai === 5"
+                                        @click.prevent>
                                     QHDN
                                 </label>
-                                <label>
-                                    <input type="radio" name="loai" value="6">
+                                <label @click.prevent="chonLoai(6)">
+                                    <input
+                                        type="checkbox"
+                                        :checked="loai === 6"
+                                        @click.prevent>
                                     Nhà trọ, phòng trọ
                                 </label>
-                                <label>
-                                    <input type="radio" name="loai" value="7">
+                                <label @click.prevent="chonLoai(7)">
+                                    <input
+                                        type="checkbox"
+                                        :checked="loai === 7"
+                                        @click.prevent>
                                     Hỗ trợ CNTT
                                 </label>
                             </div>

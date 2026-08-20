@@ -41,8 +41,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr
-                                v-for="(item,index) in topNhanVien"
+                            <tr v-for="(item,index) in topNhanVien"
                                 :key="item.MaNV">
                                 <td class="fw-bold">[[ index+1 ]]</td>
                                 <td>[[ item.HoTen ]]</td>
@@ -81,42 +80,45 @@
                         [[ yeuCaus.length ]] yêu cầu
                     </small>
                 </div>
-                <div class="card-body">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>Mã YC</th>
-                                <th>Nhân viên</th>
-                                <th>Loại DV</th>
-                                <th>Trạng thái</th>
-                                <th>Thời gian</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr
-                                v-for="item in yeuCaus.slice(0,3)"
-                                :key="item.MaYC">
-                                <td>[[ item.MaYC ]]</td>
-                                <td>[[ item.TenNhanVien ?? 'Chưa nhận' ]]</td>
-                                <td>[[ item.LoaiDichVu ]]</td>
-                                <td>
-                                    <span
-                                        :class="{
-                                            'status-wait': item.TrangThai=='ChoXuLy',
-                                            'status-process': item.TrangThai=='DangXuLy',
-                                            'status-done': item.TrangThai=='HoanThanh'
-                                        }">[[ item.TrangThai == 'ChoXuLy'
-                                        ? 'Chờ xử lý'
-                                        : item.TrangThai == 'DangXuLy'
-                                        ? 'Đang xử lý'
-                                        : item.TrangThai == 'HoanThanh'
-                                        ? 'Đã xử lý'
-                                        : item.TrangThai ]]</span>
-                                </td>
-                                <td>[[ item.NgayGui ]]</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="card-body p-0">
+                    <div class="table-scroll">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Mã YC</th>
+                                    <th>Nhân viên</th>
+                                    <th>Loại DV</th>
+                                    <th>Trạng thái</th>
+                                    <th>Thời gian</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="item in yeuCaus"
+                                    :key="item.MaYC">
+                                    <td>[[ item.MaYC ]]</td>
+                                    <td>[[ item.TenNhanVien ?? 'Chưa nhận' ]]</td>
+                                    <td>[[ item.LoaiDichVu ]]</td>
+                                    <td>
+                                        <span :class="{
+                                        'status-wait': item.TrangThai == 'ChoXuLy',
+                                        'status-process': item.TrangThai == 'DangXuLy',
+                                        'status-done': item.TrangThai == 'HoanThanh'
+                                        }">
+                                            [[ item.TrangThai == 'ChoXuLy'
+                                            ? 'Chờ xử lý'
+                                            : item.TrangThai == 'DangXuLy'
+                                            ? 'Đang xử lý'
+                                            : item.TrangThai == 'HoanThanh'
+                                            ? 'Đã xử lý'
+                                            : item.TrangThai
+                                            ]]
+                                        </span>
+                                    </td>
+                                    <td>[[ item.NgayGui ]]</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -127,8 +129,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5>Thống kê hiệu suất nhân viên</h5>
-                <button
-                    class="btn-close"
+                <button class="btn-close"
                     data-bs-dismiss="modal">
                 </button>
             </div>
@@ -164,11 +165,11 @@
                             </td>
                             <td>
                                 <span :class="{
-                            'text-success fw-bold': nv.TyLe >= 95,
-                            'text-primary fw-bold': nv.TyLe >= 90 && nv.TyLe < 95,
-                            'text-warning fw-bold': nv.TyLe >= 80 && nv.TyLe < 90,
-                            'text-danger fw-bold': nv.TyLe < 80
-                            }">[[ nv.TyLe ]] %</span>
+                                'text-success fw-bold': nv.TyLe >= 95,
+                                'text-primary fw-bold': nv.TyLe >= 90 && nv.TyLe < 95,
+                                'text-warning fw-bold': nv.TyLe >= 80 && nv.TyLe < 90,
+                                'text-danger fw-bold': nv.TyLe < 80
+                                }">[[ nv.TyLe ]] %</span>
                             </td>
                         </tr>
                     </tbody>

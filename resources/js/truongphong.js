@@ -9,9 +9,11 @@ createApp({
         return {
             serviceChart: null,
             menu: 'dashboard',
+            moBaoCao: false,
             moExcel: false,
             keyword: '',
             trangThai: '',
+            maLoai: '',
             tuNgay: today,
             denNgay: today,
             dashboard: {
@@ -23,6 +25,7 @@ createApp({
                 homNay: 0,
                 hoanThanhHomNay: 0
             },
+            loaiDichVu: [],
             yeuCaus: [],
             thongKe: [],
             topNhanVien: [],
@@ -45,76 +48,148 @@ createApp({
         }
     },
     mounted() {
-        this.loadChartLoaiDV();
         this.loadDashboard();
         this.loadTop();
+        this.loadThongKe();
         this.loadYeuCau();
         this.loadSLA();
+        // Biểu đồ loại dịch vụ
+        this.loadChartLoaiDV();
         if (window.Echo) {
             window.Echo.channel('yeucau')
-                .listen('.DuLieuCapNhat', () => {
-                    this.loadChartLoaiDV();
-                    this.loadDashboard();
-                    this.loadTop();
-                    this.loadSLA();
-                    this.loadYeuCau(
-                        this.pagination.current_page
+                .listen('.DuLieuCapNhat', (e) => {
+                    console.log(
+                        "Realtime:",
+                        e.type,
+                        e.data
                     );
+                    switch (e.type) {
+                        case "TaoYeuCau":
+                            this.loadDashboard();
+                            this.loadChartLoaiDV();
+                            this.loadYeuCau(
+                                this.pagination.current_page
+                            );
+                            break;
+                        case "NhanYeuCau":
+                            this.loadDashboard();
+                            this.loadChartLoaiDV();
+                            this.loadTop();
+                            this.loadThongKe();
+                            this.loadYeuCau(
+                                this.pagination.current_page
+                            );
+                            break;
+                        case "HoanThanh":
+                            this.loadDashboard();
+                            this.loadChartLoaiDV();
+                            this.loadTop();
+                            this.loadThongKe();
+                            this.loadYeuCau(
+                                this.pagination.current_page
+                            );
+                            break;
+                        case "HuyYeuCau":
+                            this.loadDashboard();
+                            this.loadChartLoaiDV();
+                            this.loadTop();
+                            this.loadThongKe();
+                            this.loadYeuCau(
+                                this.pagination.current_page
+                            );
+                            break;
+                        case "CapNhatSLA":
+                            this.loadSLA();
+                            break;
+                        case "LoaiDichVu":
+                            this.loadYeuCau(
+                                this.pagination.current_page
+                            );
+                            break;
+                    }
                 });
         }
     },
     methods: {
+        // =========================
+        // DASHBOARD
+        // =========================
         loadDashboard() {
             fetch('/api-tp-dashboard')
                 .then(r => r.json())
                 .then(data => {
                     this.dashboard = data;
+                })
+                .catch(error => {
+                    console.error(
+                        'Lỗi load dashboard:',
+                        error
+                    );
                 });
         },
+        // =========================
+        // BIỂU ĐỒ LOẠI DỊCH VỤ
+        // =========================
         loadChartLoaiDV() {
             fetch('/api-tp-chart-loaidv')
                 .then(r => r.json())
                 .then(data => {
+                    const canvas =
+                        document.getElementById(
+                            'serviceChart'
+                        );
+                    // Nếu không có canvas thì không tạo biểu đồ
+                    if (!canvas) {
+                        return;
+                    }
+                    // Hủy biểu đồ cũ
                     if (this.serviceChart) {
                         this.serviceChart.destroy();
+                        this.serviceChart = null;
                     }
                     this.serviceChart = new Chart(
-                        document.getElementById("serviceChart"),
+                        canvas,
                         {
-                            type: "bar",
+                            type: 'bar',
                             data: {
-                                labels: data.map(x => x.TenLoai),
-                                datasets: [{
-                                    data: data.map(x => x.Tong),
-                                    backgroundColor: [
-                                        "#4CAF50",
-                                        "#42A5F5",
-                                        "#FFB74D",
-                                        "#AB47BC",
-                                        "#26C6DA",
-                                        "#EF5350",
-                                        "#66BB6A"
-                                    ],
-                                    hoverBackgroundColor: [
-                                        "#43A047",
-                                        "#1E88E5",
-                                        "#FB8C00",
-                                        "#8E24AA",
-                                        "#00ACC1",
-                                        "#E53935",
-                                        "#43A047"
-                                    ],
-                                    borderRadius: 8,
-                                    borderSkipped: false,
-                                    barThickness: 20,
-                                    categoryPercentage: 0.7,
-                                    barPercentage: 0.9
-                                }]
+                                labels: data.map(
+                                    item => item.TenLoai
+                                ),
+                                datasets: [
+                                    {
+                                        data: data.map(
+                                            item => item.Tong
+                                        ),
+                                        backgroundColor: [
+                                            '#4CAF50',
+                                            '#42A5F5',
+                                            '#FFB74D',
+                                            '#AB47BC',
+                                            '#26C6DA',
+                                            '#EF5350',
+                                            '#66BB6A'
+                                        ],
+                                        hoverBackgroundColor: [
+                                            '#43A047',
+                                            '#1E88E5',
+                                            '#FB8C00',
+                                            '#8E24AA',
+                                            '#00ACC1',
+                                            '#E53935',
+                                            '#43A047'
+                                        ],
+                                        borderRadius: 8,
+                                        borderSkipped: false,
+                                        barThickness: 20,
+                                        categoryPercentage: 0.7,
+                                        barPercentage: 0.9
+                                    }
+                                ]
                             },
                             options: {
                                 responsive: true,
                                 maintainAspectRatio: false,
-                                indexAxis: "y",
+                                indexAxis: 'y',
                                 layout: {
                                     padding: {
                                         top: 5,
@@ -124,22 +199,25 @@ createApp({
                                     }
                                 },
                                 plugins: {
+                                    // Không dùng datalabels
                                     legend: {
                                         display: false
                                     },
                                     tooltip: {
-                                        backgroundColor: "#1f2937",
+                                        backgroundColor: '#1f2937',
                                         cornerRadius: 8,
                                         padding: 10
                                     },
                                     datalabels: {
-                                        color: "#333",
-                                        anchor: "end",
-                                        align: "end",
-                                        offset: 6,
+                                        color: "#fff",
+                                        anchor: "center",
+                                        align: "center",
                                         font: {
                                             size: 13,
                                             weight: "bold"
+                                        },
+                                        formatter: (value) => {
+                                            return value;
                                         }
                                     }
                                 },
@@ -155,6 +233,7 @@ createApp({
                                         }
                                     },
                                     y: {
+
                                         grid: {
                                             display: false
                                         },
@@ -162,10 +241,10 @@ createApp({
                                             display: false
                                         },
                                         ticks: {
-                                            color: "#374151",
+                                            color: '#374151',
                                             font: {
                                                 size: 13,
-                                                weight: "600"
+                                                weight: '600'
                                             }
                                         }
                                     }
@@ -173,8 +252,17 @@ createApp({
                             }
                         }
                     );
+                })
+                .catch(error => {
+                    console.error(
+                        'Lỗi biểu đồ loại dịch vụ:',
+                        error
+                    );
                 });
         },
+        // =========================
+        // TOP NHÂN VIÊN
+        // =========================
         loadTop() {
             fetch('/api-tp-top')
                 .then(r => r.json())
@@ -182,11 +270,15 @@ createApp({
                     this.topNhanVien = data;
                 });
         },
+        // =========================
+        // SLA
+        // =========================
         loadSLA() {
             fetch('/api-tp-sla')
                 .then(r => r.json())
                 .then(data => {
                     this.sla = data;
+                    this.loaiDichVu = data;
                 });
         },
         luuSLA(item) {
@@ -201,14 +293,18 @@ createApp({
                 },
                 body: JSON.stringify({
                     MaLoai: item.MaLoai,
-                    SLA_Gio: item.SLA_Gio
+                    SLA_Phut: item.SLA_Phut
                 })
             })
                 .then(r => r.json())
                 .then(data => {
                     alert(data.message);
+
                 });
         },
+        // =========================
+        // THỐNG KÊ
+        // =========================
         loadThongKe() {
             fetch('/api-tp-thongke')
                 .then(r => r.json())
@@ -216,33 +312,44 @@ createApp({
                     this.thongKe = data;
                 });
         },
+        // =========================
+        // YÊU CẦU
+        // =========================
         loadYeuCau(page = 1) {
             let url =
-                "/api-tp-yeucau?page=" + page;
-            if (this.keyword != "") {
+                '/api-tp-yeucau?page=' + page;
+            if (this.keyword != '') {
                 url +=
-                    "&keyword="
-                    + encodeURIComponent(this.keyword);
+                    '&keyword=' +
+                    encodeURIComponent(
+                        this.keyword
+                    );
             }
-            if (this.trangThai != "") {
+            if (this.maLoai != '') {
                 url +=
-                    "&trangThai="
-                    + this.trangThai;
+                    '&maLoai=' +
+                    this.maLoai;
             }
-            if (this.tuNgay != "") {
+            if (this.trangThai != '') {
                 url +=
-                    "&tuNgay="
-                    + this.tuNgay;
+                    '&trangThai=' +
+                    this.trangThai;
             }
-            if (this.denNgay != "") {
+            if (this.tuNgay != '') {
                 url +=
-                    "&denNgay="
-                    + this.denNgay;
+                    '&tuNgay=' +
+                    this.tuNgay;
+            }
+            if (this.denNgay != '') {
+                url +=
+                    '&denNgay=' +
+                    this.denNgay;
             }
             fetch(url)
                 .then(r => r.json())
                 .then(data => {
-                    this.yeuCaus = data.data;
+                    this.yeuCaus =
+                        data.data;
                     this.pagination = {
                         current_page:
                             data.current_page,
@@ -251,6 +358,9 @@ createApp({
                     };
                 });
         },
+        // =========================
+        // THỐNG KÊ NHÂN VIÊN
+        // =========================
         xemThongKeNhanVien() {
             fetch('/api-tp-thongke')
                 .then(r => r.json())
@@ -261,18 +371,24 @@ createApp({
                             'thongKeNVModal'
                         )
                     ).show();
-
                 });
-
         },
+        // =========================
+        // EXPORT
+        // =========================
         xuatExcelTopNhanVien() {
             window.location =
-                "/truongphong/excel/topnhanvien";
+                '/truongphong/excel/topnhanvien';
         },
         xuatExcelYeuCau() {
             window.location =
-                "/truongphong/excel/yeucau";
+                '/truongphong/excel/yeucau';
+        },
+        xuatBaoCao() {
+            window.open(
+                '/truongphong/baocao',
+                '_blank'
+            );
         }
-    },
-
-}).mount("#app");
+    }
+}).mount('#app');

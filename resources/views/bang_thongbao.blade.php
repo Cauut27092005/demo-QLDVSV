@@ -6,7 +6,6 @@
     <title>Bảng thông báo</title>
 
     @vite([
-    'resources/js/app.js',
     'resources/js/bang-thongbao.js',
     'resources/css/bang-thongbao.css'
     ])
@@ -15,9 +14,6 @@
         rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
         rel="stylesheet">
-    <style>
-
-    </style>
 </head>
 
 <body>

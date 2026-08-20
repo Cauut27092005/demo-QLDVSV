@@ -175,6 +175,40 @@
     background:#f9fafb;
 }
 
+.yeu-cau-hom-nay {
+    height: 400px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 5px;
+}
+
+.yeu-cau-hom-nay::-webkit-scrollbar {
+    width: 6px;
+}
+
+.yeu-cau-hom-nay::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+}
+
+.yeu-cau-hom-nay {
+    max-height: 400px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.table-scroll {
+    max-height: 350px;
+    overflow-y: auto;
+    overflow-x: auto;
+}
+
+.table-scroll thead th {
+    position: sticky;
+    top: 0;
+    background: #fff;
+    z-index: 2;
+}
+
 /* ================= TRẠNG THÁI ================= */
 .status-wait,
 .status-process,

@@ -28,10 +28,9 @@ createApp({
                 current_page: 1,
                 last_page: 1
             },
-
             loaiDV: [],
-            chonLoai: []
-
+            chonLoai: [],
+            daCanhBao: []
         };
     },
     computed: {
@@ -43,20 +42,58 @@ createApp({
     },
     mounted() {
         this.maNV = document.getElementById('app').dataset.username;
+        this.handleShortcut = (e) => {
+            if (e.altKey && e.key.toLowerCase() === 'q') {
+                e.preventDefault();
+                this.tuDongNhan();
+            }
+        };
+        window.addEventListener('keydown', this.handleShortcut);
         this.loadLoaiDV();
         this.loadYeuCau();
         this.loadThongKe();
+        setInterval(() => {
+            this.kiemTraSLA();
+        }, 60000); // kiểm tra mỗi 60 giây
         const initEcho = () => {
             window.Echo.channel('yeucau')
-                .listen('.DuLieuCapNhat', () => {
-                    this.loadYeuCau();
-                    this.loadThongKe();
-                    this.loadLoaiDV();
+                .listen('.DuLieuCapNhat', (e) => {
+                    console.log("Realtime:", e.type, e.data);
+                    switch (e.type) {
+                        // Có yêu cầu mới
+                        case "TaoYeuCau":
+                            this.loadYeuCau();
+                            this.loadThongKe();
+                            break;
+                        // Nhân viên nhận yêu cầu
+                        case "NhanYeuCau":
+                            this.loadYeuCau();
+                            this.loadThongKe();
+                            break;
+                        // Hoàn thành yêu cầu
+                        case "HoanThanh":
+                            this.loadYeuCau();
+                            this.loadThongKe();
+                            break;
+                        // Hủy yêu cầu
+                        case "HuyYeuCau":
+                            this.loadYeuCau();
+                            this.loadThongKe();
+                            break;
+                        // Thay đổi loại dịch vụ phụ trách
+                        case "LoaiDichVu":
+                            this.loadLoaiDV();
+                            this.loadYeuCau();
+                            break;    
+                    }
                 });
         };
         if (window.Echo) {
             initEcho();
         }
+    },
+    beforeUnmount() {
+        window.removeEventListener('keydown', this.handleShortcut);
     },
     methods: {
         xoaTimKiem() {
@@ -157,7 +194,34 @@ createApp({
                     this.loadThongKe();
                 });
         },
+        huyYeuCau(id) {
+            if (!confirm("Bạn có chắc chắn muốn hủy yêu cầu này không?")) {
+                return;
+            }
+            fetch('/nhanvien/huy/' + id, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector(
+                        'meta[name="csrf-token"]'
+                    ).content,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            })
+                .then(r => r.json())
+                .then(data => {
+                    alert(data.message);
 
+                    if (data.success) {
+                        this.loadYeuCau();
+                        this.loadThongKe();
+                    }
+                })
+                .catch(error => {
+                    console.error(error);
+                    alert("Có lỗi xảy ra khi hủy yêu cầu.");
+                });
+        },
         nhanYeuCau(id) {
             fetch('/nhan-yeu-cau/' + id)
                 .then(r => r.json())
@@ -167,7 +231,6 @@ createApp({
                     this.loadYeuCau();
                 });
         },
-
         moLichSu() {
             fetch('/api-lichsu')
                 .then(r => r.json())
@@ -180,7 +243,6 @@ createApp({
                     modal.show();
                 });
         },
-
         tuDongNhan() {
             fetch('/nhanvien/tu-dong-nhan', {
                 method: 'POST',
@@ -254,7 +316,6 @@ createApp({
             fetch(url)
                 .then(r => r.json())
                 .then(data => {
-
                     if (this.tab == "xuly") {
                         this.xuLy = data.data;
                     } else {
@@ -265,6 +326,25 @@ createApp({
                         last_page: data.last_page
                     };
                 });
-        }
+        },
+        kiemTraSLA() {
+            fetch('/api-canhbao-sla')
+                .then(r => r.json())
+                .then(data => {
+                    data.forEach(item => {
+                        if (this.daCanhBao.includes(item.MaYC)) {
+                            return;
+                        }
+                        this.daCanhBao.push(item.MaYC);
+                        alert(
+                            "⚠ Yêu cầu #" +
+                            item.MaYC +
+                            " chỉ còn " +
+                            item.ConLai +
+                            " phút sẽ quá SLA."
+                        );
+                    });
+                });
+        },
     }
 }).mount('#app');

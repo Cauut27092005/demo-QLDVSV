@@ -42,9 +42,14 @@
                             Đang xử lý
                         </span>
                         <span
-                            v-else
+                            v-else-if="item.TrangThai=='HoanThanh'"
                             class="badge bg-success">
                             Hoàn thành
+                        </span>
+                        <span
+                            v-else-if="item.TrangThai=='Huy'"
+                            class="badge bg-danger">
+                            Đã hủy
                         </span>
                     </td>
                     <td v-if="tab=='xuly'">
@@ -56,12 +61,20 @@
                             Nhận
                         </button>
                         <!-- Tab Đang xử lý -->
-                        <button
+                        <div
                             v-else-if="item.TrangThai=='DangXuLy'"
-                            class="btn btn-success btn-sm"
-                            @click="hoanThanh(item.MaYC)">
-                            Hoàn thành
-                        </button>
+                            class="d-flex gap-1">
+                            <button
+                                class="btn btn-success btn-sm"
+                                @click="hoanThanh(item.MaYC)">
+                                Hoàn thành
+                            </button>
+                            <button
+                                class="btn btn-danger btn-sm"
+                                @click="huyYeuCau(item.MaYC)">
+                                Hủy
+                            </button>
+                        </div>
                         <!-- Tab Lịch sử -->
                     </td>
                 </tr>

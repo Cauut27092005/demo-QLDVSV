@@ -45,9 +45,66 @@
                 @change="loadYeuCau()">
         </div>
         <button
-            class="btn btn-warning"
-            @click="tuDongNhan">
-            ⏱️ Chọn tuần tự
+            class="btn btn-info"
+            @click="moLoaiDV">
+            <i class="fa-solid fa-list-check me-1"></i>
+            Loại dịch vụ
         </button>
+    </div>
+</div>
+<div class="modal fade"
+     id="loaiDVModal"
+     tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">
+                    Loại dịch vụ
+                </h5>
+                <button
+                    class="btn-close btn-close-white"
+                    data-bs-dismiss="modal">
+                </button>
+            </div>
+            <div class="modal-body">
+                <div
+                    v-for="item in loaiDV"
+                    :key="item.MaLoai"
+                    class="mb-3">
+                    <div class="form-check">
+                        <input
+                            class="form-check-input"
+                            type="checkbox"
+                            :value="item.MaLoai"
+                            v-model="chonLoai"
+                            :disabled="biKhoa(item)">
+                        <label class="form-check-label">
+                            [[ item.TenLoai ]]
+                        </label>
+                    </div>
+                    <small
+                        v-if="item.MaNV!=null && item.MaNV!=maNV"
+                        class="text-danger">
+                        Đã có
+                        <strong>
+                            [[ item.HoTen ]]
+                        </strong>
+                        phụ trách
+                    </small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal">
+                    Đóng
+                </button>
+                <button
+                    class="btn btn-primary"
+                    @click="luuLoaiDV">
+                    Lưu
+                </button>
+            </div>
+        </div>
     </div>
 </div>

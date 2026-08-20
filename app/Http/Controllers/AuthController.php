@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\TaiKhoan;
+use Laravel\Socialite\Facades\Socialite;
+use App\Events\DuLieuCapNhat;
+use App\Models\TkGoogle;
+use App\Models\Users;
 
 class AuthController extends Controller
 {
@@ -13,38 +16,93 @@ class AuthController extends Controller
         return view('login');
     }
     // Xử lý đăng nhập
-    public function login(Request $request)
-{
-    $user = TaiKhoan::where(
-        'Username',
-        $request->username
-    )->first();
-    if (!$user || $user->Password != $request->password) {
-        return back()->with(
-            'error',
-            'Sai tài khoản hoặc mật khẩu'
-        );
+    public function googleRedirect()
+    {
+        $url = Socialite::driver('google')
+            ->redirect()
+            ->getTargetUrl();
+        return redirect($url . '&prompt=select_account');
     }
-    session([
-        'login' => true,
-        'VaiTro' => $user->VaiTro,
-        'Username' => $user->Username
-    ]);
-    if ($user->VaiTro == 'Admin') {
-        return redirect('/admin');
+    public function googleCallback()
+    {
+        $googleUser = Socialite::driver('google')->user();
+        $taiKhoan = TkGoogle::where('Email', $googleUser->email)->first();
+        // Chưa có trong hệ thống
+        if (!$taiKhoan) {
+            TkGoogle::create([
+                'GoogleID'  => $googleUser->id,
+                'Email'     => $googleUser->email,
+                'TrangThai' => 'ChoDuyet',
+            ]);
+            event(new DuLieuCapNhat(
+                'GoogleMoi',
+                [
+                    'Email' => $googleUser->email
+                ]
+            ));
+            return redirect('/login')->with(
+                'error',
+                'Tài khoản của bạn đã được gửi tới Admin để xét duyệt.'
+            );
+        }
+        // Chờ duyệt
+        if ($taiKhoan->TrangThai == 'ChoDuyet') {
+            return redirect('/login')->with(
+                'error',
+                'Tài khoản đang chờ Admin phê duyệt.'
+            );
+        }
+        // Bị từ chối
+        if ($taiKhoan->TrangThai == 'TuChoi') {
+            return redirect('/login')->with(
+                'error',
+                'Tài khoản của bạn đã bị từ chối.'
+            );
+        }
+        // Hoạt động
+        if ($taiKhoan->TrangThai == 'HoatDong') {
+            $data = [
+                'LanDangNhapCuoi' => now(),
+            ];
+            if (!$taiKhoan->GoogleID) {
+                $data['GoogleID'] = $googleUser->id;
+            }
+            if (!$taiKhoan->MaNV) {
+                return redirect('/login')->with(
+                    'error',
+                    'Tài khoản chưa được liên kết với nhân viên.'
+                );
+            }
+            $user = Users::find($taiKhoan->MaNV);
+            if (!$user) {
+                return redirect('/login')->with(
+                    'error',
+                    'Không tìm thấy thông tin nhân viên.'
+                );
+            }
+            $taiKhoan->update($data);
+            session([
+                'login'  => true,
+                'MaNV'   => $taiKhoan->MaNV,
+                'VaiTro' => $taiKhoan->VaiTro,
+                'Email'  => $taiKhoan->Email,
+            ]);
+            switch ($taiKhoan->VaiTro) {
+                case 'Admin':
+                    return redirect('/admin');
+                case 'TruongPhong':
+                    return redirect('/truongphong');
+                case 'NhanVien':
+                    return redirect('/nhanvien');
+                default:
+                    return redirect('/login')->with(
+                        'error',
+                        'Vai trò không hợp lệ.'
+                    );
+            }
+        }
+        return redirect('/login');
     }
-    if ($user->VaiTro == 'TruongPhong') {
-        return redirect('/truongphong');
-    }
-    if ($user->VaiTro == 'NhanVien') {
-        return redirect('/nhanvien');
-    }
-    return back()->with(
-        'error',
-        'Vai trò không hợp lệ'
-    );
-}
-    
     // Đăng xuất
     public function logout()
     {

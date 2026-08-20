@@ -11,10 +11,19 @@ use Illuminate\Queue\SerializesModels;
 class DuLieuCapNhat implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-    public $message;
-    public function __construct($message = 'update')
+    public string $type;
+    public array $data;
+    public function __construct(string $type = 'yeucau', array $data = [])
     {
-        $this->message = $message;
+        $this->type = $type;
+        $this->data = $data;
+    }
+    public function broadcastWith(): array
+    {
+        return [
+            'type' => $this->type,
+            'data' => $this->data,
+        ];
     }
     public function broadcastOn(): array
     {

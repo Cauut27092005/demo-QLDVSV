@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('employees', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+        Schema::table('yeucau_dichvu', function (Blueprint $table) {
+            $table->foreign(['MaLoai'], 'fk_yeucau_loaidv')->references(['MaLoai'])->on('loai_dichvu')->onUpdate('restrict')->onDelete('restrict');
         });
     }
 
@@ -22,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('employees');
+        Schema::table('yeucau_dichvu', function (Blueprint $table) {
+            $table->dropForeign('fk_yeucau_loaidv');
+        });
     }
 };

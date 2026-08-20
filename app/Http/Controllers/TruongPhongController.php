@@ -9,6 +9,9 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\TopNhanVienExport;
 use App\Exports\YeuCauExport;
 use App\Models\LoaiDichVu;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\DB;
+use App\Events\DuLieuCapNhat;
 
 class TruongPhongController extends Controller
 {
@@ -92,13 +95,29 @@ class TruongPhongController extends Controller
             });
         }
         // =======================
-        // Trạng thái
+        // Lọc theo loại dịch vụ
+        // =======================
+        if ($request->filled('maLoai')) {
+            $query->where(
+                'yeucau_dichvu.MaLoai',
+                $request->maLoai
+            );
+        }
+        // =======================
+        // Trạng thái: Đã xử lý / Hủy
         // =======================
         if ($request->filled('trangThai')) {
-            $query->where(
-                'TrangThai',
-                $request->trangThai
-            );
+            if ($request->trangThai === 'DaXuLy') {
+                $query->whereIn(
+                    'yeucau_dichvu.TrangThai',
+                    ['HoanThanh']
+                );
+            } elseif ($request->trangThai === 'Huy') {
+                $query->where(
+                    'yeucau_dichvu.TrangThai',
+                    'Huy'
+                );
+            }
         }
         // =======================
         // Từ ngày
@@ -124,7 +143,7 @@ class TruongPhongController extends Controller
         return response()->json(
             $query
                 ->orderByDesc('MaYC')
-                ->paginate(8)
+                ->simplePaginate(10)
         );
     }
     public function dsSLA()
@@ -133,7 +152,7 @@ class TruongPhongController extends Controller
             LoaiDichVu::select(
                 'MaLoai',
                 'TenLoai',
-                'SLA_Gio'
+                'SLA_Phut'
             )->get()
         );
     }
@@ -141,27 +160,172 @@ class TruongPhongController extends Controller
     {
         $request->validate([
             'MaLoai' => 'required',
-            'SLA_Gio' => 'required|integer|min:1'
+            'SLA_Phut' => 'required|integer|min:1'
         ]);
         LoaiDichVu::where(
             'MaLoai',
             $request->MaLoai
         )->update([
-            'SLA_Gio' => $request->SLA_Gio
+            'SLA_Phut' => $request->SLA_Phut
         ]);
+        event(new DuLieuCapNhat(
+            'CapNhatSLA',
+            [
+                'MaLoai' => $request->MaLoai,
+                'SLA_Phut' => $request->SLA_Phut
+            ]
+        ));
         return response()->json([
-            'success' => true
+            'success' => true,
+            'message' => 'Cập nhật SLA thành công.'
         ]);
+    }
+    public function xuatBaoCao(Request $request)
+    {
+        $tong = YeuCauDichVu::count();
+        $cho = YeuCauDichVu::where(
+            'TrangThai',
+            'ChoXuLy'
+        )->count();
+        $dang = YeuCauDichVu::where(
+            'TrangThai',
+            'DangXuLy'
+        )->count();
+        $hoanThanh = YeuCauDichVu::where(
+            'TrangThai',
+            'HoanThanh'
+        )->count();
+        $tyLe = 0;
+        if ($tong > 0) {
+            $tyLe = round(
+                $hoanThanh * 100 / $tong,
+                2
+            );
+        }
+        //==============================
+        // Theo loại dịch vụ
+        //==============================
+        $loaiDichVu = DB::table('loai_dichvu')
+            ->leftJoin(
+                'yeucau_dichvu',
+                'loai_dichvu.MaLoai',
+                '=',
+                'yeucau_dichvu.MaLoai'
+            )
+            ->selectRaw('
+            loai_dichvu.TenLoai,
+            COUNT(yeucau_dichvu.MaYC) as Tong
+            ')
+            ->groupBy(
+                'loai_dichvu.MaLoai',
+                'loai_dichvu.TenLoai'
+            )
+            ->orderBy(
+                'loai_dichvu.MaLoai'
+            )
+            ->get();
+        //==============================
+        // Nhân viên
+        //==============================
+        $nhanVien = DB::table('users')
+            ->leftJoin(
+                'tk_google',
+                'users.MaNV',
+                '=',
+                'tk_google.MaNV'
+            )
+            ->leftJoin(
+                'yeucau_dichvu',
+                'users.MaNV',
+                '=',
+                'yeucau_dichvu.MaNV'
+            )
+            ->where(
+                'tk_google.VaiTro',
+                'NhanVien'
+            )
+            ->selectRaw('
+                users.MaNV,
+                users.HoTen,
+                COUNT(
+                    CASE
+                    WHEN yeucau_dichvu.TrangThai="HoanThanh"
+                    THEN 1
+                    END
+                ) as HoanThanh,
+                COUNT(
+                    CASE
+                    WHEN yeucau_dichvu.TrangThai="HoanThanh"
+                    AND yeucau_dichvu.DatSLA=1
+                    THEN 1
+                    END
+                ) as DatSLA,
+                COUNT(
+                    CASE
+                    WHEN yeucau_dichvu.TrangThai="HoanThanh"
+                    AND yeucau_dichvu.DatSLA=0
+                    THEN 1
+                    END
+            ) as QuaSLA
+            ')
+            ->groupBy(
+                'users.MaNV',
+                'users.HoTen'
+            )
+            ->get();
+        //==============================
+        // Quá SLA
+        //==============================
+        $quaHan = DB::table('yeucau_dichvu')
+            ->leftJoin(
+                'users',
+                'yeucau_dichvu.MaNV',
+                '=',
+                'users.MaNV'
+            )
+            ->leftJoin(
+                'loai_dichvu',
+                'yeucau_dichvu.MaLoai',
+                '=',
+                'loai_dichvu.MaLoai'
+            )
+            ->where(
+                'yeucau_dichvu.TrangThai',
+                'HoanThanh'
+            )
+            ->where(
+                'yeucau_dichvu.DatSLA',
+                0
+            )
+            ->select(
+                'yeucau_dichvu.MaYC',
+                'yeucau_dichvu.MaSV',
+                'users.HoTen',
+                'loai_dichvu.TenLoai'
+            )
+            ->get();
+        $pdf = Pdf::loadView(
+            'truongphong.report',
+            compact(
+                'tong',
+                'cho',
+                'dang',
+                'hoanThanh',
+                'tyLe',
+                'loaiDichVu',
+                'nhanVien',
+                'quaHan'
+            )
+        );
+        $pdf->setPaper(
+            'a4',
+            'portrait'
+        );
+        return $pdf->download(
+            'BaoCaoTruongPhong_' . date('Ymd_His') . '.pdf'
+        );
     }
     /*biểu đồ*/
-    public function chartTrangThai()
-    {
-        return response()->json([
-            'ChoXuLy' => YeuCauDichVu::where('TrangThai', 'ChoXuLy')->count(),
-            'DangXuLy' => YeuCauDichVu::where('TrangThai', 'DangXuLy')->count(),
-            'HoanThanh' => YeuCauDichVu::where('TrangThai', 'HoanThanh')->count(),
-        ]);
-    }
     public function chartLoaiDichVu()
     {
         return response()->json(
@@ -172,9 +336,9 @@ class TruongPhongController extends Controller
                 'yeucau_dichvu.MaLoai'
             )
                 ->selectRaw("
-            loai_dichvu.TenLoai,
-            COUNT(yeucau_dichvu.MaYC) as Tong
-        ")
+                    loai_dichvu.TenLoai,
+                    COUNT(yeucau_dichvu.MaYC) as Tong
+                ")
                 ->groupBy(
                     'loai_dichvu.MaLoai',
                     'loai_dichvu.TenLoai'
@@ -190,33 +354,42 @@ class TruongPhongController extends Controller
     {
         return response()->json(
             Users::leftJoin(
-                'yeucau_dichvu',
+                'tk_google',
                 'users.MaNV',
                 '=',
-                'yeucau_dichvu.MaNV'
+                'tk_google.MaNV'
             )
+                ->leftJoin(
+                    'yeucau_dichvu',
+                    'users.MaNV',
+                    '=',
+                    'yeucau_dichvu.MaNV'
+                )
+                ->where('tk_google.VaiTro', 'NhanVien')
                 ->selectRaw("
-            users.MaNV,
-            users.HoTen,
-            COUNT(
-                CASE
-                    WHEN TrangThai='HoanThanh'
-                    THEN 1
-                END
-            ) as HoanThanh,
-            COUNT(
-                CASE
-                    WHEN DatSLA=1
-                    THEN 1
-                END
-            ) as DatSLA,
-            COUNT(
-                CASE
-                    WHEN DatSLA=0
-                    THEN 1
-                END
-            ) as QuaSLA
-        ")
+                    users.MaNV,
+                    users.HoTen,
+                    COUNT(
+                        CASE
+                        WHEN yeucau_dichvu.TrangThai='HoanThanh'
+                        THEN 1
+                        END
+                    ) as HoanThanh,
+                    COUNT(
+                        CASE
+                        WHEN yeucau_dichvu.TrangThai='HoanThanh'
+                        AND yeucau_dichvu.DatSLA=1
+                        THEN 1
+                        END
+                    ) as DatSLA,
+                    COUNT(
+                        CASE
+                        WHEN yeucau_dichvu.TrangThai='HoanThanh'
+                        AND yeucau_dichvu.DatSLA=0
+                        THEN 1
+                        END
+                    ) as QuaSLA
+                ")
                 ->groupBy(
                     'users.MaNV',
                     'users.HoTen'
@@ -226,12 +399,8 @@ class TruongPhongController extends Controller
                     $item->TyLe =
                         $item->HoanThanh == 0
                         ? 0
-                        : round(
-                            $item->DatSLA
-                                * 100
-                                / $item->HoanThanh,
-                            1
-                        );
+                        : round($item->DatSLA * 100 / $item->HoanThanh, 1);
+
                     return $item;
                 })
         );
@@ -241,27 +410,33 @@ class TruongPhongController extends Controller
     {
         return response()->json(
             Users::leftJoin(
-                "yeucau_dichvu",
-                "users.MaNV",
-                "=",
-                "yeucau_dichvu.MaNV"
+                'tk_google',
+                'users.MaNV',
+                '=',
+                'tk_google.MaNV'
             )
-                ->selectRaw("
-            users.MaNV,
-            users.HoTen,
-            COUNT(
-                CASE
-                WHEN TrangThai='HoanThanh'
-                THEN 1
-                END
-            )
-            as Tong
-        ")
-                ->groupBy(
-                    "users.MaNV",
-                    "users.HoTen"
+                ->leftJoin(
+                    'yeucau_dichvu',
+                    'users.MaNV',
+                    '=',
+                    'yeucau_dichvu.MaNV'
                 )
-                ->orderByDesc("Tong")
+                ->where('tk_google.VaiTro', 'NhanVien')
+                ->selectRaw("
+                    users.MaNV,
+                    users.HoTen,
+                    COUNT(
+                        CASE
+                        WHEN yeucau_dichvu.TrangThai='HoanThanh'
+                        THEN 1
+                        END
+                    ) as Tong
+                ")
+                ->groupBy(
+                    'users.MaNV',
+                    'users.HoTen'
+                )
+                ->orderByDesc('Tong')
                 ->limit(5)
                 ->get()
         );
@@ -296,7 +471,6 @@ class TruongPhongController extends Controller
             'TopNhanVien.xlsx'
         );
     }
-
     public function excelYeuCau()
     {
         return Excel::download(

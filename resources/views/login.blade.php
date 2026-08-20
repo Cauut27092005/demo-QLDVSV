@@ -9,7 +9,6 @@
     <link rel="apple-touch-icon" href="/icon-192.png">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <!-- Thêm font chữ Inter hiện đại giống thiết kế mẫu -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -23,73 +22,29 @@
 
 <body>
     <div class="overlay"></div>
-    <div id="app">
-        <div class="login-form">
-            <h1 class="system-title">
-                HỆ THỐNG
-            </h1>
-            @if(session('error'))
-            <div class="alert alert-danger">
-                {{ session('error') }}
-            </div>
-            @endif
-            <form method="POST" action="/login">
-                @csrf
-                <div class="input-group mb-3">
-                    <input
-                        type="text"
-                        name="username"
-                        class="form-control input-login"
-                        placeholder="Tài khoản"
-                        v-model="username"
-                        required>
-                    <span class="input-group-text icon-login">
-                        👤
-                    </span>
-                </div>
-                <div class="input-group mb-3">
-                    <input
-                        :type="showPassword ? 'text' : 'password'"
-                        name="password"
-                        class="form-control input-login"
-                        placeholder="Mật khẩu"
-                        v-model="password"
-                        required>
-                    <span class="input-group-text icon-login">
-                        🔒
-                    </span>
-                </div>
-                <button class="btn btn-login-custom">
-                    ĐĂNG NHẬP
-                </button>
-                <div class="mt-3 text-white d-flex justify-content-between">
-                    <label>
-                        <input
-                            class="form-check-input form-check-input-custom"
-                            type="checkbox"
-                            id="showPass"
-                            v-model="showPassword">
-                        Hiện mật khẩu
-                    </label>
-                </div>
-            </form>
+    <div class="login-form">
+        <h1 class="system-title">
+            HỆ THỐNG
+        </h1>
+        @if(session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+        @endif
+        @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+        @endif
+        <a href="{{ url('/auth/google') }}"
+            class="btn btn-danger w-100 py-3">
+            Đăng nhập bằng Google
+        </a>
+        <div class="mt-4 text-center text-white">
+            Nếu tài khoản chưa được cấp quyền,
+            hãy đăng nhập bằng Google để gửi yêu cầu
+            tới quản trị viên.
         </div>
     </div>
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    <script>
-        const {
-            createApp
-        } = Vue;
-        createApp({
-            data() {
-                return {
-                    username: '',
-                    password: '',
-                    showPassword: false
-                }
-            }
-        }).mount('#app');
-    </script>
 </body>
-
 </html>

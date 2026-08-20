@@ -11,7 +11,6 @@ class ThongBaoController extends Controller
     {
         return view('bang_thongbao');
     }
-
     public function api_TB()
     {
         return YeuCauDichVu::leftJoin(
@@ -36,11 +35,11 @@ class ThongBaoController extends Controller
                 ['ChoXuLy', 'DangXuLy']
             )
             ->orderByRaw("
-            CASE
+                CASE
                 WHEN yeucau_dichvu.TrangThai='DangXuLy' THEN 1
                 WHEN yeucau_dichvu.TrangThai='ChoXuLy' THEN 2
-            END
-        ")
+                END
+            ")
             ->orderByDesc('yeucau_dichvu.MaYC')
             ->get();
     }

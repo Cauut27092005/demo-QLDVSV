@@ -11,14 +11,14 @@ class NhanVienExport implements FromCollection, WithHeadings
     public function collection()
     {
         return YeuCauDichVu::join(
-                'loai_dichvu',
-                'yeucau_dichvu.MaLoai',
-                '=',
-                'loai_dichvu.MaLoai'
-            )
+            'loai_dichvu',
+            'yeucau_dichvu.MaLoai',
+            '=',
+            'loai_dichvu.MaLoai'
+        )
             ->where(
                 'yeucau_dichvu.MaNV',
-                session('Username')
+                session('MaNV')
             )
             ->where(
                 'yeucau_dichvu.TrangThai',
@@ -33,7 +33,6 @@ class NhanVienExport implements FromCollection, WithHeadings
             )
             ->get();
     }
-
     public function headings(): array
     {
         return [
