@@ -18,10 +18,9 @@ class AuthController extends Controller
     // Xử lý đăng nhập
     public function googleRedirect()
     {
-        $url = Socialite::driver('google')
-            ->redirect()
-            ->getTargetUrl();
-        return redirect($url . '&prompt=select_account');
+        return Socialite::driver('google')
+        ->with(['prompt' => 'select_account'])
+        ->redirect();
     }
     public function googleCallback()
     {
