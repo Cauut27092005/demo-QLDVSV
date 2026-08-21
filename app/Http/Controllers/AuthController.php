@@ -18,13 +18,21 @@ class AuthController extends Controller
     // Xử lý đăng nhập
     public function googleRedirect()
     {
-        $response = Socialite::driver('google')->redirect();
-        $url = $response->getTargetUrl();
-        $separator = str_contains($url, '?') ? '&' : '?';
-        return redirect($url . $separator . 'prompt=select_account');
+        $url = Socialite::driver('google')->redirect()->getTargetUrl();
+        logger()->info('GOOGLE REDIRECT', [
+            'session_id' => session()->getId(),
+            'session_state' => session()->get('state'),
+            'url' => $url,
+        ]);
+        return redirect($url);
     }
     public function googleCallback()
     {
+        logger()->info('GOOGLE CALLBACK', [
+            'session_id' => session()->getId(),
+            'session_state' => session()->get('state'),
+            'google_state' => request('state'),
+        ]);
         $googleUser = Socialite::driver('google')->user();
         $taiKhoan = TkGoogle::where('Email', $googleUser->email)->first();
         // Chưa có trong hệ thống
