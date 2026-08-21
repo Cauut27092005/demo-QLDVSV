@@ -20,13 +20,15 @@ class AuthController extends Controller
     {
         $response = Socialite::driver('google')->redirect();
 
-        logger()->info('GOOGLE REDIRECT', [
+        logger()->info('GOOGLE REDIRECT DEBUG', [
             'session_id' => session()->getId(),
             'session_state' => session()->get('state'),
-            'session_cookie' => config('session.cookie'),
-            'has_cookie' => request()->hasCookie(config('session.cookie')),
+            'cookie_name' => config('session.cookie'),
+            'cookie_domain' => config('session.domain'),
+            'cookie_secure' => config('session.secure'),
+            'cookie_same_site' => config('session.same_site'),
+            'response_headers' => $response->headers->all(),
         ]);
-
         return $response;
     }
     public function googleCallback()
