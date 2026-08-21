@@ -41,11 +41,15 @@ RUN composer install \
 # Install JS dependencies and build Vite
 RUN npm ci
 RUN npm run build
+RUN php artisan optimize:clear
 
 # Laravel permissions
 RUN chown -R www-data:www-data \
     /var/www/html/storage \
     /var/www/html/bootstrap/cache
+
+RUN mkdir -p /var/www/html/storage/framework/sessions \
+    && chown -R www-data:www-data /var/www/html/storage/framework
 
 # Laravel public directory
 RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|' \
