@@ -41,7 +41,6 @@ RUN composer install \
 # Install JS dependencies and build Vite
 RUN npm ci
 RUN npm run build
-RUN php artisan optimize:clear
 
 # Laravel permissions
 RUN chown -R www-data:www-data \
