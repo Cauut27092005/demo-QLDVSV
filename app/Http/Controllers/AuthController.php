@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Laravel\Socialite\Facades\Socialite;
 use App\Events\DuLieuCapNhat;
+use Laravel\Socialite\Facades\Socialite;
 use App\Models\TkGoogle;
 use App\Models\Users;
 
