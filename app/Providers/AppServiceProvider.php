@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\URL;
 use PDO;
 use Throwable;
 
@@ -23,6 +24,9 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->ensureDatabaseExists();
+        if (app()->environment('production')) {
+        URL::forceScheme('https');
+    }
     }
 
     protected function ensureDatabaseExists(): void
