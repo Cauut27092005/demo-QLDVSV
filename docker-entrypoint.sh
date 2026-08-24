@@ -15,5 +15,12 @@ php artisan migrate --force -vvv
 
 echo "Migration command finished with code: $?"
 
+echo "=== APACHE MODULES ==="
+apache2ctl -M | grep -E 'headers|rewrite|proxy'
+
+echo "=== APACHE CONFIG ==="
+apache2ctl -S
+
 echo "Starting Apache..."
+
 exec apache2-foreground
