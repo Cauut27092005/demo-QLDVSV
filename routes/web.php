@@ -146,3 +146,18 @@ Route::get('/test-session', function () {
         'same_site' => config('session.same_site'),
     ]);
 });
+Route::get('/test-cookie', function () {
+    return response()->json([
+        'message' => 'cookie test'
+    ])->cookie(
+        'test_cookie',
+        'hello',
+        120,
+        '/',
+        null,
+        true,
+        true,
+        false,
+        'lax'
+    );
+});
