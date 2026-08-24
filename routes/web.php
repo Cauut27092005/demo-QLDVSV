@@ -31,7 +31,9 @@ Route::get('/logout', [AuthController::class, 'logout']);
 // Sinh Viên
 // ======================
 
-Route::get('/home', function () {return view('home');});
+Route::get('/home', function () {
+    return view('home');
+});
 
 // ======================
 //  ADMIN
@@ -45,7 +47,7 @@ Route::post('/api-nhanvien/update', [AdminController::class, 'updateNV']);
 
 Route::delete('/api-nhanvien/delete/{id}', [AdminController::class, 'deleteNV']);
 
-Route::post('/api-nhanvien/reset-password/{maNV}', [AdminController::class,'resetPassword']);
+Route::post('/api-nhanvien/reset-password/{maNV}', [AdminController::class, 'resetPassword']);
 
 Route::get('/api-nhanvien', [AdminController::class, 'nhanVien']);
 
@@ -55,15 +57,15 @@ Route::get('/quanly-nhanvien', [AdminController::class, 'QL_NV']);
 // GOOGLE ACCOUNT
 //=========================
 
-Route::get('/quanly-google', [AdminController::class,'QL_Google']);
+Route::get('/quanly-google', [AdminController::class, 'QL_Google']);
 
-Route::get('/api-google', [AdminController::class,'apiGoogle']);
+Route::get('/api-google', [AdminController::class, 'apiGoogle']);
 
 Route::get('/api-google', [AdminController::class, 'taiKhoanGoogle']);
 
 Route::post('/api-google/duyet', [AdminController::class, 'duyetGoogle']);
 
-Route::post('/api-google/tuchoi', [AdminController::class,'tuChoiGoogle']);
+Route::post('/api-google/tuchoi', [AdminController::class, 'tuChoiGoogle']);
 
 // ======================
 //  Nhân Viên
@@ -83,7 +85,7 @@ Route::get('/xuat-excel', [NhanVienController::class, 'xuatExcel']);
 
 Route::post('/nhanvien/tu-dong-nhan', [NhanVienController::class, 'tuDongNhan']);
 
-Route::get('/nhan-yeu-cau/{id}', [NhanVienController::class,'nhanYeuCau']);
+Route::get('/nhan-yeu-cau/{id}', [NhanVienController::class, 'nhanYeuCau']);
 
 Route::get('/capnhat-hoanthanh/{id}', [NhanVienController::class, 'CN_HT']);
 
@@ -95,25 +97,25 @@ Route::get('/api-canhbao-sla', [NhanVienController::class, 'canhBaoSLA']);
 //  Trưởng phòng
 // ======================
 
-Route::get('/truongphong', [TruongPhongController::class,'index']);
+Route::get('/truongphong', [TruongPhongController::class, 'index']);
 
-Route::get('/api-tp-dashboard', [TruongPhongController::class,'dashboard']);
+Route::get('/api-tp-dashboard', [TruongPhongController::class, 'dashboard']);
 
-Route::get('/api-tp-yeucau', [TruongPhongController::class,'yeuCau']);
+Route::get('/api-tp-yeucau', [TruongPhongController::class, 'yeuCau']);
 
 Route::get('/api-tp-chart-loaidv', [TruongPhongController::class, 'chartLoaiDichVu']);
 
-Route::get('/api-tp-sla', [TruongPhongController::class,'dsSLA']);
+Route::get('/api-tp-sla', [TruongPhongController::class, 'dsSLA']);
 
-Route::post('/api-tp-sla', [TruongPhongController::class,'capNhatSLA']);
+Route::post('/api-tp-sla', [TruongPhongController::class, 'capNhatSLA']);
 
-Route::get('/truongphong/baocao', [TruongPhongController::class,'xuatBaoCao']);
+Route::get('/truongphong/baocao', [TruongPhongController::class, 'xuatBaoCao']);
 
-Route::get('/api-tp-thongke', [TruongPhongController::class,'thongKe']);
+Route::get('/api-tp-thongke', [TruongPhongController::class, 'thongKe']);
 
-Route::get("/api-tp-top",[TruongPhongController::class,"topNhanVien"]);
+Route::get("/api-tp-top", [TruongPhongController::class, "topNhanVien"]);
 
-Route::get('/api-tp-chitiet/{maNV}', [TruongPhongController::class,'chiTiet']);
+Route::get('/api-tp-chitiet/{maNV}', [TruongPhongController::class, 'chiTiet']);
 
 Route::get('/truongphong/excel/topnhanvien', [TruongPhongController::class, 'excelTopNhanVien']);
 
@@ -170,8 +172,9 @@ Route::get('/test-cookie-debug', function () {
             'HTTP_X_FORWARDED_PROTO' => $_SERVER['HTTP_X_FORWARDED_PROTO'] ?? null,
             'HTTP_X_FORWARDED_HOST' => $_SERVER['HTTP_X_FORWARDED_HOST'] ?? null,
         ],
-    ])->header(
-        'Set-Cookie',
-        'debug_cookie=hello; Max-Age=7200; Path=/; Secure; HttpOnly; SameSite=Lax'
-    );
+    ])->header('X-Test-Header', 'hello')
+        ->header(
+            'Set-Cookie',
+            'debug_cookie=hello; Max-Age=7200; Path=/; Secure; HttpOnly; SameSite=Lax'
+        );
 });
