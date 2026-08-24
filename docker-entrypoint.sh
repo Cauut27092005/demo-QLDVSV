@@ -23,4 +23,10 @@ apache2ctl -S
 
 echo "Starting Apache..."
 
+echo "=== APACHE DOCUMENT ROOT ==="
+grep -R "DocumentRoot" /etc/apache2/sites-enabled /etc/apache2/sites-available
+
+echo "=== APACHE HEADERS MODULE ==="
+apache2ctl -M | grep headers
+
 exec apache2-foreground
