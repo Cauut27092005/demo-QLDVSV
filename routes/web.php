@@ -165,10 +165,10 @@ Route::get('/test-cookie', function () {
 });
 
 Route::get('/test-cookie-debug', function () {
-    return response('COOKIE DEBUG')
-    ->header('X-Test-Header', 'hello')
-    ->header(
-        'Set-Cookie',
-        'debug_cookie=hello; Max-Age=7200; Path=/; Secure; HttpOnly; SameSite=Lax'
-    );
+    return response('COOKIE DEBUG V2')
+        ->header('X-Test-Header', 'HELLO-V2')
+        ->header(
+            'Set-Cookie',
+            'debug_cookie=hello-v2; Max-Age=7200; Path=/; Secure; HttpOnly; SameSite=Lax'
+        );
 });
