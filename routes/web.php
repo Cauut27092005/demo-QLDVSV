@@ -165,16 +165,10 @@ Route::get('/test-cookie', function () {
 });
 
 Route::get('/test-cookie-debug', function () {
-    return response()->json([
-        'headers' => request()->headers->all(),
-        'server' => [
-            'SERVER_SOFTWARE' => $_SERVER['SERVER_SOFTWARE'] ?? null,
-            'HTTP_X_FORWARDED_PROTO' => $_SERVER['HTTP_X_FORWARDED_PROTO'] ?? null,
-            'HTTP_X_FORWARDED_HOST' => $_SERVER['HTTP_X_FORWARDED_HOST'] ?? null,
-        ],
-    ])->header('X-Test-Header', 'hello')
-        ->header(
-            'Set-Cookie',
-            'debug_cookie=hello; Max-Age=7200; Path=/; Secure; HttpOnly; SameSite=Lax'
-        );
+    return response('COOKIE DEBUG')
+    ->header('X-Test-Header', 'hello')
+    ->header(
+        'Set-Cookie',
+        'debug_cookie=hello; Max-Age=7200; Path=/; Secure; HttpOnly; SameSite=Lax'
+    );
 });
