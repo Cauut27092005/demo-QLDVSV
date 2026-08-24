@@ -147,9 +147,17 @@ Route::get('/test-session', function () {
     ]);
 });
 Route::get('/test-cookie', function () {
-    return response('COOKIE TEST')
+
+    $response = response('COOKIE TEST')
         ->header(
             'Set-Cookie',
             'test_cookie=hello; Max-Age=7200; Path=/; Secure; HttpOnly; SameSite=Lax'
         );
+
+    logger()->info('TEST COOKIE RESPONSE', [
+        'headers' => $response->headers->all(),
+        'set_cookie' => $response->headers->get('Set-Cookie'),
+    ]);
+
+    return $response;
 });
