@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class TkGoogle extends Model
 {
@@ -19,4 +20,16 @@ class TkGoogle extends Model
         'LanDangNhapCuoi',
         'CreatedAt',
     ];
+    protected $casts = [
+        'LanDangNhapCuoi' => 'datetime',
+        'CreatedAt' => 'datetime',
+    ];
+    public function nhanVien(): BelongsTo
+    {
+        return $this->belongsTo(
+            Users::class,
+            'MaNV',
+            'MaNV'
+        );
+    }
 }

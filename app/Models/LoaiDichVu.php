@@ -12,5 +12,10 @@ class LoaiDichVu extends Model
     protected $fillable = [
         'TenLoai',
         'MaNV',
+        'SLA_Gio',
+    ];
+
+    protected $casts = [
+        'SLA_Gio' => 'integer',
     ];
 }
