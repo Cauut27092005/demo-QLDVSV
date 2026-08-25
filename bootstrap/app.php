@@ -14,6 +14,10 @@
         )
         ->withMiddleware(function (Middleware $middleware): void {
             $middleware->trustProxies(at: '*');
+
+            $middleware->web(append: [
+                \Illuminate\Session\Middleware\StartSession::class,
+            ]);
         })
         ->withExceptions(function (Exceptions $exceptions): void {
             $exceptions->shouldRenderJsonWhen(

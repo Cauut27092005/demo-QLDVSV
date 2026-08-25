@@ -136,15 +136,25 @@ Route::get('/test-socket', function () {
     return 'OK';
 });
 use Illuminate\Session\Middleware\StartSession;
-Route::get('/test-session', function () {
+use Illuminate\Http\Request;
+
+Route::get('/test-session', function (Request $request) {
     session(['test_session' => 'hello']);
 
-    return response()->json([
+    $response = response()->json([
         'session_id' => session()->getId(),
         'test_session' => session('test_session'),
-        'has_session_cookie' => request()->hasCookie(config('session.cookie')),
+        'has_session_cookie' => $request->hasCookie(config('session.cookie')),
         'session_driver' => config('session.driver'),
     ]);
+
+    logger()->info('SESSION TEST BEFORE RESPONSE', [
+        'session_id' => session()->getId(),
+        'headers' => $response->headers->all(),
+        'session_config' => config('session'),
+    ]);
+
+    return $response;
 })->middleware(StartSession::class);
 Route::get('/test-cookie', function () {
 
