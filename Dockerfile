@@ -63,4 +63,4 @@ RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 EXPOSE 80
 
-CMD ["docker-entrypoint.sh"]
+CMD ["sh", "-c", "php artisan migrate --force && apache2-foreground"]
