@@ -181,3 +181,8 @@ Route::get('/test-cookie-debug', function () {
             'lax'
         );
 });
+Route::get('/test-header', function () {
+    return response('HELLO')
+        ->header('X-Test-Header', 'hello123')
+        ->header('Set-Cookie', 'abc=123; Path=/; Secure; HttpOnly; SameSite=Lax');
+});
