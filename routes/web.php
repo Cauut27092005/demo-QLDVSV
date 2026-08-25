@@ -139,22 +139,12 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Http\Request;
 
 Route::get('/test-session', function (Request $request) {
-    session(['test_session' => 'hello']);
 
-    $response = response()->json([
+    return response()->json([
+        'MARKER' => 'SESSION_TEST_2026_08_25',
         'session_id' => session()->getId(),
-        'test_session' => session('test_session'),
-        'has_session_cookie' => $request->hasCookie(config('session.cookie')),
-        'session_driver' => config('session.driver'),
+        'driver' => config('session.driver'),
     ]);
-
-    logger()->info('SESSION TEST BEFORE RESPONSE', [
-        'session_id' => session()->getId(),
-        'headers' => $response->headers->all(),
-        'session_config' => config('session'),
-    ]);
-
-    return $response;
 })->middleware(StartSession::class);
 Route::get('/test-cookie', function () {
 
