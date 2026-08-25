@@ -29,4 +29,13 @@ grep -R "DocumentRoot" /etc/apache2/sites-enabled /etc/apache2/sites-available
 echo "=== APACHE HEADERS MODULE ==="
 apache2ctl -M | grep headers
 
+echo "=== APACHE MODULES ==="
+apache2ctl -M | sort
+
+echo "=== APACHE VHOST ==="
+apache2ctl -S
+
+echo "=== APACHE CONFIG ==="
+apache2ctl -t -D DUMP_RUN_CFG
+
 exec apache2-foreground
