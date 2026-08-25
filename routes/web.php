@@ -166,18 +166,18 @@ Route::get('/test-cookie', function () {
 
 Route::get('/test-cookie-debug', function () {
 
-    $response = response('COOKIE DEBUG V3');
-
-    $response->headers->set('X-Test-Header', 'HELLO-V3');
-
-    $response->headers->set(
-        'Set-Cookie',
-        'debug_cookie=hello-v3; Max-Age=7200; Path=/; Secure; HttpOnly; SameSite=Lax'
-    );
-
-    logger()->info('DEBUG RESPONSE HEADERS', [
-        'headers' => $response->headers->all(),
-    ]);
-
-    return $response;
+    return response('COOKIE DEBUG V4')
+        ->header('X-Test-Header', 'HELLO-V4')
+        ->header('X-Test-Header-2', 'HELLO-SECOND')
+        ->cookie(
+            'debug_cookie',
+            'hello-v4',
+            120,
+            '/',
+            null,
+            true,
+            true,
+            false,
+            'lax'
+        );
 });
