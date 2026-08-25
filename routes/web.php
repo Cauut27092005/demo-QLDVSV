@@ -135,19 +135,17 @@ Route::get('/test-socket', function () {
     event(new \App\Events\DuLieuCapNhat('hello'));
     return 'OK';
 });
-
+use Illuminate\Session\Middleware\StartSession;
 Route::get('/test-session', function () {
     session(['test_session' => 'hello']);
 
     return response()->json([
         'session_id' => session()->getId(),
         'test_session' => session('test_session'),
-        'cookie' => config('session.cookie'),
-        'domain' => config('session.domain'),
-        'secure' => config('session.secure'),
-        'same_site' => config('session.same_site'),
+        'has_session_cookie' => request()->hasCookie(config('session.cookie')),
+        'session_driver' => config('session.driver'),
     ]);
-});
+})->middleware(StartSession::class);
 Route::get('/test-cookie', function () {
 
     $response = response('COOKIE TEST')
