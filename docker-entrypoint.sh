@@ -15,22 +15,15 @@ php artisan migrate --force -vvv
 
 echo "Migration command finished with code: $?"
 
-echo "=== APACHE MODULES ==="
-apache2ctl -M | grep -E 'headers|rewrite|proxy'
-
-echo "=== APACHE CONFIG ==="
-apache2ctl -S
-
 echo "Starting Apache..."
 
 echo "=== APACHE DOCUMENT ROOT ==="
 grep -R "DocumentRoot" /etc/apache2/sites-enabled /etc/apache2/sites-available
 
-echo "=== APACHE HEADERS MODULE ==="
-apache2ctl -M | grep headers
+
 
 echo "=== APACHE MODULES ==="
-apache2ctl -M | sort
+apache2ctl -M | grep -E 'headers|rewrite'
 
 echo "=== APACHE VHOST ==="
 apache2ctl -S

@@ -13,9 +13,6 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Apache rewrite
-RUN a2enmod rewrite
-
 WORKDIR /var/www/html
 
 # Composer
