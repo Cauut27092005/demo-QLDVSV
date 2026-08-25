@@ -1,23 +1,21 @@
 #!/bin/bash
 
+set -e
+
 echo "======================================"
 echo "Starting Laravel container..."
 echo "======================================"
 
-echo "Clearing Laravel cached configuration..."
-php artisan optimize:clear
-
 echo "Running Laravel migrations..."
+
 php artisan migrate --force -vvv
 
-echo "Migration command finished with code: $?"
+echo "Migration command finished."
 
 echo "Starting Apache..."
 
 echo "=== APACHE DOCUMENT ROOT ==="
 grep -R "DocumentRoot" /etc/apache2/sites-enabled /etc/apache2/sites-available
-
-
 
 echo "=== APACHE MODULES ==="
 apache2ctl -M | grep -E 'headers|rewrite'
