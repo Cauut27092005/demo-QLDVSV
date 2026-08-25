@@ -3,11 +3,11 @@ FROM php:8.3-apache
 # PHP extensions
 RUN apt-get update \
     && apt-get install -y \
-        libfreetype6-dev \
-        libjpeg62-turbo-dev \
-        libpng-dev \
-        libzip-dev \
-        libpq-dev \
+    libfreetype6-dev \
+    libjpeg62-turbo-dev \
+    libpng-dev \
+    libzip-dev \
+    libpq-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install pdo pdo_mysql pdo_pgsql gd zip \
     && apt-get clean \
@@ -35,6 +35,11 @@ RUN composer install \
     --optimize-autoloader \
     --no-interaction
 
+RUN php artisan config:clear \
+    && php artisan cache:clear \
+    && php artisan route:clear \
+    && php artisan view:clear
+
 # Install JS dependencies and build Vite
 RUN npm ci
 RUN npm run build
@@ -55,7 +60,7 @@ RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|' \
 
 RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' \
     /etc/apache2/apache2.conf
-    
+
 # Laravel startup script
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 
@@ -63,4 +68,4 @@ RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 EXPOSE 80
 
-CMD ["sh", "-c", "php artisan migrate --force && apache2-foreground"]
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
